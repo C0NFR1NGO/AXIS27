@@ -14,7 +14,7 @@ const heroStyle = {
   overflow: 'hidden',
 };
 
-export default function HeroSection() {
+export default function HeroSection({ ready = true }) {
   return (
     <section id="hero" style={heroStyle}>
       {/* DBH Holographic Left Panel (hidden on mobile) */}
@@ -93,11 +93,11 @@ export default function HeroSection() {
 
       <motion.h1
         initial={{ opacity: 0, y: 35 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2, delay: 0.2, ease: 'easeOut' }}
+        animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 35 }}
+        transition={{ duration: 1.1, delay: 0.1, ease: 'easeOut' }}
         style={{
           fontFamily: "'Ethnocentric', sans-serif",
-          fontSize: 'clamp(2.8rem, 10vw, 7.5rem)',
+          fontSize: 'clamp(3.5rem, 12.5vw, 9.375rem)',
           fontWeight: 900,
           letterSpacing: '0.2em',
           textIndent: '0.2em',
@@ -118,11 +118,11 @@ export default function HeroSection() {
 
       <motion.p
         initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.6, ease: 'easeOut' }}
+        animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+        transition={{ duration: 0.95, delay: 0.28, ease: 'easeOut' }}
         style={{
           fontFamily: "var(--font-mono)",
-          fontSize: 'clamp(1rem, 2.5vw, 1.45rem)',
+          fontSize: 'clamp(1.25rem, 3.125vw, 1.81rem)',
           fontWeight: 700,
           letterSpacing: '0.25em',
           textTransform: 'uppercase',
@@ -141,8 +141,8 @@ export default function HeroSection() {
 
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 0.9, ease: 'easeOut' }}
+        animate={ready ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.95, delay: 0.48, ease: 'easeOut' }}
         style={{
           fontFamily: "var(--font-body)",
           fontSize: 'clamp(0.85rem, 1.4vw, 1.05rem)',
@@ -159,8 +159,8 @@ export default function HeroSection() {
 
       <motion.div
         initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 1.2, ease: 'easeOut' }}
+        animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+        transition={{ duration: 0.95, delay: 0.65, ease: 'easeOut' }}
         style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}
       >
         <Link

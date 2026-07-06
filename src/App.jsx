@@ -42,15 +42,15 @@ function SplashScreen({ onComplete }) {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(onComplete, 3500);
+    const timer = setTimeout(onComplete, 3300);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
     <motion.div
-      initial={{ opacity: 1 }}
-      animate={{ opacity: 0 }}
-      transition={{ duration: 0.85, delay: 2.8, ease: [0.76, 0, 0.24, 1] }}
+      initial={{ opacity: 1, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, scale: 1.04, filter: 'blur(15px)' }}
+      transition={{ duration: 1.0, ease: [0.76, 0, 0.24, 1] }}
       style={{
         position: 'fixed',
         inset: 0,
@@ -167,7 +167,7 @@ function SplashScreen({ onComplete }) {
             transition={{ duration: 0.8, delay: 0.3 }}
             style={{
               fontFamily: "'Ethnocentric', sans-serif",
-              fontSize: 'clamp(2.5rem, 8vw, 5.5rem)',
+              fontSize: 'clamp(3.125rem, 10vw, 6.875rem)',
               fontWeight: 800,
               letterSpacing: '0.22em',
               textIndent: '0.22em',
@@ -190,7 +190,7 @@ function SplashScreen({ onComplete }) {
             style={{
               marginTop: '0.8rem',
               fontFamily: 'var(--font-mono)',
-              fontSize: 'clamp(0.8rem, 1.8vw, 0.95rem)',
+              fontSize: 'clamp(1.0rem, 2.25vw, 1.185rem)',
               letterSpacing: '0.3em',
               textTransform: 'uppercase',
               color: 'var(--text-secondary)',
@@ -275,19 +275,12 @@ function AppContent() {
 
     return window.sessionStorage.getItem('axis27-home-intro-seen') !== '1';
   });
-  const [showShell, setShowShell] = useState(() => location.pathname !== '/' || !showSplash);
   const [homeRevealReady, setHomeRevealReady] = useState(false);
   useCursorDistortion();
 
   useEffect(() => {
     if (location.pathname === '/' && showSplash) {
       window.sessionStorage.setItem('axis27-home-intro-seen', '1');
-    }
-  }, [location.pathname, showSplash]);
-
-  useEffect(() => {
-    if (location.pathname !== '/') {
-      setShowShell(true);
     }
   }, [location.pathname, showSplash]);
 
@@ -302,27 +295,13 @@ function AppContent() {
       return;
     }
 
-    const timer = setTimeout(() => setHomeRevealReady(true), 180);
+    const timer = setTimeout(() => setHomeRevealReady(true), 120);
     return () => clearTimeout(timer);
-  }, [location.pathname, showSplash]);
-
-  useEffect(() => {
-    if (location.pathname === '/' && showSplash) {
-      setShowShell(false);
-      setHomeRevealReady(false);
-    }
   }, [location.pathname, showSplash]);
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>
-      <AnimatePresence
-        mode="wait"
-        onExitComplete={() => {
-          if (location.pathname === '/') {
-            setShowShell(true);
-          }
-        }}
-      >
+      <AnimatePresence>
         {showSplash && (
           <SplashScreen
             key="splash"
@@ -331,48 +310,46 @@ function AppContent() {
         )}
       </AnimatePresence>
 
-      {showShell && (
-        <motion.div
-          initial={location.pathname === '/' ? { opacity: 0, y: 14, scale: 0.992, filter: 'blur(12px)' } : false}
-          animate={location.pathname === '/' ? (homeRevealReady ? { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' } : { opacity: 0, y: 14, scale: 0.992, filter: 'blur(12px)' }) : { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          style={{ pointerEvents: showSplash ? 'none' : 'auto' }}
-        >
-          <Navigation />
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, scale: 1.01, y: 6 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.995, y: -4 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <Routes location={location}>
-                <Route
-                  path="/"
-                  element={
-                    <motion.div
-                      initial={{ opacity: 0, y: 26, scale: 0.99, filter: 'blur(14px)' }}
-                      animate={homeRevealReady ? { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' } : { opacity: 0, y: 26, scale: 0.99, filter: 'blur(14px)' }}
-                      transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      <HomePage />
-                    </motion.div>
-                  }
-                />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/events" element={<EventsPage />} />
-                <Route path="/workshops" element={<WorkshopsPage />} />
-                <Route path="/sponsors" element={<SponsorsPage />} />
-                <Route path="/accommodation" element={<AccommodationPage />} />
-                <Route path="/team" element={<TeamPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-              </Routes>
-            </motion.div>
-          </AnimatePresence>
-          <Footer />
-        </motion.div>
-      )}
+      <motion.div
+        initial={location.pathname === '/' ? { opacity: 0, y: 14, scale: 0.992, filter: 'blur(12px)' } : false}
+        animate={location.pathname === '/' ? (homeRevealReady ? { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' } : { opacity: 0, y: 14, scale: 0.992, filter: 'blur(12px)' }) : { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        style={{ pointerEvents: showSplash ? 'none' : 'auto' }}
+      >
+        <Navigation />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, scale: 1.01, y: 6 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.995, y: -4 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <Routes location={location}>
+              <Route
+                path="/"
+                element={
+                  <motion.div
+                    initial={{ opacity: 0, y: 26, scale: 0.99, filter: 'blur(14px)' }}
+                    animate={homeRevealReady ? { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' } : { opacity: 0, y: 26, scale: 0.99, filter: 'blur(14px)' }}
+                    transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <HomePage ready={homeRevealReady} />
+                  </motion.div>
+                }
+              />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/workshops" element={<WorkshopsPage />} />
+              <Route path="/sponsors" element={<SponsorsPage />} />
+              <Route path="/accommodation" element={<AccommodationPage />} />
+              <Route path="/team" element={<TeamPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+            </Routes>
+          </motion.div>
+        </AnimatePresence>
+        <Footer />
+      </motion.div>
     </div>
   );
 }

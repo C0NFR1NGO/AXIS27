@@ -6,7 +6,7 @@ import ZoomReveal from '../components/ZoomReveal';
 
 const LazyCosmicBackground = lazy(() => import('../components/CosmicBackground'));
 
-export default function HomePage() {
+export default function HomePage({ ready }) {
   return (
     <>
       <div style={{ position: 'relative', height: '100vh', zIndex: 0 }}>
@@ -16,7 +16,7 @@ export default function HomePage() {
           </Suspense>
         </div>
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <HeroSection />
+          <HeroSection ready={ready} />
         </div>
       </div>
       <ZoomReveal><StatsBar /></ZoomReveal>
