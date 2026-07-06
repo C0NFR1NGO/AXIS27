@@ -19,11 +19,11 @@ if (typeof document !== 'undefined' && !isMobile) {
   });
 }
 
-// Balanced density thresholds to prevent both emptiness and clutter on phones
-const DUST_COUNT = isMobile ? 500 : 2000;
-const NODE_COUNT = isMobile ? 45 : 200;
-const MAX_CONNECTIONS = isMobile ? 80 : 900;
-const CONNECTION_DIST = isMobile ? 3.8 : 6.2;
+// Substantially raised PC thresholds to create an extremely dense, interconnected geometric constellation network
+const DUST_COUNT = isMobile ? 650 : 4200;
+const NODE_COUNT = isMobile ? 50 : 450;
+const MAX_CONNECTIONS = isMobile ? 90 : 2600;
+const CONNECTION_DIST = isMobile ? 4.0 : 7.8;
 
 function ConstellationField() {
   const pointsRef = useRef();
@@ -31,10 +31,11 @@ function ConstellationField() {
   const linesRef = useRef();
   const { viewport } = useThree();
 
+  // Widen bounds to 2.8x to ensure full coverage even at maximum parallax sways
   const bounds = useMemo(() => {
     return {
-      width: viewport.width * 1.5,
-      height: viewport.height * 1.5,
+      width: viewport.width * 2.8,
+      height: viewport.height * 2.8,
     };
   }, [viewport.width, viewport.height]);
 
@@ -99,8 +100,8 @@ function ConstellationField() {
   const dustData = useMemo(() => {
     const arr = [];
     for (let i = 0; i < DUST_COUNT; i++) {
-      const hx = (Math.random() - 0.5) * bounds.width * 1.35;
-      const hy = (Math.random() - 0.5) * bounds.height * 1.35;
+      const hx = (Math.random() - 0.5) * bounds.width * 1.25;
+      const hy = (Math.random() - 0.5) * bounds.height * 1.25;
       arr.push({
         x: hx, y: hy, z: (Math.random() - 0.5) * 36 - 10,
         vx: (Math.random() - 0.5) * 0.005,
@@ -138,10 +139,11 @@ function ConstellationField() {
     const mx = mouse.x * viewport.width * 0.5;
     const my = mouse.y * viewport.height * 0.5;
 
-    const boundX = viewport.width * 0.92;
-    const boundY = viewport.height * 0.92;
+    // Expanded wrap bounds to prevent pop-in on widescreen limits
+    const boundX = viewport.width * 1.85;
+    const boundY = viewport.height * 1.85;
 
-    // 1. Update node physics
+    // 1. Update active nodes
     for (let i = 0; i < NODE_COUNT; i++) {
       const n = nodes[i];
 
@@ -175,9 +177,9 @@ function ConstellationField() {
       pointsRef.current.geometry.attributes.position.needsUpdate = true;
     }
 
-    // 2. Update background dust physics
-    const dBoundX = viewport.width * 1.25;
-    const dBoundY = viewport.height * 1.25;
+    // 2. Update background dust
+    const dBoundX = viewport.width * 2.1;
+    const dBoundY = viewport.height * 2.1;
 
     for (let i = 0; i < DUST_COUNT; i++) {
       const d = dustData[i];
@@ -185,7 +187,7 @@ function ConstellationField() {
       d.y += d.vy + Math.cos(time * 0.05 + d.phase) * 0.0018 + 0.0014;
       d.z += d.vz;
 
-      if (Math.abs(d.x) > dBoundX) { d.x = (Math.random() - 0.5) * dBoundX * 2; }
+      if (Math.abs(d.x) > dBoundX) { d.x = -Math.sign(d.x) * dBoundX * 0.98; }
       if (d.y > dBoundY) { d.y = -dBoundY; }
       if (d.y < -dBoundY) { d.y = dBoundY; }
 
@@ -277,6 +279,13 @@ function ConstellationField() {
       linesRef.current.geometry.attributes.position.needsUpdate = true;
       linesRef.current.geometry.attributes.color.needsUpdate = true;
     }
+
+    // 4. Cinematic Camera Drift and Parallax Movement (SUBTLY REDUCED & COMPENSATED)
+    const targetCamX = Math.sin(time * 0.04) * 0.35 + (mx * 0.55);
+    const targetCamY = Math.cos(time * 0.03) * 0.18 + (my * 0.4);
+    state.camera.position.x += (targetCamX - state.camera.position.x) * 0.03;
+    state.camera.position.y += (targetCamY - state.camera.position.y) * 0.03;
+    state.camera.lookAt(state.camera.position.x * 0.45, state.camera.position.y * 0.45, -2);
   });
 
   return (

@@ -20,8 +20,11 @@ function SplashScreen({ onComplete }) {
   useEffect(() => {
     const logList = [
       "// DETROIT CYBERLIFE INC. REG 846-92",
-      "// SYSTEM DIAGNOSTICS: RUNNING...",
+      "// SYSTEM INTERRUPT SIGNAL: OK [✓]",
+      "// INITIALIZING COGNITIVE INTERFACE...",
+      "// LOADING SPICE DRIFT PARTICLE ENGINE...",
       "// DETECTING SOFTWARE INSTABILITY [▲ 92%]",
+      "// SYNCHRONIZING CORE CONSTELLATION MAP...",
       "// ANOMALY STATUS: COMPATIBLE",
       "// INITIATING DIRECTIVE: IGNIS AETERNUM",
       "// ILLUMINATING THE INFINITE... READY"
@@ -36,7 +39,7 @@ function SplashScreen({ onComplete }) {
       } else {
         clearInterval(interval);
       }
-    }, 280);
+    }, 230);
     
     return () => clearInterval(interval);
   }, []);
@@ -72,6 +75,92 @@ function SplashScreen({ onComplete }) {
         backgroundSize: '200px 200px, 300px 300px, 400px 400px, 500px 500px',
         opacity: 0.25,
       }} />
+
+      {/* Background Cyber Grid */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: 'linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)',
+        backgroundSize: '40px 40px',
+        opacity: 0.85,
+        pointerEvents: 'none',
+      }} />
+
+      {/* Detroit Corner Telemetry - Top-Left */}
+      <div className="nav-desktop-links" style={{
+        position: 'absolute',
+        top: '2.5rem',
+        left: '3rem',
+        textAlign: 'left',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.62rem',
+        color: 'var(--text-muted)',
+        lineHeight: 1.6,
+        letterSpacing: '0.08em',
+        opacity: 0.5,
+        pointerEvents: 'none',
+      }}>
+        <div>[ CYBERLIFE BOOTLOADER v4.10 ]</div>
+        <div>KERNEL DIRECTIVE LOADED: 100%</div>
+        <div>DUNE_MELANGE_INTERFACE: ACTIVE</div>
+      </div>
+
+      {/* Detroit Corner Telemetry - Top-Right */}
+      <div className="nav-desktop-links" style={{
+        position: 'absolute',
+        top: '2.5rem',
+        right: '3rem',
+        textAlign: 'right',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.62rem',
+        color: 'var(--text-muted)',
+        lineHeight: 1.6,
+        letterSpacing: '0.08em',
+        opacity: 0.5,
+        pointerEvents: 'none',
+      }}>
+        <div>LOCAL_TIME: [2027.04.12]</div>
+        <div>COHERENCE LEVEL: SECURE [✓]</div>
+        <div>CONNECTION STATE: ENCRYPTED</div>
+      </div>
+
+      {/* Detroit Corner Telemetry - Bottom-Left */}
+      <div className="nav-desktop-links" style={{
+        position: 'absolute',
+        bottom: '2.5rem',
+        left: '3rem',
+        textAlign: 'left',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.62rem',
+        color: 'var(--text-muted)',
+        lineHeight: 1.6,
+        letterSpacing: '0.08em',
+        opacity: 0.5,
+        pointerEvents: 'none',
+      }}>
+        <div>BOOT REGISTRY STATUS: ACTIVE</div>
+        <div>COGNITIVE SYNAPSE MAP: 98.4%</div>
+        <div>SOFTWARE INSTABILITY: [▲ 92%]</div>
+      </div>
+
+      {/* Detroit Corner Telemetry - Bottom-Right */}
+      <div className="nav-desktop-links" style={{
+        position: 'absolute',
+        bottom: '2.5rem',
+        right: '3rem',
+        textAlign: 'right',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.62rem',
+        color: 'var(--text-muted)',
+        lineHeight: 1.6,
+        letterSpacing: '0.08em',
+        opacity: 0.5,
+        pointerEvents: 'none',
+      }}>
+        <div>PROCESSOR STATE: STABLE [16/16]</div>
+        <div>CORE THERMALS: 32.4°C (OPTIMAL)</div>
+        <div>STAGE SYSTEM: DIRECTIVE BOOT</div>
+      </div>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.92, y: 10 }}
@@ -277,6 +366,14 @@ function AppContent() {
   });
   const [homeRevealReady, setHomeRevealReady] = useState(false);
   useCursorDistortion();
+
+  // Reset scroll to top on path changes and prevent default browser scroll restoration
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (location.pathname === '/' && showSplash) {

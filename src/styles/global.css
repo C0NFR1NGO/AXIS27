@@ -72,18 +72,19 @@ body {
   position: relative;
 }
 
-/* Subtle Detroit: Become Human Android HUD Scanline Overlay */
+/* Subtle Detroit: Become Human Android HUD Scanline & Cinematic Vignette Overlay */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   background: 
-    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.18) 50%),
+    radial-gradient(circle, transparent 25%, rgba(4, 3, 2, 0.74) 100%),
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%),
     linear-gradient(90deg, rgba(210, 156, 56, 0.02), rgba(0, 229, 255, 0.01), rgba(0, 136, 255, 0.02));
-  background-size: 100% 4px, 6px 100%;
+  background-size: 100% 100%, 100% 4px, 6px 100%;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.3;
+  opacity: 0.52;
 }
 
 @media (hover: none) and (pointer: coarse) {

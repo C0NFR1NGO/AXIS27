@@ -83,7 +83,7 @@ export const socialLinks = {
   instagram: 'https://www.instagram.com/axis_vnit',
   linkedin: 'https://www.linkedin.com/company/axis-vnit-nagpur/',
   facebook: 'https://www.facebook.com/axisvnit',
-  twitter: 'https://x.com/axisvnit',
+  twitter: 'https://x.com/AXIS_VNIT',
   youtube: 'https://www.youtube.com/@AXISVNIT',
 };
 
