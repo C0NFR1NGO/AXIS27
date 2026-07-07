@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Share+Tech+Mono&family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -11,13 +13,13 @@
   --gold: #d29c38;
   --gold-light: #f7ca72;
   --gold-glow: rgba(210, 156, 56, 0.35);
-  
+
   /* Detroit CyberLife LED & Space Blue */
   --spice-blue: #00e5ff;
   --spice-blue-glow: rgba(0, 229, 255, 0.3);
   --cyber-blue: #0088ff;
   --cyber-blue-glow: rgba(0, 136, 255, 0.25);
-  
+
   /* DBH Software Instability Warning Red */
   --cyber-red: #ff3355;
   --cyber-red-glow: rgba(255, 51, 85, 0.35);
@@ -37,17 +39,27 @@
   --blue-deep: #1a1510;
   --glitch-red: var(--cyber-red);
 
-  --text-primary: #f5f2eb; /* Warm desert bone white */
+  --text-primary: #f5f2eb;
+  /* Warm desert bone white */
   --text-secondary: #dcd6ca;
   --text-muted: #8a8275;
 
   /* Custom Typography */
-  --font-display: 'Cinzel', serif; /* Dune Cinematic Serif */
-  --font-heading: 'Orbitron', sans-serif; /* DBH sci-fi header */
-  --font-body: 'Rajdhani', sans-serif; /* DBH Tech info / sans body */
-  --font-mono: 'Share Tech Mono', monospace; /* DBH diagnostics & logs */
-  
+  --font-display: 'Cinzel', serif;
+  /* Dune Cinematic Serif */
+  --font-heading: 'Orbitron', sans-serif;
+  /* DBH sci-fi header */
+  --font-body: 'Rajdhani', sans-serif;
+  /* DBH Tech info / sans body */
+  --font-mono: 'Share Tech Mono', monospace;
+  /* DBH diagnostics & logs */
+
   --nav-height: 72px;
+
+  /* Custom Easing Curves for UI Snappiness */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @font-face {
@@ -77,7 +89,7 @@ body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background: 
+  background:
     radial-gradient(circle, transparent 25%, rgba(4, 3, 2, 0.74) 100%),
     linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%),
     linear-gradient(90deg, rgba(210, 156, 56, 0.02), rgba(0, 229, 255, 0.01), rgba(0, 136, 255, 0.02));
@@ -88,7 +100,9 @@ body::after {
 }
 
 @media (hover: none) and (pointer: coarse) {
-  body { cursor: auto; }
+  body {
+    cursor: auto;
+  }
 }
 
 a {
@@ -111,8 +125,14 @@ img {
   color: var(--text-primary);
 }
 
-::-webkit-scrollbar { display: none; }
-html { scrollbar-width: none; -ms-overflow-style: none; }
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
 
 .section {
   min-height: 60vh;
@@ -136,8 +156,15 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
 }
 
 @keyframes shimmer {
-  0%, 100% { background-position: 0% center; }
-  50% { background-position: 100% center; }
+
+  0%,
+  100% {
+    background-position: 0% center;
+  }
+
+  50% {
+    background-position: 100% center;
+  }
 }
 
 .section-title {
@@ -184,14 +211,19 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
   background: rgba(13, 10, 8, 0.8);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(229, 169, 60, 0.14);
-  border-radius: 4px; /* Sleek square corners like DBH UI panels */
-  transition: border-color 0.35s, transform 0.35s, box-shadow 0.35s;
+  border-radius: 4px;
+  /* Sleek square corners like DBH UI panels */
+  transition: border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
 }
 
 .glass-card:hover {
   border-color: var(--spice-blue);
   box-shadow: 0 0 25px rgba(0, 229, 255, 0.15), 0 0 40px rgba(229, 169, 60, 0.05);
   transform: translateY(-2px);
+}
+
+.glass-card:active {
+  transform: scale(0.97);
 }
 
 /* Primary Button: Dune Gold Theme */
@@ -206,7 +238,7 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
   color: var(--gold);
   background: transparent;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out), transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
   text-decoration: none;
   display: inline-block;
   border-radius: 2px;
@@ -218,6 +250,10 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
   color: var(--bg-deep);
   box-shadow: 0 0 30px rgba(229, 169, 60, 0.4);
   transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
 }
 
 /* Secondary Button: Detroit Cyber Cyan Theme */
@@ -232,7 +268,7 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
   color: var(--spice-blue);
   background: transparent;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out), transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
   text-decoration: none;
   display: inline-block;
   border-radius: 2px;
@@ -244,6 +280,10 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
   color: var(--bg-deep);
   box-shadow: 0 0 30px rgba(0, 229, 255, 0.35);
   transform: translateY(-1px);
+}
+
+.btn-secondary:active {
+  transform: scale(0.97);
 }
 
 .text-glow-gold {
@@ -321,11 +361,39 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
     grid-template-columns: 1fr 1fr !important;
     gap: 1.2rem 0.8rem !important;
   }
-  .about-stats-grid > div:last-child {
+
+  .about-stats-grid>div:last-child {
     grid-column: 1 / span 2 !important;
     justify-self: center;
     width: 100%;
-    max-width: 260px; /* centers the third card nicely */
+    max-width: 260px;
+    /* centers the third card nicely */
   }
 }
 
+/* Social Icons */
+.social-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 229, 255, 0.16);
+  border-radius: 50%;
+  color: var(--spice-blue);
+  background: rgba(0, 229, 255, 0.03);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.05);
+  transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out), border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+.social-icon:hover {
+  background: var(--spice-blue);
+  color: #050403;
+  border-color: var(--spice-blue);
+  box-shadow: 0 0 20px var(--spice-blue);
+  transform: translateY(-2px);
+}
+
+.social-icon:active {
+  transform: scale(0.93);
+}

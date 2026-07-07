@@ -26,14 +26,18 @@ export default function EventsSection() {
       </motion.p>
 
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
         gap: '1.5rem',
         width: '100%',
         maxWidth: '1200px',
       }}>
         {eventCategories.map((cat, i) => (
-          <EventCard key={cat.id} category={cat} index={i} />
+          <div key={cat.id} style={{ flex: '1 1 320px', maxWidth: '380px' }}>
+            <EventCard category={cat} index={i} />
+          </div>
         ))}
       </div>
     </section>

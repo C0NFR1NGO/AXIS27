@@ -77,7 +77,7 @@ export default function CoreCommitteeSection() {
                 background: isSelected
                   ? 'rgba(229,169,60,0.12)'
                   : 'rgba(255,255,255,0.03)',
-                transition: 'background 0.3s, border-color 0.3s',
+                transition: 'background 0.2s var(--ease-out), border-color 0.2s var(--ease-out)',
               }}
             >
               <div
@@ -111,7 +111,7 @@ export default function CoreCommitteeSection() {
                   fontWeight: 600,
                   color: isSelected ? 'var(--gold)' : 'var(--text-primary)',
                   marginBottom: '0.3rem',
-                  transition: 'color 0.3s',
+                  transition: 'color 0.2s var(--ease-out)',
                 }}
               >
                 {name}
@@ -157,10 +157,10 @@ export default function CoreCommitteeSection() {
             }}
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ type: 'spring', duration: 0.4, bounce: 0.1 }}
               onClick={(e) => e.stopPropagation()}
               className="glass-card"
               style={{

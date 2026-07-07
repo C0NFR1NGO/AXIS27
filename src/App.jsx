@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import EventsPage from './pages/EventsPage';
+import EventDetailsPage from './pages/EventDetailsPage';
 import WorkshopsPage from './pages/WorkshopsPage';
 import SponsorsPage from './pages/SponsorsPage';
 import AccommodationPage from './pages/AccommodationPage';
@@ -16,7 +17,7 @@ import './styles/global.css';
 
 function SplashScreen({ onComplete }) {
   const [logs, setLogs] = useState([]);
-  
+
   useEffect(() => {
     const logList = [
       "// DETROIT CYBERLIFE INC. REG 846-92",
@@ -29,7 +30,7 @@ function SplashScreen({ onComplete }) {
       "// INITIATING DIRECTIVE: IGNIS AETERNUM",
       "// ILLUMINATING THE INFINITE... READY"
     ];
-    
+
     let currentLog = 0;
     const interval = setInterval(() => {
       if (currentLog < logList.length) {
@@ -40,7 +41,7 @@ function SplashScreen({ onComplete }) {
         clearInterval(interval);
       }
     }, 230);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -176,10 +177,10 @@ function SplashScreen({ onComplete }) {
         }}
       >
         <div style={{ position: 'relative', width: 'min(92vw, 760px)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          
+
           {/* Main Decorative Center Container (Dune Eclipse + DBH LED temple Ring) */}
           <div style={{ position: 'relative', width: '220px', height: '220px', marginBottom: '2.5rem' }}>
-            
+
             {/* Dune Eclipse: Outer Corona Glow */}
             <motion.div
               animate={{ scale: [0.95, 1.08, 0.95], opacity: [0.6, 0.9, 0.6] }}
@@ -192,7 +193,7 @@ function SplashScreen({ onComplete }) {
                 filter: 'blur(6px)',
               }}
             />
-            
+
             {/* DBH CyberLife LED Ring (Spins) */}
             <motion.div
               animate={{ rotate: 360 }}
@@ -221,7 +222,7 @@ function SplashScreen({ onComplete }) {
                 borderBottomColor: 'rgba(229,169,60,0.35)',
               }}
             />
-            
+
             {/* Dark Sun Eclipse body */}
             <div style={{
               position: 'absolute',
@@ -233,16 +234,20 @@ function SplashScreen({ onComplete }) {
               placeItems: 'center',
               boxShadow: 'inset 0 0 20px rgba(229,169,60,0.15)',
             }}>
-               <motion.img
+              <motion.img
                 src="/images/logo-icon.png"
                 alt="AXIS'27"
-                initial={{ opacity: 0, scale: 0.88 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.7, delay: 0.2 }}
+                initial={{ opacity: 0, scale: 0.88, rotate: 0 }}
+                animate={{ opacity: 1, scale: 1, rotate: 360 }}
+                transition={{ 
+                  default: { duration: 0.7, delay: 0.2 },
+                  rotate: { duration: 8, repeat: Infinity, ease: 'linear' }
+                }}
                 style={{
                   width: '130px',
                   height: 'auto',
                   filter: 'drop-shadow(0 0 15px rgba(0,229,255,0.45))',
+                  transformOrigin: 'center center',
                 }}
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
@@ -313,7 +318,7 @@ function SplashScreen({ onComplete }) {
                     initial={{ opacity: 0, x: -5 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.15 }}
-                    style={{ 
+                    style={{
                       color: isWarning ? 'var(--cyber-red)' : index === logs.length - 1 ? 'var(--spice-blue)' : 'var(--text-secondary)',
                       fontWeight: index === logs.length - 1 ? 600 : 400
                     }}
@@ -437,6 +442,7 @@ function AppContent() {
               />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/events" element={<EventsPage />} />
+              <Route path="/events/:eventId" element={<EventDetailsPage />} />
               <Route path="/workshops" element={<WorkshopsPage />} />
               <Route path="/sponsors" element={<SponsorsPage />} />
               <Route path="/accommodation" element={<AccommodationPage />} />
