@@ -43,8 +43,6 @@ export default function Navigation() {
           background: scrolled
             ? 'linear-gradient(135deg, rgba(229,169,60,0.05) 0%, rgba(13,10,8,0.85) 50%, rgba(0,229,255,0.03) 100%)'
             : 'linear-gradient(135deg, rgba(229,169,60,0.08) 0%, rgba(13,10,8,0.6) 50%, rgba(0,229,255,0.04) 100%)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
           border: scrolled ? '1px solid rgba(0,229,255,0.22)' : '1px solid rgba(229,169,60,0.18)',
           boxShadow: scrolled
             ? '0 8px 32px rgba(0,0,0,0.5), 0 0 15px rgba(0,229,255,0.1)'
@@ -52,13 +50,14 @@ export default function Navigation() {
           transition: 'background 0.4s, box-shadow 0.4s, border-color 0.4s',
         }}
       >
-        <Link to="/" className="nav-logo-link" style={{ display: 'flex', alignItems: 'center', flexShrink: 0, position: 'absolute', left: '1.5rem', gap: '0.5rem' }}>
+        <Link to="/" className="nav-logo-link" style={{ display: 'flex', alignItems: 'center', flexShrink: 0, position: 'absolute', left: '1.5rem', gap: '0.5rem', zIndex: 10 }}>
           <picture>
             <source media="(min-width: 768px)" srcSet="/images/logo.png" />
             <img
               src="/images/logo-icon.png"
               alt="AXIS'27"
               className="nav-logo"
+              style={{ filter: 'brightness(1.5)' }}
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           </picture>
@@ -162,8 +161,6 @@ export default function Navigation() {
               inset: 0,
               zIndex: 3000,
               background: 'rgba(7,5,3,0.97)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
               display: 'flex',
               alignItems: 'flex-start',
               justifyContent: 'center',
