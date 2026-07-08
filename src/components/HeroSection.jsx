@@ -30,125 +30,160 @@ const socialIcons = {
   ),
 };
 
-const heroStyle = {
-  minHeight: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  position: 'relative',
-  zIndex: 1,
-  padding: '6.5rem 5% 2rem',
-  textAlign: 'center',
-  overflow: 'hidden',
-};
-
 export default function HeroSection({ ready = true }) {
   return (
-    <section id="hero" style={heroStyle}>
-      {/* DBH Holographic Left Panel (hidden on mobile) */}
-      <div style={{
-        position: 'absolute',
-        left: '3rem',
-        bottom: '5rem',
-        textAlign: 'left',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '0.75rem',
-        color: 'var(--text-muted)',
-        borderLeft: '2px solid var(--spice-blue)',
-        paddingLeft: '1rem',
-        lineHeight: 1.6,
-        letterSpacing: '0.08em',
-        pointerEvents: 'none',
-        zIndex: 2,
-      }} className="nav-desktop-links">
+    <section id="hero" style={{
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+      zIndex: 1,
+      padding: '6.5rem 5% 2rem',
+      textAlign: 'center',
+      overflow: 'hidden',
+    }}>
+      {/* DETROIT: Left holographic HUD panel */}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={ready ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+        transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="nav-desktop-links"
+        style={{
+          position: 'absolute',
+          left: '3rem',
+          bottom: '5rem',
+          textAlign: 'left',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.72rem',
+          color: 'var(--text-muted)',
+          borderLeft: '2px solid var(--spice-blue)',
+          paddingLeft: '1rem',
+          lineHeight: 1.6,
+          letterSpacing: '0.08em',
+          pointerEvents: 'none',
+          zIndex: 2,
+        }}
+      >
         <div style={{ color: 'var(--spice-blue)', fontWeight: 700, marginBottom: '0.2rem' }}>// CYBERLIFE DIRECTIVE</div>
-        <div>MODEL: AXIS-v2.70</div>
-        <div>SOFTWARE INSTABILITY: <span style={{ color: 'var(--cyber-red)' }}>[▲ 94%]</span></div>
+        <div>MODEL: AXIS-V270-X1</div>
+        <div>
+          SOFTWARE INSTABILITY:{' '}
+          <motion.span
+            style={{ color: 'var(--cyber-red)' }}
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          >
+            [▲ 94%]
+          </motion.span>
+        </div>
         <div>STATUS: COMPATIBLE</div>
-        <div>LED SYSTEM: PULSING [●]</div>
-      </div>
+        <div>
+          TEMPLE LED:{' '}
+          <motion.span
+            style={{ color: 'var(--spice-blue)' }}
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            PULSING [●]
+          </motion.span>
+        </div>
+      </motion.div>
 
-      {/* DBH Holographic Right Panel (hidden on mobile) */}
-      <div style={{
-        position: 'absolute',
-        right: '3rem',
-        bottom: '5rem',
-        textAlign: 'right',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '0.75rem',
-        color: 'var(--text-muted)',
-        borderRight: '2px solid var(--gold)',
-        paddingRight: '1rem',
-        lineHeight: 1.6,
-        letterSpacing: '0.08em',
-        pointerEvents: 'none',
-        zIndex: 2,
-      }} className="nav-desktop-links">
+      {/* DETROIT: Right holographic HUD panel */}
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={ready ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+        transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="nav-desktop-links"
+        style={{
+          position: 'absolute',
+          right: '3rem',
+          bottom: '5rem',
+          textAlign: 'right',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.72rem',
+          color: 'var(--text-muted)',
+          borderRight: '2px solid var(--gold)',
+          paddingRight: '1rem',
+          lineHeight: 1.6,
+          letterSpacing: '0.08em',
+          pointerEvents: 'none',
+          zIndex: 2,
+        }}
+      >
         <div style={{ color: 'var(--gold)', fontWeight: 700, marginBottom: '0.2rem' }}>// INFINITE LIGHT</div>
-        <div>TARGET: NAGPUR (VNIT)</div>
-        <div>GPS: 21.1255° N, 79.0505° E</div>
-        <div>STATUS: OPERATIONAL</div>
-        <div>SECURITY: SHA-256 [SECURE]</div>
-      </div>
+        <div>TARGET: VNIT NAGPUR</div>
+        <div>GPS: 21.1255° N / 79.0505° E</div>
+        <div>KALADAN LINK: STABLE</div>
+        <div>ENCRYPTION: SHA-256 [SECURE]</div>
+      </motion.div>
 
-      {/* Pulsing Android LED temple indicator overlay (top right) */}
-      <div style={{
-        position: 'absolute',
-        top: '2.5rem',
-        right: '3rem',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.6rem',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '0.72rem',
-        color: 'var(--spice-blue)',
-        zIndex: 2,
-      }} className="nav-desktop-links">
+      {/* DBH instability indicator top-right */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={ready ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="nav-desktop-links"
+        style={{
+          position: 'absolute',
+          top: '2.5rem',
+          right: '3rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.6rem',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.7rem',
+          color: 'var(--spice-blue)',
+          zIndex: 2,
+        }}
+      >
         <span>SOFTWARE INSTABILITY: ▲ 94%</span>
         <motion.div
           animate={{ opacity: [0.3, 1, 0.3], scale: [0.9, 1.15, 0.9] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          transition={{ duration: 1.8, repeat: Infinity }}
           style={{
-            width: '10px',
-            height: '10px',
+            width: '9px',
+            height: '9px',
             borderRadius: '50%',
             background: 'var(--spice-blue)',
-            boxShadow: '0 0 10px var(--spice-blue)',
+            boxShadow: '0 0 12px var(--spice-blue), 0 0 24px var(--spice-blue-glow)',
           }}
         />
-      </div>
+      </motion.div>
 
-
+      {/* AXIS'27 — Dune title with spice shimmer */}
       <motion.h1
         initial={{ opacity: 0, y: 35 }}
         animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 35 }}
-        transition={{ duration: 0.6, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+        transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
         style={{
           fontFamily: "'Ethnocentric', sans-serif",
           fontSize: 'clamp(3.5rem, 12.5vw, 9.375rem)',
           fontWeight: 900,
           letterSpacing: '0.2em',
           textIndent: '0.2em',
-          background: 'linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 40%, #fff 60%, var(--spice-blue) 100%)',
+          background: 'linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 40%, #fff 60%, var(--spice-blue) 85%, var(--cyber-blue) 100%)',
           backgroundSize: '200% 200%',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          textShadow: '0 0 50px var(--gold-glow), 0 0 30px var(--spice-blue-glow)',
+          textShadow: '0 0 60px var(--gold-glow), 0 0 35px var(--spice-blue-glow)',
           marginBottom: '0.4rem',
           textTransform: 'uppercase',
           position: 'relative',
           zIndex: 1,
-          animation: 'shimmer 5s ease-in-out infinite',
+          animation: 'shimmer 4s ease-in-out infinite',
         }}
       >
         AXIS'27
       </motion.h1>
 
+      {/* DUNE: Spice-drift tagline */}
       <motion.p
         initial={{ opacity: 0, y: 15 }}
         animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
-        transition={{ duration: 0.5, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
+        transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         style={{
           fontFamily: "var(--font-mono)",
           fontSize: 'clamp(1.25rem, 3.125vw, 1.81rem)',
@@ -171,7 +206,7 @@ export default function HeroSection({ ready = true }) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={ready ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.5, delay: 0.3, ease: [0.23, 1, 0.32, 1] }}
+        transition={{ duration: 0.5, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
         style={{
           fontFamily: "var(--font-body)",
           fontSize: 'clamp(0.85rem, 1.4vw, 1.05rem)',
@@ -183,13 +218,20 @@ export default function HeroSection({ ready = true }) {
       >
         <span>VISVESVARAYA NATIONAL INSTITUTE OF TECHNOLOGY, NAGPUR</span>
         <br />
-        <span style={{ color: 'var(--gold)', letterSpacing: '0.22em', textShadow: '0 0 15px var(--gold-glow)', fontWeight: 700 }}>DATES COMING SOON</span>
+        <span style={{
+          color: 'var(--gold)',
+          letterSpacing: '0.22em',
+          textShadow: '0 0 18px var(--gold-glow)',
+          fontWeight: 700,
+        }}>
+          DATES COMING SOON
+        </span>
       </motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
-        transition={{ duration: 0.5, delay: 0.4, ease: [0.23, 1, 0.32, 1] }}
+        transition={{ duration: 0.5, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
         style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}
       >
         <Link
@@ -214,11 +256,11 @@ export default function HeroSection({ ready = true }) {
         </a>
       </motion.div>
 
-      {/* Synchronized Cyber-Styled Social Icons Row */}
+      {/* Social icons */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-        transition={{ duration: 0.5, delay: 0.5, ease: [0.23, 1, 0.32, 1] }}
+        transition={{ duration: 0.5, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
         style={{
           marginTop: '3rem',
           display: 'flex',

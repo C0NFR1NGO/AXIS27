@@ -36,15 +36,44 @@ export default function Footer() {
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       style={{
         position: 'relative',
         zIndex: 1,
-        borderTop: '1px solid rgba(229,169,60,0.15)',
+        borderTop: '1px solid rgba(229,169,60,0.12)',
         padding: '3rem 5% 2rem',
         textAlign: 'center',
-        background: 'rgba(7,5,3,0.92)',
+        background: 'linear-gradient(0deg, rgba(7,5,3,0.98) 0%, rgba(13,10,8,0.92) 60%, transparent 100%)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
       }}
     >
+      {/* DBH status bar */}
+      <div style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.65rem',
+        color: 'var(--text-muted)',
+        letterSpacing: '0.15em',
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '2rem',
+        marginBottom: '2rem',
+        opacity: 0.5,
+      }}>
+        <span style={{ color: 'var(--spice-blue)' }}>CYBERLIFE: ACTIVE</span>
+        <span>
+          SOFTWARE INSTABILITY:{' '}
+          <motion.span
+            style={{ color: 'var(--cyber-red)' }}
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2.5, repeat: Infinity }}
+          >
+            ▲ 94%
+          </motion.span>
+        </span>
+        <span style={{ color: 'var(--gold)' }}>DIRECTIVE: IGNIS AETERNUM</span>
+      </div>
+
       <div style={{ marginBottom: '2rem' }}>
         <Link to="/" style={{ display: 'inline-block' }}>
           <img
@@ -68,7 +97,7 @@ export default function Footer() {
         </div>
         <div style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.75rem',
+          fontSize: '0.72rem',
           letterSpacing: '0.22em',
           textTransform: 'uppercase',
           color: 'var(--text-muted)',
@@ -76,6 +105,20 @@ export default function Footer() {
           IGNIS AETERNUM: ILLUMINATING THE INFINITE
         </div>
       </div>
+
+      {/* DBH temple LED pulsing above socials */}
+      <motion.div
+        animate={{ opacity: [0.3, 1, 0.3], scale: [0.95, 1.1, 0.95] }}
+        transition={{ duration: 2, repeat: Infinity }}
+        style={{
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          background: 'var(--spice-blue)',
+          boxShadow: '0 0 14px var(--spice-blue), 0 0 24px var(--spice-blue-glow)',
+          margin: '0 auto 1.2rem',
+        }}
+      />
 
       <div style={{
         display: 'flex',
@@ -95,25 +138,22 @@ export default function Footer() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1px solid rgba(229,169,60,0.2)',
+              border: '1px solid rgba(229,169,60,0.18)',
               borderRadius: '50%',
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.75rem',
-              fontWeight: 700,
               color: 'var(--gold)',
               textDecoration: 'none',
-              transition: 'all 0.3s',
-              background: 'rgba(229,169,60,0.05)',
+              transition: 'all 0.3s var(--ease-cyber)',
+              background: 'rgba(229,169,60,0.04)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'var(--gold)';
               e.currentTarget.style.color = 'var(--bg-deep)';
-              e.currentTarget.style.borderColor = 'var(--gold)';
+              e.currentTarget.style.borderColor = 'var(--gold-light)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(229,169,60,0.05)';
+              e.currentTarget.style.background = 'rgba(229,169,60,0.04)';
               e.currentTarget.style.color = 'var(--gold)';
-              e.currentTarget.style.borderColor = 'rgba(229,169,60,0.2)';
+              e.currentTarget.style.borderColor = 'rgba(229,169,60,0.18)';
             }}
           >
             {socialIcons[platform]}
@@ -130,7 +170,7 @@ export default function Footer() {
       }}>
         <p>VISVESVARAYA NATIONAL INSTITUTE OF TECHNOLOGY, NAGPUR</p>
         <p>AXIS Office, Student Activity Centre, VNIT, South Ambazari Road, Nagpur - 440010</p>
-        <p style={{ marginTop: '1rem', opacity: 0.6 }}>
+        <p style={{ marginTop: '1rem', opacity: 0.45 }}>
           &copy; {new Date().getFullYear()} AXIS, VNIT Nagpur. All Rights Reserved.
         </p>
       </div>

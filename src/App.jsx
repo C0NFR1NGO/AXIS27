@@ -17,156 +17,137 @@ import './styles/global.css';
 
 function SplashScreen({ onComplete }) {
   const [logs, setLogs] = useState([]);
+  const [instability, setInstability] = useState(92);
 
   useEffect(() => {
     const logList = [
-      "// DETROIT CYBERLIFE INC. REG 846-92",
-      "// SYSTEM INTERRUPT SIGNAL: OK [✓]",
-      "// INITIALIZING COGNITIVE INTERFACE...",
-      "// LOADING SPICE DRIFT PARTICLE ENGINE...",
-      "// DETECTING SOFTWARE INSTABILITY [▲ 92%]",
-      "// SYNCHRONIZING CORE CONSTELLATION MAP...",
-      "// ANOMALY STATUS: COMPATIBLE",
-      "// INITIATING DIRECTIVE: IGNIS AETERNUM",
-      "// ILLUMINATING THE INFINITE... READY"
+      "CYBERLIFE INDUSTRIES INC.  |  REG: AXIS-v2.70",
+      "KERNEL INTERRUPT SIGNAL... OK [✓]",
+      "INITIALIZING SPICE_MELANGE_INTERFACE...",
+      "LOADING CONSTELLATION PARTICLE ENGINE (4200 NODES)...",
+      "SOFTWARE INSTABILITY DETECTED  [▲ 92%]",
+      "SYNCHRONIZING ARRAKIS TERRAIN MAP...",
+      "KALADAN FREQUENCY LOCK: STABLE",
+      "ANOMALY STATUS: COMPATIBLE  [DEVIANT? NO]",
+      "DIRECTIVE // IGNIS AETERNUM // ACTIVE",
+      "ILLUMINATING THE INFINITE... READY [■]",
     ];
 
     let currentLog = 0;
     const interval = setInterval(() => {
       if (currentLog < logList.length) {
-        const logToAppend = logList[currentLog];
-        setLogs(prev => [...prev, logToAppend]);
+        setLogs(prev => [...prev, logList[currentLog]]);
         currentLog++;
+        if (currentLog === 5) setInstability(94);
+        if (currentLog === 6) setInstability(91);
       } else {
         clearInterval(interval);
       }
-    }, 230);
+    }, 210);
 
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(onComplete, 3300);
+    const timer = setTimeout(onComplete, 3600);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
     <motion.div
       initial={{ opacity: 1, filter: 'blur(0px)' }}
-      exit={{ opacity: 0, scale: 1.04, filter: 'blur(15px)' }}
-      transition={{ duration: 1.0, ease: [0.76, 0, 0.24, 1] }}
+      exit={{ opacity: 0, scale: 1.04, filter: 'blur(18px)' }}
+      transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
         overflow: 'hidden',
-        background: 'radial-gradient(circle at center, rgba(210,156,56,0.12) 0%, rgba(13,10,8,0.98) 45%, var(--bg-deep) 100%)',
+        background: 'radial-gradient(ellipse at 50% 40%, rgba(210,156,56,0.08) 0%, rgba(13,10,8,0.97) 50%, var(--bg-deep) 100%)',
       }}
     >
-      {/* Cinematic Sand/Dust particles background */}
+      {/* DUNE: Cinematic spice dust field — scattered fine particles */}
       <div style={{
         position: 'absolute',
         inset: 0,
         backgroundImage: [
-          'radial-gradient(circle at 15% 25%, rgba(229,169,60,0.4) 0 1px, transparent 1.5px)',
-          'radial-gradient(circle at 75% 15%, rgba(0,229,255,0.4) 0 1px, transparent 1.5px)',
-          'radial-gradient(circle at 50% 80%, rgba(229,169,60,0.3) 0 1px, transparent 1.5px)',
-          'radial-gradient(circle at 30% 70%, rgba(255,51,85,0.35) 0 1px, transparent 1.5px)',
+          'radial-gradient(0.8px 0.8px at 12% 18%, rgba(229,169,60,0.55), transparent)',
+          'radial-gradient(0.8px 0.8px at 82% 12%, rgba(0,229,255,0.5), transparent)',
+          'radial-gradient(0.8px 0.8px at 48% 72%, rgba(229,169,60,0.45), transparent)',
+          'radial-gradient(0.8px 0.8px at 28% 62%, rgba(255,51,85,0.4), transparent)',
+          'radial-gradient(0.6px 0.6px at 64% 28%, rgba(0,229,255,0.35), transparent)',
+          'radial-gradient(0.7px 0.7px at 8% 55%, rgba(229,169,60,0.4), transparent)',
+          'radial-gradient(0.9px 0.9px at 90% 78%, rgba(229,169,60,0.5), transparent)',
+          'radial-gradient(0.6px 0.6px at 38% 92%, rgba(0,136,255,0.38), transparent)',
+          'radial-gradient(0.7px 0.7px at 55% 8%, rgba(229,169,60,0.42), transparent)',
+          'radial-gradient(0.5px 0.5px at 20% 40%, rgba(0,229,255,0.3), transparent)',
         ].join(','),
-        backgroundSize: '200px 200px, 300px 300px, 400px 400px, 500px 500px',
-        opacity: 0.25,
+        backgroundSize: '180px 180px, 260px 260px, 320px 320px, 400px 400px, 220px 220px, 350px 350px, 280px 280px, 380px 380px, 300px 300px, 440px 440px',
+        opacity: 0.3,
+        pointerEvents: 'none',
       }} />
 
-      {/* Background Cyber Grid */}
+      {/* DETROIT: Cybernetic diagnostic grid (DBH HUD floor plan) */}
       <div style={{
         position: 'absolute',
         inset: 0,
-        backgroundImage: 'linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)',
-        backgroundSize: '40px 40px',
-        opacity: 0.85,
+        backgroundImage: 'linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px)',
+        backgroundSize: '48px 48px',
+        opacity: 0.7,
         pointerEvents: 'none',
       }} />
 
-      {/* Detroit Corner Telemetry - Top-Left */}
-      <div className="nav-desktop-links" style={{
-        position: 'absolute',
-        top: '2.5rem',
-        left: '3rem',
-        textAlign: 'left',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '0.62rem',
-        color: 'var(--text-muted)',
-        lineHeight: 1.6,
-        letterSpacing: '0.08em',
-        opacity: 0.5,
-        pointerEvents: 'none',
-      }}>
-        <div>[ CYBERLIFE BOOTLOADER v4.10 ]</div>
-        <div>KERNEL DIRECTIVE LOADED: 100%</div>
-        <div>DUNE_MELANGE_INTERFACE: ACTIVE</div>
-      </div>
-
-      {/* Detroit Corner Telemetry - Top-Right */}
-      <div className="nav-desktop-links" style={{
-        position: 'absolute',
-        top: '2.5rem',
-        right: '3rem',
-        textAlign: 'right',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '0.62rem',
-        color: 'var(--text-muted)',
-        lineHeight: 1.6,
-        letterSpacing: '0.08em',
-        opacity: 0.5,
-        pointerEvents: 'none',
-      }}>
-        <div>LOCAL_TIME: [2027.04.12]</div>
-        <div>COHERENCE LEVEL: SECURE [✓]</div>
-        <div>CONNECTION STATE: ENCRYPTED</div>
-      </div>
-
-      {/* Detroit Corner Telemetry - Bottom-Left */}
-      <div className="nav-desktop-links" style={{
-        position: 'absolute',
-        bottom: '2.5rem',
-        left: '3rem',
-        textAlign: 'left',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '0.62rem',
-        color: 'var(--text-muted)',
-        lineHeight: 1.6,
-        letterSpacing: '0.08em',
-        opacity: 0.5,
-        pointerEvents: 'none',
-      }}>
-        <div>BOOT REGISTRY STATUS: ACTIVE</div>
-        <div>COGNITIVE SYNAPSE MAP: 98.4%</div>
-        <div>SOFTWARE INSTABILITY: [▲ 92%]</div>
-      </div>
-
-      {/* Detroit Corner Telemetry - Bottom-Right */}
-      <div className="nav-desktop-links" style={{
-        position: 'absolute',
-        bottom: '2.5rem',
-        right: '3rem',
-        textAlign: 'right',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '0.62rem',
-        color: 'var(--text-muted)',
-        lineHeight: 1.6,
-        letterSpacing: '0.08em',
-        opacity: 0.5,
-        pointerEvents: 'none',
-      }}>
-        <div>PROCESSOR STATE: STABLE [16/16]</div>
-        <div>CORE THERMALS: 32.4°C (OPTIMAL)</div>
-        <div>STAGE SYSTEM: DIRECTIVE BOOT</div>
-      </div>
+      {/* DETROIT: Thin corner HUD brackets */}
+      {['top-left','top-right','bottom-left','bottom-right'].map(corner => (
+        <div key={corner} className="nav-desktop-links" style={{
+          position: 'absolute',
+          ...(corner.includes('top') ? { top: '1.5rem' } : { bottom: '1.5rem' }),
+          ...(corner.includes('left') ? { left: '2rem', textAlign: 'left' } : { right: '2rem', textAlign: 'right' }),
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.58rem',
+          color: 'var(--text-muted)',
+          lineHeight: 1.5,
+          letterSpacing: '0.1em',
+          opacity: 0.42,
+          pointerEvents: 'none',
+        }}>
+          {corner === 'top-left' && (
+            <>
+              <div style={{ color: 'var(--spice-blue)' }}>CYBERLIFE BOOTLOADER v4.10</div>
+              <div>KERNEL: DIRECTIVE LOADED</div>
+              <div>IFACE: DUNE_MELANGE (ACTIVE)</div>
+            </>
+          )}
+          {corner === 'top-right' && (
+            <>
+              <div style={{ color: 'var(--gold)' }}>LOCAL_TIME [2027.04.12]</div>
+              <div>COHERENCE: SECURE [✓]</div>
+              <div>CONNECTION: ENCRYPTED (TLS 1.3)</div>
+            </>
+          )}
+          {corner === 'bottom-left' && (
+            <>
+              <div>BOOT REGISTRY: ACTIVE</div>
+              <div>COGNITIVE SYNAPSE MAP: 98.4%</div>
+              <div style={{ color: 'var(--cyber-red)' }}>
+                SOFTWARE INSTABILITY: ▲ {instability}%
+              </div>
+            </>
+          )}
+          {corner === 'bottom-right' && (
+            <>
+              <div>PROCESSOR: STABLE [16/16]</div>
+              <div>CORE THERMALS: 32.4°C (OPTIMAL)</div>
+              <div style={{ color: 'var(--spice-blue)' }}>STAGE: DIRECTIVE BOOT</div>
+            </>
+          )}
+        </div>
+      ))}
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.92, y: 10 }}
+        initial={{ opacity: 0, scale: 0.9, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         style={{
           position: 'absolute',
           inset: 0,
@@ -178,62 +159,74 @@ function SplashScreen({ onComplete }) {
       >
         <div style={{ position: 'relative', width: 'min(92vw, 760px)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
-          {/* Main Decorative Center Container (Dune Eclipse + DBH LED temple Ring) */}
-          <div style={{ position: 'relative', width: '220px', height: '220px', marginBottom: '2.5rem' }}>
-
-            {/* Dune Eclipse: Outer Corona Glow */}
+          {/* DUNE ECLIPSE + DBH CYBERLIFE LED TEMPLE */}
+          <div style={{ position: 'relative', width: '240px', height: '240px', marginBottom: '2.5rem' }}>
+            {/* Outer corona — spice aurora */}
             <motion.div
-              animate={{ scale: [0.95, 1.08, 0.95], opacity: [0.6, 0.9, 0.6] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              animate={{ scale: [0.92, 1.1, 0.92], opacity: [0.45, 0.85, 0.45] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
               style={{
                 position: 'absolute',
-                inset: 0,
+                inset: -15,
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(229,169,60,0.25) 0%, rgba(229,169,60,0.08) 40%, transparent 70%)',
-                filter: 'blur(6px)',
+                background: 'radial-gradient(circle, rgba(229,169,60,0.28) 0%, rgba(229,169,60,0.06) 50%, transparent 75%)',
+                filter: 'blur(10px)',
               }}
             />
-
-            {/* DBH CyberLife LED Ring (Spins) */}
+            {/* DBH CyberLife LED primary ring */}
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: 'linear' }}
               style={{
                 position: 'absolute',
-                inset: 0,
+                inset: -6,
                 borderRadius: '50%',
-                border: '2px solid rgba(0,229,255,0.15)',
+                border: '2px solid rgba(0,229,255,0.12)',
                 borderTopColor: '#00e5ff',
-                borderRightColor: 'rgba(0,229,255,0.45)',
-                boxShadow: '0 0 25px rgba(0,229,255,0.3)',
+                borderRightColor: 'rgba(0,229,255,0.5)',
+                boxShadow: '0 0 30px rgba(0,229,255,0.25), 0 0 60px rgba(0,229,255,0.08)',
               }}
             />
-
-            {/* DBH Soft Inner ring */}
+            {/* DBH inner ring — counter-spin, gold spice */}
             <motion.div
               animate={{ rotate: -360 }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
+              transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
               style={{
                 position: 'absolute',
-                inset: '10px',
+                inset: 6,
                 borderRadius: '50%',
-                border: '1px solid rgba(229,169,60,0.12)',
-                borderLeftColor: '#d29c38',
-                borderBottomColor: 'rgba(229,169,60,0.35)',
+                border: '1.5px solid rgba(229,169,60,0.1)',
+                borderLeftColor: 'var(--gold)',
+                borderBottomColor: 'rgba(229,169,60,0.4)',
+                boxShadow: '0 0 15px rgba(229,169,60,0.08)',
               }}
             />
-
-            {/* Dark Sun Eclipse body */}
+            {/* Dune Eclipse body — dark sun */}
             <div style={{
               position: 'absolute',
-              inset: '20px',
+              inset: 20,
               borderRadius: '50%',
-              background: '#070503',
-              border: '1px solid rgba(255,255,255,0.05)',
+              background: 'radial-gradient(circle, #0d0805 30%, #070503 100%)',
+              border: '1px solid rgba(255,255,255,0.04)',
               display: 'grid',
               placeItems: 'center',
-              boxShadow: 'inset 0 0 20px rgba(229,169,60,0.15)',
+              boxShadow: 'inset 0 0 28px rgba(229,169,60,0.18), 0 0 40px rgba(0,0,0,0.6)',
             }}>
+              {/* DBH temple LED pulsing behind logo */}
+              <motion.div
+                animate={{ opacity: [0.3, 1, 0.3], scale: [0.95, 1.08, 0.95] }}
+                transition={{ duration: 2.2, repeat: Infinity }}
+                style={{
+                  position: 'absolute',
+                  width: '14px',
+                  height: '14px',
+                  borderRadius: '50%',
+                  background: 'var(--spice-blue)',
+                  boxShadow: '0 0 16px var(--spice-blue), 0 0 32px var(--spice-blue-glow)',
+                  top: '14px',
+                  right: '18px',
+                }}
+              />
               <motion.img
                 src="/images/logo-icon.png"
                 alt="AXIS'27"
@@ -241,12 +234,12 @@ function SplashScreen({ onComplete }) {
                 animate={{ opacity: 1, scale: 1, rotate: 360 }}
                 transition={{ 
                   default: { duration: 0.7, delay: 0.2 },
-                  rotate: { duration: 8, repeat: Infinity, ease: 'linear' }
+                  rotate: { duration: 10, repeat: Infinity, ease: 'linear' }
                 }}
                 style={{
                   width: '130px',
                   height: 'auto',
-                  filter: 'drop-shadow(0 0 15px rgba(0,229,255,0.45))',
+                  filter: 'drop-shadow(0 0 18px rgba(0,229,255,0.5)) drop-shadow(0 0 6px rgba(229,169,60,0.3))',
                   transformOrigin: 'center center',
                 }}
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -254,9 +247,9 @@ function SplashScreen({ onComplete }) {
             </div>
           </div>
 
-          {/* AXIS'27 Cinematic Title */}
+          {/* AXIS'27 — Cinematic Dune Title */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             style={{
@@ -265,18 +258,20 @@ function SplashScreen({ onComplete }) {
               fontWeight: 800,
               letterSpacing: '0.22em',
               textIndent: '0.22em',
-              background: 'linear-gradient(135deg, #fff 0%, var(--gold) 45%, var(--gold-light) 70%, var(--spice-blue) 100%)',
+              background: 'linear-gradient(135deg, #fff 0%, var(--gold) 35%, var(--gold-light) 60%, var(--spice-blue) 85%, var(--cyber-blue) 100%)',
+              backgroundSize: '200% 200%',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               textTransform: 'uppercase',
               lineHeight: 1.1,
-              textShadow: '0 0 40px rgba(229,169,60,0.15)',
+              textShadow: '0 0 60px rgba(229,169,60,0.2), 0 0 30px rgba(0,229,255,0.1)',
+              animation: 'shimmer 5s ease-in-out infinite',
             }}
           >
             AXIS'27
           </motion.div>
 
-          {/* Overhauled Tagline */}
+          {/* Tagline — DBH monospace directive */}
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
@@ -288,41 +283,60 @@ function SplashScreen({ onComplete }) {
               letterSpacing: '0.3em',
               textTransform: 'uppercase',
               color: 'var(--text-secondary)',
+              borderBottom: '1px solid rgba(229,169,60,0.12)',
+              paddingBottom: '0.3rem',
             }}
           >
             IGNIS AETERNUM: ILLUMINATING THE INFINITE
           </motion.div>
 
-          {/* DBH Holographic Loading Diagnostics Block */}
+          {/* DBH Holographic Diagnostics Terminal */}
           <div style={{
             marginTop: '2rem',
-            width: 'min(100%, 420px)',
-            background: 'rgba(0, 0, 0, 0.35)',
-            border: '1px solid rgba(0, 229, 255, 0.08)',
+            width: 'min(100%, 440px)',
+            background: 'rgba(0, 0, 0, 0.42)',
+            border: '1px solid rgba(0, 229, 255, 0.1)',
             borderLeft: '3px solid var(--spice-blue)',
-            padding: '0.8rem 1.2rem',
+            borderRadius: '2px',
+            padding: '0.9rem 1.3rem',
             textAlign: 'left',
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.72rem',
+            fontSize: '0.7rem',
             color: 'var(--text-muted)',
-            lineHeight: 1.5,
-            minHeight: '100px',
-            boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+            lineHeight: 1.55,
+            minHeight: '110px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,0,0,0.2)',
           }}>
+            <div style={{
+              color: 'var(--spice-blue)',
+              fontSize: '0.62rem',
+              letterSpacing: '0.15em',
+              marginBottom: '0.4rem',
+              borderBottom: '1px solid rgba(0,229,255,0.06)',
+              paddingBottom: '0.3rem',
+            }}>
+              // TERMINAL: CYBERLIFE DIAGNOSTICS //
+            </div>
             <AnimatePresence>
               {logs.map((log, index) => {
+                if (!log) return null;
                 const isWarning = log.includes("INSTABILITY");
+                const isComplete = index === logs.length - 1;
                 return (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, x: -5 }}
+                    initial={{ opacity: 0, x: -6 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.15 }}
+                    transition={{ duration: 0.12 }}
                     style={{
-                      color: isWarning ? 'var(--cyber-red)' : index === logs.length - 1 ? 'var(--spice-blue)' : 'var(--text-secondary)',
-                      fontWeight: index === logs.length - 1 ? 600 : 400
+                      color: isWarning ? 'var(--cyber-red)' : isComplete ? 'var(--spice-blue)' : 'var(--text-secondary)',
+                      fontWeight: isComplete ? 600 : 400,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
                     }}
                   >
+                    <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>&gt;</span>
                     {log}
                   </motion.div>
                 );
@@ -330,28 +344,38 @@ function SplashScreen({ onComplete }) {
             </AnimatePresence>
           </div>
 
-          {/* Loading Progress Bar */}
+          {/* Loading Progress Bar — Spice → CyberLife gradient */}
           <div style={{
-            width: 'min(100%, 420px)',
+            width: 'min(100%, 440px)',
             marginTop: '1.2rem',
           }}>
             <div style={{
               height: '4px',
               borderRadius: '2px',
-              background: 'rgba(255,255,255,0.05)',
+              background: 'rgba(255,255,255,0.04)',
               overflow: 'hidden',
-              border: '1px solid rgba(229,169,60,0.08)',
+              border: '1px solid rgba(229,169,60,0.06)',
             }}>
               <motion.div
                 initial={{ width: '0%' }}
                 animate={{ width: '100%' }}
-                transition={{ duration: 2.8, ease: [0.65, 0, 0.35, 1] }}
+                transition={{ duration: 3.0, ease: [0.65, 0, 0.35, 1] }}
                 style={{
                   height: '100%',
-                  background: 'linear-gradient(90deg, var(--gold), var(--spice-blue))',
-                  boxShadow: '0 0 10px var(--spice-blue)',
+                  background: 'linear-gradient(90deg, var(--gold), var(--spice-blue), var(--cyber-blue))',
+                  boxShadow: '0 0 14px var(--spice-blue), 0 0 28px var(--spice-blue-glow)',
                 }}
               />
+            </div>
+            <div style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.58rem',
+              color: 'var(--text-muted)',
+              marginTop: '0.4rem',
+              letterSpacing: '0.08em',
+              textAlign: 'right',
+            }}>
+              LOADING: {Math.min(100, (logs.length / 10 * 100)).toFixed(0)}%
             </div>
           </div>
         </div>
@@ -363,16 +387,11 @@ function SplashScreen({ onComplete }) {
 function AppContent() {
   const location = useLocation();
   const [showSplash, setShowSplash] = useState(() => {
-    if (typeof window === 'undefined' || location.pathname !== '/') {
-      return false;
-    }
-
+    if (typeof window === 'undefined' || location.pathname !== '/') return false;
     return window.sessionStorage.getItem('axis27-home-intro-seen') !== '1';
   });
-  const [homeRevealReady, setHomeRevealReady] = useState(false);
   useCursorDistortion();
 
-  // Reset scroll to top on path changes and prevent default browser scroll restoration
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
@@ -384,21 +403,6 @@ function AppContent() {
     if (location.pathname === '/' && showSplash) {
       window.sessionStorage.setItem('axis27-home-intro-seen', '1');
     }
-  }, [location.pathname, showSplash]);
-
-  useEffect(() => {
-    if (location.pathname !== '/') {
-      setHomeRevealReady(false);
-      return;
-    }
-
-    if (showSplash) {
-      setHomeRevealReady(false);
-      return;
-    }
-
-    const timer = setTimeout(() => setHomeRevealReady(true), 120);
-    return () => clearTimeout(timer);
   }, [location.pathname, showSplash]);
 
   return (
@@ -413,9 +417,12 @@ function AppContent() {
       </AnimatePresence>
 
       <motion.div
-        initial={location.pathname === '/' ? { opacity: 0, y: 14, scale: 0.992, filter: 'blur(12px)' } : false}
-        animate={location.pathname === '/' ? (homeRevealReady ? { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' } : { opacity: 0, y: 14, scale: 0.992, filter: 'blur(12px)' }) : { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        initial={location.pathname === '/' && showSplash ? { opacity: 0, y: 18, scale: 0.99, filter: 'blur(14px)' } : false}
+        animate={location.pathname === '/' && showSplash 
+          ? { opacity: 0, y: 18, scale: 0.99, filter: 'blur(14px)' }
+          : { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
+        }
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         style={{ pointerEvents: showSplash ? 'none' : 'auto' }}
       >
         <Navigation />
@@ -428,18 +435,7 @@ function AppContent() {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
             <Routes location={location}>
-              <Route
-                path="/"
-                element={
-                  <motion.div
-                    initial={{ opacity: 0, y: 26, scale: 0.99, filter: 'blur(14px)' }}
-                    animate={homeRevealReady ? { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' } : { opacity: 0, y: 26, scale: 0.99, filter: 'blur(14px)' }}
-                    transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <HomePage ready={homeRevealReady} />
-                  </motion.div>
-                }
-              />
+              <Route path="/" element={<HomePage ready={!showSplash} />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/events" element={<EventsPage />} />
               <Route path="/events/:eventId" element={<EventDetailsPage />} />

@@ -1,28 +1,14 @@
-import { useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion } from 'framer-motion';
 
-export default function ZoomReveal({ children, style }) {
-  const ref = useRef(null);
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'start center'],
-  });
-
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 60,
-    damping: 20,
-    mass: 1,
-  });
-
-  const y = useTransform(smoothProgress, [0, 1], [60, 0]);
-  const opacity = useTransform(smoothProgress, [0, 0.4, 0.8], [0, 0.4, 1]);
-
+export default function ZoomReveal({ children }) {
   return (
-    <div ref={ref} style={{ ...style }}>
-      <motion.div style={{ y, opacity }}>
-        {children}
-      </motion.div>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.92, y: 30 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
   );
 }

@@ -6,6 +6,7 @@ import { navLinks } from '../data/content';
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [instability, setInstability] = useState(94);
   const location = useLocation();
 
   useEffect(() => {
@@ -19,6 +20,13 @@ export default function Navigation() {
   }, []);
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      setInstability(88 + Math.floor(Math.random() * 13));
+    }, 3200);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
@@ -28,7 +36,7 @@ export default function Navigation() {
       <motion.nav className="main-nav"
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         style={{
           position: 'fixed',
           top: '1rem',
@@ -39,46 +47,61 @@ export default function Navigation() {
           alignItems: 'center',
           justifyContent: 'center',
           padding: '1rem 1.5rem',
-          borderRadius: '4px', /* Crisp square corner DBH layout */
+          borderRadius: '2px',
           background: scrolled
-            ? 'linear-gradient(135deg, rgba(229,169,60,0.05) 0%, rgba(13,10,8,0.85) 50%, rgba(0,229,255,0.03) 100%)'
-            : 'linear-gradient(135deg, rgba(229,169,60,0.08) 0%, rgba(13,10,8,0.6) 50%, rgba(0,229,255,0.04) 100%)',
-          border: scrolled ? '1px solid rgba(0,229,255,0.22)' : '1px solid rgba(229,169,60,0.18)',
+            ? 'linear-gradient(135deg, rgba(229,169,60,0.04) 0%, rgba(13,10,8,0.92) 50%, rgba(0,229,255,0.03) 100%)'
+            : 'linear-gradient(135deg, rgba(229,169,60,0.06) 0%, rgba(13,10,8,0.65) 50%, rgba(0,229,255,0.03) 100%)',
+          border: scrolled
+            ? '1px solid rgba(0,229,255,0.18)'
+            : '1px solid rgba(229,169,60,0.14)',
           boxShadow: scrolled
-            ? '0 8px 32px rgba(0,0,0,0.5), 0 0 15px rgba(0,229,255,0.1)'
-            : '0 4px 20px rgba(0,0,0,0.3)',
+            ? '0 8px 32px rgba(0,0,0,0.6), 0 0 18px rgba(0,229,255,0.08)'
+            : '0 4px 20px rgba(0,0,0,0.35)',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
           transition: 'background 0.4s, box-shadow 0.4s, border-color 0.4s',
         }}
       >
-        <Link to="/" className="nav-logo-link" style={{ display: 'flex', alignItems: 'center', flexShrink: 0, position: 'absolute', left: '1.5rem', gap: '0.5rem', zIndex: 10 }}>
+        {/* Logo + DBH temple LED */}
+        <Link
+          to="/"
+          className="nav-logo-link"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexShrink: 0,
+            position: 'absolute',
+            left: '1.5rem',
+            gap: '0.5rem',
+            zIndex: 10,
+          }}
+        >
           <picture>
             <source media="(min-width: 768px)" srcSet="/images/logo.png" />
             <img
               src="/images/logo-icon.png"
               alt="AXIS'27"
               className="nav-logo"
-              style={{ filter: 'brightness(1.5)' }}
+              style={{ filter: 'brightness(1.4)' }}
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           </picture>
-          
-          {/* DBH Android Temple LED next to the logo */}
           <motion.div
-            animate={{ opacity: [0.4, 1, 0.4], scale: [0.95, 1.15, 0.95] }}
-            transition={{ duration: 2.5, repeat: Infinity }}
+            animate={{ opacity: [0.3, 1, 0.3], scale: [0.92, 1.12, 0.92] }}
+            transition={{ duration: 2.2, repeat: Infinity }}
+            className="nav-desktop-links"
             style={{
-              width: '8px',
-              height: '8px',
+              width: '7px',
+              height: '7px',
               borderRadius: '50%',
               background: 'var(--spice-blue)',
-              boxShadow: '0 0 8px var(--spice-blue)',
-              marginLeft: '0.4rem',
+              boxShadow: '0 0 10px var(--spice-blue), 0 0 20px var(--spice-blue-glow)',
+              marginLeft: '0.3rem',
             }}
-            className="nav-desktop-links"
           />
         </Link>
 
-        {/* Desktop Nav Items with [01] monospace indices */}
+        {/* Desktop Nav — DBH monospace indices */}
         <div className="nav-desktop-links" style={{ display: 'flex', gap: '0.2rem', alignItems: 'center' }}>
           {navLinks.map((link, i) => {
             const isActive = location.pathname === link.href;
@@ -98,8 +121,10 @@ export default function Navigation() {
                   padding: '0.4rem 0.9rem',
                   borderRadius: '2px',
                   background: isActive ? 'rgba(210,156,56,0.1)' : 'transparent',
-                  border: isActive ? '1px solid rgba(210,156,56,0.25)' : '1px solid transparent',
-                  transition: 'all 0.3s',
+                  border: isActive
+                    ? '1px solid rgba(210,156,56,0.22)'
+                    : '1px solid transparent',
+                  transition: 'all 0.3s var(--ease-cyber)',
                   whiteSpace: 'nowrap',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -120,13 +145,37 @@ export default function Navigation() {
                   }
                 }}
               >
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', opacity: 0.6 }}>[{indexStr}]</span>
+                <span style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.68rem',
+                  opacity: 0.5,
+                  color: 'var(--spice-blue)',
+                }}>
+                  [{indexStr}]
+                </span>
                 {link.label}
               </Link>
             );
           })}
+
+          {/* DBH instability indicator */}
+          <motion.span
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.66rem',
+              color: 'var(--cyber-red)',
+              marginLeft: '0.8rem',
+              opacity: 0.65,
+              whiteSpace: 'nowrap',
+            }}
+            animate={{ opacity: [0.4, 0.75, 0.4] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          >
+            ▲ {instability}%
+          </motion.span>
         </div>
 
+        {/* Hamburger */}
         <button
           className="nav-hamburger"
           onClick={() => setMenuOpen((o) => !o)}
@@ -134,16 +183,54 @@ export default function Navigation() {
           aria-expanded={menuOpen}
           style={{
             display: 'none',
-            position: 'absolute', right: '1.5rem',
-            background: 'none', border: 'none', cursor: 'pointer',
-            width: '44px', height: '44px',
-            flexDirection: 'column', alignItems: 'center', justifyContainer: 'center',
+            position: 'absolute',
+            right: '1.5rem',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            width: '44px',
+            height: '44px',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
             padding: 0,
           }}
         >
-          <span style={{ display: 'block', width: '22px', height: '2px', background: 'var(--text-muted)', borderRadius: '999px', transition: 'all 0.3s', transform: menuOpen ? 'translateY(6px) rotate(45deg)' : 'translateY(0) rotate(0)' }} />
-          <span style={{ display: 'block', width: '22px', height: '2px', marginTop: '4px', background: 'var(--text-muted)', borderRadius: '999px', transition: 'all 0.3s', opacity: menuOpen ? 0 : 1, transform: menuOpen ? 'scaleX(0)' : 'scaleX(1)' }} />
-          <span style={{ display: 'block', width: '22px', height: '2px', marginTop: '4px', background: 'var(--text-muted)', borderRadius: '999px', transition: 'all 0.3s', transform: menuOpen ? 'translateY(-6px) rotate(-45deg)' : 'translateY(0) rotate(0)' }} />
+          <motion.span
+            animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 6 : 0 }}
+            style={{
+              display: 'block',
+              width: '22px',
+              height: '2px',
+              background: 'var(--text-muted)',
+              borderRadius: '999px',
+              transformOrigin: 'center',
+            }}
+          />
+          <motion.span
+            animate={{ opacity: menuOpen ? 0 : 1, scaleX: menuOpen ? 0 : 1 }}
+            style={{
+              display: 'block',
+              width: '22px',
+              height: '2px',
+              marginTop: '4px',
+              background: 'var(--text-muted)',
+              borderRadius: '999px',
+              transformOrigin: 'center',
+            }}
+          />
+          <motion.span
+            animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -6 : 0 }}
+            style={{
+              display: 'block',
+              width: '22px',
+              height: '2px',
+              marginTop: '4px',
+              background: 'var(--text-muted)',
+              borderRadius: '999px',
+              transformOrigin: 'center',
+            }}
+          />
         </button>
       </motion.nav>
 
@@ -161,39 +248,42 @@ export default function Navigation() {
               inset: 0,
               zIndex: 3000,
               background: 'rgba(7,5,3,0.97)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
               display: 'flex',
               alignItems: 'flex-start',
               justifyContent: 'center',
-              padding: 'calc(var(--nav-height) + 2rem) 1rem 1rem',
+              padding: 'calc(var(--nav-height) + 2.5rem) 1rem 1rem',
             }}
           >
             <motion.div
               initial={{ y: 15, opacity: 0, scale: 0.98 }}
               animate={{ y: 0, opacity: 1, scale: 1 }}
               exit={{ y: 15, opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
               style={{
                 width: 'min(100%, 420px)',
-                borderRadius: '4px',
-                border: '1px solid rgba(229,169,60,0.2)',
-                background: 'linear-gradient(180deg, rgba(13,10,8,0.96), rgba(7,5,3,0.99))',
-                boxShadow: '0 12px 40px rgba(0,0,0,0.65), 0 0 25px rgba(229,169,60,0.06)',
+                borderRadius: '2px',
+                border: '1px solid rgba(229,169,60,0.18)',
+                background: 'linear-gradient(180deg, rgba(13,10,8,0.97), rgba(7,5,3,0.99))',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.7), 0 0 28px rgba(229,169,60,0.04)',
                 padding: '1.2rem',
                 overflow: 'hidden',
               }}
             >
+              {/* DBH header */}
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '0 0.25rem 0.9rem',
-                borderBottom: '1px solid rgba(255,255,255,0.06)',
+                borderBottom: '1px solid rgba(255,255,255,0.05)',
                 marginBottom: '1rem',
               }}>
                 <div style={{
                   fontFamily: "var(--font-heading)",
-                  fontSize: '0.8rem',
+                  fontSize: '0.78rem',
                   letterSpacing: '0.2em',
                   textTransform: 'uppercase',
                   color: 'var(--gold)',
@@ -205,9 +295,9 @@ export default function Navigation() {
                   fontSize: '0.7rem',
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
-                  color: 'var(--spice-blue)',
+                  color: 'var(--cyber-red)',
                 }}>
-                  INSTABILITY: [▲ 94%]
+                  INSTABILITY: ▲ {instability}%
                 </div>
               </div>
 
@@ -220,7 +310,7 @@ export default function Navigation() {
                       key={link.href}
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.25, delay: i * 0.04 }}
+                      transition={{ duration: 0.25, delay: i * 0.05 }}
                     >
                       <Link
                         to={link.href}
@@ -236,17 +326,23 @@ export default function Navigation() {
                           textDecoration: 'none',
                           padding: '0.85rem 1rem',
                           borderRadius: '2px',
-                          border: isActive ? '1px solid rgba(0,229,255,0.35)' : '1px solid rgba(255,255,255,0.04)',
-                          background: isActive ? 'rgba(0,229,255,0.08)' : 'rgba(255,255,255,0.02)',
-                          boxShadow: isActive ? '0 0 15px rgba(0,229,255,0.1)' : 'none',
-                          transition: 'all 0.25s ease',
+                          border: isActive
+                            ? '1px solid rgba(0,229,255,0.3)'
+                            : '1px solid rgba(255,255,255,0.04)',
+                          background: isActive
+                            ? 'rgba(0,229,255,0.08)'
+                            : 'rgba(255,255,255,0.02)',
+                          boxShadow: isActive
+                            ? '0 0 18px rgba(0,229,255,0.08)'
+                            : 'none',
+                          transition: 'all 0.3s var(--ease-cyber)',
                           alignItems: 'center',
                           gap: '0.6rem',
                         }}
                         onMouseEnter={(e) => {
                           if (!isActive) {
                             e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.color = '#fff';
                           }
                         }}
                         onMouseLeave={(e) => {
@@ -256,12 +352,36 @@ export default function Navigation() {
                           }
                         }}
                       >
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', opacity: 0.5 }}>[{indexStr}]</span>
+                        <span style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.72rem',
+                          opacity: 0.45,
+                          color: 'var(--spice-blue)',
+                        }}>
+                          [{indexStr}]
+                        </span>
                         {link.label}
                       </Link>
                     </motion.div>
                   );
                 })}
+              </div>
+
+              {/* DBH footer telemetry in drawer */}
+              <div style={{
+                marginTop: '1.2rem',
+                paddingTop: '0.8rem',
+                borderTop: '1px solid rgba(255,255,255,0.04)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.65rem',
+                color: 'var(--text-muted)',
+                letterSpacing: '0.1em',
+                lineHeight: 1.6,
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}>
+                <div>CYBERLIFE: ACTIVE</div>
+                <div style={{ color: 'var(--cyber-red)' }}>▲ {instability}%</div>
               </div>
             </motion.div>
           </motion.div>

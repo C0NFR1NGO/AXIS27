@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { accommodationInfo } from '../data/content';
 
 export default function AccommodationSection() {
   return (
@@ -8,9 +9,9 @@ export default function AccommodationSection() {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
-        Accommodation
+        {accommodationInfo.title}
       </motion.h2>
 
       <motion.p
@@ -18,58 +19,78 @@ export default function AccommodationSection() {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.4, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+        transition={{ duration: 0.8, delay: 0.2 }}
       >
-        Comfortable stay arrangements within the VNIT campus for all out-of-town participants.
+        {accommodationInfo.description}
       </motion.p>
 
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.4, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
         className="glass-card"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          maxWidth: '600px',
-          width: '100%',
           padding: '2.5rem',
+          maxWidth: '700px',
+          width: '100%',
+          marginBottom: '2rem',
         }}
       >
         <div style={{
-          fontFamily: "'Rajdhani', sans-serif",
-          fontSize: '0.95rem',
-          color: 'var(--text-secondary)',
-          lineHeight: 1.9,
-          textAlign: 'center',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.72rem',
+          color: 'var(--spice-blue)',
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          marginBottom: '1rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
         }}>
-          Accommodation details including registration, fees, and facilities will be announced closer to the event dates.
-          For inquiries, reach out to our team.
+          <motion.span
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            style={{
+              width: '5px',
+              height: '5px',
+              borderRadius: '50%',
+              background: 'var(--spice-blue)',
+              boxShadow: '0 0 6px var(--spice-blue)',
+            }}
+          />
+          // HABITATION_INTERFACE // ACTIVE
         </div>
 
-        <div style={{
-          display: 'flex',
-          gap: '0.8rem',
-          justifyContent: 'center',
-          marginTop: '1.5rem',
-          flexWrap: 'wrap',
-        }}>
-          {['Campus Hostels', 'Separate Blocks', '24/7 Security'].map((feature) => (
-            <div
-              key={feature}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {[
+            'Within VNIT campus — hostel facilities',
+            'Separate accommodation for male & female participants',
+            '24/7 security and campus-wide WiFi',
+            'Proximity to all event venues & food courts',
+            'Dedicated AXIS accommodation desk for queries',
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.4 + i * 0.08 }}
               style={{
-                padding: '0.5rem 1.2rem',
-                border: '1px solid rgba(229,169,60,0.25)',
-                borderRadius: '2px',
-                fontFamily: "var(--font-body)",
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                letterSpacing: '0.05em',
-                color: 'var(--gold)',
-                background: 'rgba(229,169,60,0.05)',
+                padding: '0.75rem 0',
+                borderBottom: '1px solid rgba(255,255,255,0.04)',
+                fontFamily: "'Rajdhani', sans-serif",
+                fontSize: '1rem',
+                color: 'var(--text-secondary)',
+                letterSpacing: '0.04em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
               }}
             >
-              {feature}
-            </div>
+              <span style={{ color: 'var(--gold)', fontSize: '1.2rem' }}>◈</span>
+              {item}
+            </motion.div>
           ))}
         </div>
       </motion.div>

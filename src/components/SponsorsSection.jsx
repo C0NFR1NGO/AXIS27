@@ -1,12 +1,16 @@
 import { motion } from 'framer-motion';
-
-const sponsorTiers = [
-  { tier: 'Title Sponsor', companies: ['Your Brand Here'] },
-  { tier: 'Co-Title Sponsor', companies: ['Your Brand Here'] },
-  { tier: 'Associate Sponsors', companies: ['Your Brand Here', 'Your Brand Here'] },
-];
+import { Link } from 'react-router-dom';
+import { socialLinks } from '../data/content';
 
 export default function SponsorsSection() {
+  const categories = [
+    { label: 'Title Sponsor', tier: 'title' },
+    { label: 'Platinum Sponsors', tier: 'platinum' },
+    { label: 'Gold Sponsors', tier: 'gold' },
+    { label: 'Silver Sponsors', tier: 'silver' },
+    { label: 'Partners', tier: 'partner' },
+  ];
+
   return (
     <section id="sponsors" className="section">
       <motion.h2
@@ -14,7 +18,7 @@ export default function SponsorsSection() {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
         Sponsors
       </motion.h2>
@@ -26,73 +30,78 @@ export default function SponsorsSection() {
         viewport={{ once: true, margin: '-100px' }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        Partner with AXIS'27 — connect with 35,000+ brilliant minds from across India.
+        Partner with Central India's largest technical festival and connect with 35,000+ brilliant minds.
       </motion.p>
 
-      <div style={{ width: '100%', maxWidth: '900px' }}>
-        {sponsorTiers.map((tier, ti) => (
-          <motion.div
-            key={tier.tier}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: ti * 0.15 }}
-            style={{ marginBottom: '2.5rem', textAlign: 'center' }}
-          >
-            <div style={{
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: '0.85rem',
-              fontWeight: 700,
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: 'var(--cyan)',
-              marginBottom: '1rem',
-            }}>
-              {tier.tier}
-            </div>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: '2rem',
-              flexWrap: 'wrap',
-            }}>
-              {tier.companies.map((company, ci) => (
-                <div
-                  key={`${company}-${ci}`}
-                  className="glass-card"
-                  style={{
-                    padding: '1.5rem 3rem',
-                    cursor: 'default',
-                    minWidth: '200px',
-                    textAlign: 'center',
-                    transition: 'border-color 0.3s, transform 0.3s',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--spice-blue)';
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 229, 255, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(229,169,60,0.15)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }}
-                >
-                  <div style={{
-                    fontFamily: "'Rajdhani', sans-serif",
-                    fontSize: '1.1rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.1em',
-                    color: 'var(--text-secondary)',
-                  }}>
-                    {company}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      <motion.div
+        className="glass-card"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          padding: '3rem',
+          maxWidth: '800px',
+          width: '100%',
+          textAlign: 'center',
+        }}
+      >
+        <div style={{
+          fontFamily: 'var(--font-heading)',
+          fontSize: '1.4rem',
+          fontWeight: 700,
+          color: 'var(--gold)',
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          marginBottom: '2rem',
+        }}>
+          Sponsorship Tiers
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {categories.map((cat, i) => (
+            <motion.div
+              key={cat.tier}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
+              style={{
+                padding: '1.25rem',
+                border: '1px solid rgba(229,169,60,0.1)',
+                borderRadius: '2px',
+                background: 'rgba(229,169,60,0.02)',
+                fontFamily: "'Rajdhani', sans-serif",
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                color: 'var(--text-secondary)',
+                letterSpacing: '0.06em',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                transition: 'border-color 0.3s',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--gold)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(229,169,60,0.1)'; }}
+            >
+              <span>{cat.label}</span>
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.75rem',
+                color: 'var(--text-muted)',
+              }}>
+                Available
+              </span>
+            </motion.div>
+          ))}
+        </div>
+
+        <div style={{ marginTop: '2.5rem' }}>
+          <Link to="/contact" className="btn-primary">
+            Become a Sponsor
+          </Link>
+        </div>
+      </motion.div>
     </section>
   );
 }

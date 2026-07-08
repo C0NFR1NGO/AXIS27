@@ -19,7 +19,6 @@ if (typeof document !== 'undefined' && !isMobile) {
   });
 }
 
-// Substantially raised PC thresholds to create an extremely dense, interconnected geometric constellation network
 const DUST_COUNT = isMobile ? 650 : 4200;
 const NODE_COUNT = isMobile ? 50 : 450;
 const MAX_CONNECTIONS = isMobile ? 90 : 2600;
@@ -30,28 +29,21 @@ function ConstellationField() {
   const dustRef = useRef();
   const linesRef = useRef();
   const { viewport } = useThree();
+  const timeRef = useRef(0);
+  const instabilityRef = useRef(0);
 
-  // Widen bounds to 2.8x to ensure full coverage even at maximum parallax sways
-  const bounds = useMemo(() => {
-    return {
-      width: viewport.width * 2.8,
-      height: viewport.height * 2.8,
-    };
-  }, [viewport.width, viewport.height]);
+  const bounds = useMemo(() => ({
+    width: viewport.width * 2.8,
+    height: viewport.height * 2.8,
+  }), [viewport.width, viewport.height]);
 
-  // Randomise the color distribution balance on load (Gold-dominant vs Cyan-dominant vs Balanced)
   const colorDistribution = useMemo(() => {
     const r = Math.random();
-    if (r < 0.35) {
-      return { goldRatio: 0.76, cyanRatio: 0.94 };
-    } else if (r < 0.7) {
-      return { goldRatio: 0.38, cyanRatio: 0.88 };
-    } else {
-      return { goldRatio: 0.58, cyanRatio: 0.9 };
-    }
+    if (r < 0.35) return { goldRatio: 0.76, cyanRatio: 0.94 };
+    if (r < 0.7) return { goldRatio: 0.38, cyanRatio: 0.88 };
+    return { goldRatio: 0.58, cyanRatio: 0.9 };
   }, []);
 
-  // Soft glowing scales for elements
   const sizeScales = useMemo(() => {
     const scale = 0.85 + Math.random() * 0.4;
     return {
@@ -61,14 +53,14 @@ function ConstellationField() {
     };
   }, []);
 
-  // 1. Generate active constellation nodes
   const nodes = useMemo(() => {
     const arr = [];
     for (let i = 0; i < NODE_COUNT; i++) {
       const hx = (Math.random() - 0.5) * bounds.width;
       const hy = (Math.random() - 0.5) * bounds.height;
       arr.push({
-        x: hx, y: hy, z: (Math.random() - 0.5) * (isMobile ? 12 : 22) - (isMobile ? 3 : 6),
+        x: hx, y: hy,
+        z: (Math.random() - 0.5) * (isMobile ? 12 : 22) - (isMobile ? 3 : 6),
         vx: (Math.random() - 0.5) * (isMobile ? 0.012 : 0.024),
         vy: (Math.random() - 0.5) * (isMobile ? 0.012 : 0.024),
         vz: (Math.random() - 0.5) * 0.004,
@@ -96,19 +88,20 @@ function ConstellationField() {
     return c;
   }, [colorDistribution]);
 
-  // 2. Generate dense background spice dust
   const dustData = useMemo(() => {
     const arr = [];
     for (let i = 0; i < DUST_COUNT; i++) {
       const hx = (Math.random() - 0.5) * bounds.width * 1.25;
       const hy = (Math.random() - 0.5) * bounds.height * 1.25;
       arr.push({
-        x: hx, y: hy, z: (Math.random() - 0.5) * 36 - 10,
+        x: hx, y: hy,
+        z: (Math.random() - 0.5) * 36 - 10,
         vx: (Math.random() - 0.5) * 0.005,
         vy: (Math.random() - 0.5) * 0.005,
         vz: (Math.random() - 0.5) * 0.002,
         phase: Math.random() * Math.PI * 2,
         speed: 0.07 + Math.random() * 0.14,
+        flicker: 0.3 + Math.random() * 0.7,
       });
     }
     return arr;
@@ -130,35 +123,30 @@ function ConstellationField() {
     return c;
   }, [colorDistribution]);
 
-  // Float32Arrays for lines
   const linePositions = useMemo(() => new Float32Array(MAX_CONNECTIONS * 2 * 3), []);
   const lineColors = useMemo(() => new Float32Array(MAX_CONNECTIONS * 2 * 3), []);
+  const dustOpacities = useMemo(() => new Float32Array(DUST_COUNT), []);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
+    timeRef.current = time;
     const mx = mouse.x * viewport.width * 0.5;
     const my = mouse.y * viewport.height * 0.5;
-
-    // Expanded wrap bounds to prevent pop-in on widescreen limits
     const boundX = viewport.width * 1.85;
     const boundY = viewport.height * 1.85;
 
-    // 1. Update active nodes
+    instabilityRef.current = 0.85 + Math.sin(time * 0.7) * 0.15 + Math.sin(time * 1.3) * 0.08;
+
     for (let i = 0; i < NODE_COUNT; i++) {
       const n = nodes[i];
-
       n.x += n.vx + Math.sin(time * n.speed + n.phase) * (isMobile ? 0.0012 : 0.0025);
       n.y += n.vy + Math.cos(time * n.speed * 0.85 + n.phase) * (isMobile ? 0.0012 : 0.0025);
       n.z += n.vz;
-
-      if (Math.abs(n.x) > boundX) { n.x = -Math.sign(n.x) * boundX * 0.98; }
-      if (Math.abs(n.y) > boundY) { n.y = -Math.sign(n.y) * boundY * 0.98; }
-      if (Math.abs(n.z) > 16) { n.vz = -n.vz; }
-
-      // Mouse repulsion
+      if (Math.abs(n.x) > boundX) n.x = -Math.sign(n.x) * boundX * 0.98;
+      if (Math.abs(n.y) > boundY) n.y = -Math.sign(n.y) * boundY * 0.98;
+      if (Math.abs(n.z) > 16) n.vz = -n.vz;
       if (mouse.active && !isMobile) {
-        const dx = n.x - mx;
-        const dy = n.y - my;
+        const dx = n.x - mx, dy = n.y - my;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 8.0 && dist > 0.01) {
           const force = (1 - dist / 8.0) * 0.06;
@@ -166,123 +154,81 @@ function ConstellationField() {
           n.y += (dy / dist) * force;
         }
       }
-
       const i3 = i * 3;
       nodePositions[i3] = n.x;
       nodePositions[i3 + 1] = n.y;
       nodePositions[i3 + 2] = n.z;
     }
+    if (pointsRef.current) pointsRef.current.geometry.attributes.position.needsUpdate = true;
 
-    if (pointsRef.current) {
-      pointsRef.current.geometry.attributes.position.needsUpdate = true;
-    }
-
-    // 2. Update background dust
     const dBoundX = viewport.width * 2.1;
     const dBoundY = viewport.height * 2.1;
-
     for (let i = 0; i < DUST_COUNT; i++) {
       const d = dustData[i];
       d.x += d.vx + Math.sin(time * 0.07 + d.phase) * 0.0018;
       d.y += d.vy + Math.cos(time * 0.05 + d.phase) * 0.0018 + 0.0014;
       d.z += d.vz;
-
-      if (Math.abs(d.x) > dBoundX) { d.x = -Math.sign(d.x) * dBoundX * 0.98; }
-      if (d.y > dBoundY) { d.y = -dBoundY; }
-      if (d.y < -dBoundY) { d.y = dBoundY; }
-
+      if (Math.abs(d.x) > dBoundX) d.x = -Math.sign(d.x) * dBoundX * 0.98;
+      if (d.y > dBoundY) d.y = -dBoundY;
+      if (d.y < -dBoundY) d.y = dBoundY;
       const i3 = i * 3;
       dustPositions[i3] = d.x;
       dustPositions[i3 + 1] = d.y;
       dustPositions[i3 + 2] = d.z;
+      dustOpacities[i] = d.flicker + Math.sin(time * 1.5 + d.phase) * 0.2;
     }
-
     if (dustRef.current) {
       dustRef.current.geometry.attributes.position.needsUpdate = true;
     }
 
-    // 3. Build line constellation
     let lineCount = 0;
     linePositions.fill(0);
     lineColors.fill(0);
-
     for (let i = 0; i < NODE_COUNT; i++) {
       if (lineCount >= MAX_CONNECTIONS) break;
       const n1 = nodes[i];
-
-      // Connection lines to mouse cursor
       if (mouse.active && !isMobile) {
-        const dx = n1.x - mx;
-        const dy = n1.y - my;
+        const dx = n1.x - mx, dy = n1.y - my;
         const dMouse = Math.sqrt(dx * dx + dy * dy);
         if (dMouse < 7.2) {
           const idx = lineCount * 6;
-          
-          linePositions[idx] = n1.x;
-          linePositions[idx + 1] = n1.y;
-          linePositions[idx + 2] = n1.z;
-          
-          linePositions[idx + 3] = mx;
-          linePositions[idx + 4] = my;
-          linePositions[idx + 5] = 0;
-
-          const alpha = (1.0 - (dMouse / 7.2)) * 0.9;
+          linePositions[idx] = n1.x; linePositions[idx + 1] = n1.y; linePositions[idx + 2] = n1.z;
+          linePositions[idx + 3] = mx; linePositions[idx + 4] = my; linePositions[idx + 5] = 0;
+          const alpha = (1.0 - dMouse / 7.2) * 0.9;
           lineColors[idx] = 0.0; lineColors[idx + 1] = 0.9 * alpha; lineColors[idx + 2] = 1.0 * alpha;
           lineColors[idx + 3] = 0.0; lineColors[idx + 4] = 0.3 * alpha; lineColors[idx + 5] = 0.9 * alpha;
-
           lineCount++;
         }
       }
-
-      // Connection lines between nodes
       for (let j = i + 1; j < NODE_COUNT; j++) {
         if (lineCount >= MAX_CONNECTIONS) break;
         const n2 = nodes[j];
-
-        const dx = n1.x - n2.x;
-        const dy = n1.y - n2.y;
-        const dz = n1.z - n2.z;
+        const dx = n1.x - n2.x, dy = n1.y - n2.y, dz = n1.z - n2.z;
         const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
         const activeDist = isMobile ? CONNECTION_DIST : ((n1.range + n2.range) / 2.0);
-
         if (d < activeDist) {
           const idx = lineCount * 6;
-          
-          linePositions[idx] = n1.x;
-          linePositions[idx + 1] = n1.y;
-          linePositions[idx + 2] = n1.z;
-
-          linePositions[idx + 3] = n2.x;
-          linePositions[idx + 4] = n2.y;
-          linePositions[idx + 5] = n2.z;
-
-          const i3_1 = i * 3;
-          const i3_2 = j * 3;
-          
-          const alpha = (1.0 - (d / activeDist)) * 0.45;
-          
+          linePositions[idx] = n1.x; linePositions[idx + 1] = n1.y; linePositions[idx + 2] = n1.z;
+          linePositions[idx + 3] = n2.x; linePositions[idx + 4] = n2.y; linePositions[idx + 5] = n2.z;
+          const i3_1 = i * 3, i3_2 = j * 3;
+          const alpha = (1.0 - d / activeDist) * 0.45;
           lineColors[idx] = nodeColors[i3_1] * alpha;
           lineColors[idx + 1] = nodeColors[i3_1 + 1] * alpha;
           lineColors[idx + 2] = nodeColors[i3_1 + 2] * alpha;
-
           lineColors[idx + 3] = nodeColors[i3_2] * alpha;
           lineColors[idx + 4] = nodeColors[i3_2 + 1] * alpha;
           lineColors[idx + 5] = nodeColors[i3_2 + 2] * alpha;
-
           lineCount++;
         }
       }
     }
-
     if (linesRef.current) {
       linesRef.current.geometry.attributes.position.needsUpdate = true;
       linesRef.current.geometry.attributes.color.needsUpdate = true;
     }
 
-    // 4. Cinematic Camera Drift and Parallax Movement (SUBTLY REDUCED & COMPENSATED)
-    const targetCamX = Math.sin(time * 0.04) * 0.35 + (mx * 0.55);
-    const targetCamY = Math.cos(time * 0.03) * 0.18 + (my * 0.4);
+    const targetCamX = Math.sin(time * 0.04) * 0.35 + mx * 0.55;
+    const targetCamY = Math.cos(time * 0.03) * 0.18 + my * 0.4;
     state.camera.position.x += (targetCamX - state.camera.position.x) * 0.03;
     state.camera.position.y += (targetCamY - state.camera.position.y) * 0.03;
     state.camera.lookAt(state.camera.position.x * 0.45, state.camera.position.y * 0.45, -2);
@@ -290,7 +236,6 @@ function ConstellationField() {
 
   return (
     <>
-      {/* Background Spice Dust */}
       <points ref={dustRef}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[dustPositions, 3]} />
@@ -307,7 +252,6 @@ function ConstellationField() {
         />
       </points>
 
-      {/* Active Constellation Nodes */}
       <points ref={pointsRef}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[nodePositions, 3]} />
@@ -324,7 +268,6 @@ function ConstellationField() {
         />
       </points>
 
-      {/* Cybernetic Connection Lines */}
       <lineSegments ref={linesRef}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
@@ -343,8 +286,6 @@ function ConstellationField() {
 }
 
 export default function CosmicBackground() {
-  const cameraZ = useMemo(() => 15.5 + Math.random() * 4.5, []);
-
   return (
     <Canvas camera={{ position: [0, 0, 18], fov: 70 }}>
       <color attach="background" args={['#070503']} />

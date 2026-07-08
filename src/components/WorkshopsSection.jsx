@@ -1,13 +1,5 @@
 import { motion } from 'framer-motion';
-
-const workshops = [
-  { title: 'AI & Machine Learning', icon: '🤖' },
-  { title: 'Ethical Hacking', icon: '🔐' },
-  { title: 'Generative AI', icon: '✨' },
-  { title: 'Robotics', icon: '⚙️' },
-  { title: 'Web Development', icon: '🌐' },
-  { title: 'Data Science', icon: '📊' },
-];
+import { workshopInfo } from '../data/content';
 
 export default function WorkshopsSection() {
   return (
@@ -17,9 +9,9 @@ export default function WorkshopsSection() {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
-        Workshops
+        {workshopInfo.title}
       </motion.h2>
 
       <motion.p
@@ -29,48 +21,80 @@ export default function WorkshopsSection() {
         viewport={{ once: true, margin: '-100px' }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        Hands-on sessions on cutting-edge technologies led by industry experts. Stay tuned for 2027 details.
+        {workshopInfo.description}
       </motion.p>
 
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '1rem',
-        justifyContent: 'center',
-        maxWidth: '800px',
-      }}>
-        {workshops.map((w, i) => (
-          <motion.div
-            key={w.title}
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: i * 0.08 }}
-            whileHover={{
-              scale: 1.05,
-              borderColor: 'var(--cyan)',
-              boxShadow: '0 0 30px rgba(0, 229, 255, 0.12)',
-            }}
-            className="glass-card"
+      <motion.div
+        className="glass-card"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          padding: '2.5rem',
+          maxWidth: '700px',
+          width: '100%',
+          marginBottom: '2rem',
+        }}
+      >
+        <div style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.72rem',
+          color: 'var(--spice-blue)',
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          marginBottom: '1rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+        }}>
+          <motion.span
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 2, repeat: Infinity }}
             style={{
-              padding: '1.2rem 2rem',
-              border: '1px solid rgba(0,229,255,0.15)',
-              cursor: 'default',
-              transition: 'border-color 0.3s, transform 0.3s, box-shadow 0.3s',
+              width: '5px',
+              height: '5px',
+              borderRadius: '50%',
+              background: 'var(--spice-blue)',
+              boxShadow: '0 0 6px var(--spice-blue)',
             }}
-          >
-            <span style={{
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: '1.05rem',
-              fontWeight: 700,
-              letterSpacing: '0.05em',
-              color: 'var(--text-primary)',
-            }}>
-              {w.title}
-            </span>
-          </motion.div>
-        ))}
-      </div>
+          />
+          // NEURAL_WORKSHOP_INTERFACE // ACTIVE
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {[
+            'AI / Machine Learning & Deep Learning',
+            'Ethical Hacking & Cybersecurity',
+            'Generative AI & Large Language Models',
+            'Robotics & Autonomous Systems',
+            'Web3 & Blockchain Development',
+            'AR/VR & Immersive Technologies',
+          ].map((item, i) => (
+            <motion.div
+              key={item}
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.4 + i * 0.08 }}
+              style={{
+                padding: '0.75rem 0',
+                borderBottom: '1px solid rgba(255,255,255,0.04)',
+                fontFamily: "'Rajdhani', sans-serif",
+                fontSize: '1rem',
+                color: 'var(--text-secondary)',
+                letterSpacing: '0.04em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+              }}
+            >
+              <span style={{ color: 'var(--gold)', fontSize: '1.2rem' }}>◈</span>
+              {item}
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
     </section>
   );
 }

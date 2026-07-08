@@ -9,27 +9,31 @@
 }
 
 :root {
-  /* Dune Warm Spice & Arrakis Sand */
+  /* —— DUNE: Arrakis Sand & Spice Melange —— */
   --gold: #d29c38;
   --gold-light: #f7ca72;
   --gold-glow: rgba(210, 156, 56, 0.35);
+  --spice-amber: #b8860b;
+  --spice-ember: rgba(184, 134, 11, 0.45);
+  --sand: #c2a87b;
+  --sand-light: #e8dcc8;
 
-  /* Detroit CyberLife LED & Space Blue */
+  /* —— DETROIT: CyberLife LED Blue —— */
   --spice-blue: #00e5ff;
   --spice-blue-glow: rgba(0, 229, 255, 0.3);
   --cyber-blue: #0088ff;
   --cyber-blue-glow: rgba(0, 136, 255, 0.25);
 
-  /* DBH Software Instability Warning Red */
+  /* —— DETROIT: Software Instability Red —— */
   --cyber-red: #ff3355;
   --cyber-red-glow: rgba(255, 51, 85, 0.35);
 
-  /* Obsidian dark sand & tech-slate shadows */
+  /* —— DUNE: Obsidian desert depths —— */
   --bg-deep: #070503;
   --bg-mid: #0d0a08;
   --bg-surface: #181410;
 
-  /* Style Aliases for backward compatibility */
+  /* —— Legacy aliases —— */
   --violet: var(--gold);
   --violet-light: var(--gold-light);
   --violet-glow: var(--gold-glow);
@@ -39,27 +43,21 @@
   --blue-deep: #1a1510;
   --glitch-red: var(--cyber-red);
 
+  /* —— Typography —— */
   --text-primary: #f5f2eb;
-  /* Warm desert bone white */
   --text-secondary: #dcd6ca;
   --text-muted: #8a8275;
-
-  /* Custom Typography */
   --font-display: 'Cinzel', serif;
-  /* Dune Cinematic Serif */
   --font-heading: 'Orbitron', sans-serif;
-  /* DBH sci-fi header */
   --font-body: 'Rajdhani', sans-serif;
-  /* DBH Tech info / sans body */
   --font-mono: 'Share Tech Mono', monospace;
-  /* DBH diagnostics & logs */
-
   --nav-height: 72px;
 
-  /* Custom Easing Curves for UI Snappiness */
+  /* —— DBH-style easing curves —— */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-cyber: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @font-face {
@@ -84,19 +82,39 @@ body {
   position: relative;
 }
 
-/* Subtle Detroit: Become Human Android HUD Scanline & Cinematic Vignette Overlay */
+/* —— DETROIT: Android HUD Scanline + DUNE: Cinematic Sand Vignette + LED Column —— */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle, transparent 25%, rgba(4, 3, 2, 0.74) 100%),
-    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%),
-    linear-gradient(90deg, rgba(210, 156, 56, 0.02), rgba(0, 229, 255, 0.01), rgba(0, 136, 255, 0.02));
-  background-size: 100% 100%, 100% 4px, 6px 100%;
+    radial-gradient(circle, transparent 25%, rgba(4, 3, 2, 0.88) 100%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.06) 2px,
+      rgba(0, 0, 0, 0.06) 4px
+    ),
+    linear-gradient(90deg, rgba(210, 156, 56, 0.01), rgba(0, 229, 255, 0.005), rgba(0, 136, 255, 0.008));
+  background-size: 100% 100%, 100% 4px, 8px 100%;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.52;
+  opacity: 0.4;
+}
+
+/* —— DETROIT: Thin HUD border frame (desktop only) —— */
+@media (min-width: 768px) {
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 12px;
+    border: 1px solid rgba(0, 229, 255, 0.04);
+    border-radius: 2px;
+    z-index: 9998;
+    pointer-events: none;
+    opacity: 0.55;
+  }
 }
 
 @media (hover: none) and (pointer: coarse) {
@@ -110,30 +128,16 @@ a {
   text-decoration: none;
   transition: color 0.3s;
 }
+a:hover { color: var(--gold); }
 
-a:hover {
-  color: var(--gold);
-}
+img { max-width: 100%; height: auto; }
 
-img {
-  max-width: 100%;
-  height: auto;
-}
+::selection { background: var(--gold-glow); color: var(--text-primary); }
 
-::selection {
-  background: var(--gold-glow);
-  color: var(--text-primary);
-}
+::-webkit-scrollbar { display: none; }
+html { scrollbar-width: none; -ms-overflow-style: none; }
 
-::-webkit-scrollbar {
-  display: none;
-}
-
-html {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
+/* —— SECTION LAYOUT —— */
 .section {
   min-height: 60vh;
   padding: 80px 5%;
@@ -144,6 +148,7 @@ html {
   justify-content: center;
 }
 
+/* —— DETROIT: CyberLife horizontal rule w/ Dune spice glow —— */
 .section::before {
   content: '';
   position: absolute;
@@ -152,21 +157,40 @@ html {
   right: 10%;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--gold), var(--spice-blue), var(--gold), transparent);
-  opacity: 0.25;
+  opacity: 0.20;
+  box-shadow: 0 0 12px var(--spice-blue-glow);
 }
 
+/* —— DUNE: Shimmering spice-drift animation —— */
 @keyframes shimmer {
-
-  0%,
-  100% {
-    background-position: 0% center;
-  }
-
-  50% {
-    background-position: 100% center;
-  }
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
 }
 
+@keyframes led-pulse {
+  0%, 100% { opacity: 0.3; box-shadow: 0 0 6px var(--spice-blue); }
+  50% { opacity: 1; box-shadow: 0 0 18px var(--spice-blue), 0 0 36px var(--spice-blue-glow); }
+}
+
+@keyframes sand-drift {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0.15; }
+  50% { transform: translateY(-4px) rotate(0.5deg); opacity: 0.3; }
+  100% { transform: translateY(0) rotate(0deg); opacity: 0.15; }
+}
+
+@keyframes instability {
+  0%, 100% { clip-path: inset(0 0 0 0); }
+  5% { clip-path: inset(30% 0 0 0); }
+  10% { clip-path: inset(0 0 20% 0); }
+  15% { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes hud-flicker {
+  0%, 99.5%, 100% { opacity: 0.5; }
+  99.6% { opacity: 0.95; }
+}
+
+/* —— SECTION TITLES: Dune Gold + Detroit Cyan gradient —— */
 .section-title {
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 4.5vw, 3.2rem);
@@ -206,27 +230,32 @@ html {
   line-height: 1.7;
 }
 
-/* Glass card styling: sleek, tech borders, dark sandstone blur */
+/* —— DETROIT: DBH-style glass UI panel (square corners, sharp borders) —— */
 .glass-card {
-  background: rgba(13, 10, 8, 0.8);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(229, 169, 60, 0.14);
-  border-radius: 4px;
-  /* Sleek square corners like DBH UI panels */
-  transition: border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  background: rgba(13, 10, 8, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(229, 169, 60, 0.12);
+  border-radius: 2px;
+  transition: border-color 0.3s var(--ease-cyber), transform 0.3s var(--ease-cyber), box-shadow 0.3s var(--ease-cyber);
 }
 
 .glass-card:hover {
   border-color: var(--spice-blue);
-  box-shadow: 0 0 25px rgba(0, 229, 255, 0.15), 0 0 40px rgba(229, 169, 60, 0.05);
-  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.12), 0 0 50px rgba(229, 169, 60, 0.04), inset 0 0 30px rgba(0, 229, 255, 0.02);
+  transform: translateY(-1px);
 }
 
 .glass-card:active {
   transform: scale(0.97);
 }
 
-/* Primary Button: Dune Gold Theme */
+/* —— DETROIT: Software instability jitter —— */
+.instability-text {
+  animation: instability 8s steps(1) infinite;
+}
+
+/* —— BUTTONS —— */
 .btn-primary {
   font-family: var(--font-heading);
   font-size: 0.85rem;
@@ -238,25 +267,23 @@ html {
   color: var(--gold);
   background: transparent;
   cursor: pointer;
-  transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out), transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  transition: background 0.25s var(--ease-cyber), color 0.25s var(--ease-cyber), transform 0.25s var(--ease-cyber), box-shadow 0.25s var(--ease-cyber), border-color 0.25s var(--ease-cyber);
   text-decoration: none;
   display: inline-block;
   border-radius: 2px;
-  box-shadow: 0 0 15px rgba(229, 169, 60, 0.1), inset 0 0 15px rgba(229, 169, 60, 0.03);
+  box-shadow: 0 0 18px rgba(229, 169, 60, 0.08), inset 0 0 18px rgba(229, 169, 60, 0.02);
 }
 
 .btn-primary:hover {
   background: var(--gold);
   color: var(--bg-deep);
-  box-shadow: 0 0 30px rgba(229, 169, 60, 0.4);
+  border-color: var(--gold-light);
+  box-shadow: 0 0 40px rgba(229, 169, 60, 0.45), 0 0 60px var(--spice-ember);
   transform: translateY(-1px);
 }
 
-.btn-primary:active {
-  transform: scale(0.97);
-}
+.btn-primary:active { transform: scale(0.96); }
 
-/* Secondary Button: Detroit Cyber Cyan Theme */
 .btn-secondary {
   font-family: var(--font-heading);
   font-size: 0.85rem;
@@ -268,32 +295,26 @@ html {
   color: var(--spice-blue);
   background: transparent;
   cursor: pointer;
-  transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out), transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  transition: background 0.25s var(--ease-cyber), color 0.25s var(--ease-cyber), transform 0.25s var(--ease-cyber), box-shadow 0.25s var(--ease-cyber), border-color 0.25s var(--ease-cyber);
   text-decoration: none;
   display: inline-block;
   border-radius: 2px;
-  box-shadow: 0 0 15px rgba(0, 229, 255, 0.1), inset 0 0 15px rgba(0, 229, 255, 0.03);
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.08), inset 0 0 18px rgba(0, 229, 255, 0.02);
 }
 
 .btn-secondary:hover {
   background: var(--spice-blue);
   color: var(--bg-deep);
-  box-shadow: 0 0 30px rgba(0, 229, 255, 0.35);
+  border-color: #fff;
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.4), 0 0 60px rgba(0, 229, 255, 0.15);
   transform: translateY(-1px);
 }
 
-.btn-secondary:active {
-  transform: scale(0.97);
-}
+.btn-secondary:active { transform: scale(0.96); }
 
-.text-glow-gold {
-  text-shadow: 0 0 20px var(--gold-glow);
-}
-
-.text-glow-spice {
-  text-shadow: 0 0 20px var(--spice-blue-glow);
-}
-
+/* —— UTILITY —— */
+.text-glow-gold { text-shadow: 0 0 20px var(--gold-glow); }
+.text-glow-spice { text-shadow: 0 0 20px var(--spice-blue-glow); }
 .text-gradient {
   background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--spice-blue));
   -webkit-background-clip: text;
@@ -301,15 +322,35 @@ html {
   background-clip: text;
 }
 
+/* —— SOCIAL ICONS —— */
+.social-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 229, 255, 0.16);
+  border-radius: 50%;
+  color: var(--spice-blue);
+  background: rgba(0, 229, 255, 0.03);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.03);
+  transition: background 0.3s var(--ease-cyber), color 0.3s var(--ease-cyber), border-color 0.3s var(--ease-cyber), box-shadow 0.3s var(--ease-cyber), transform 0.3s var(--ease-cyber);
+}
+
+.social-icon:hover {
+  background: var(--spice-blue);
+  color: #050403;
+  border-color: var(--spice-blue);
+  box-shadow: 0 0 28px var(--spice-blue);
+  transform: translateY(-2px);
+}
+
+.social-icon:active { transform: scale(0.93); }
+
+/* —— RESPONSIVE —— */
 @media (max-width: 768px) {
-  .section {
-    padding: 80px 5%;
-  }
-
-  .nav-desktop-links {
-    display: none !important;
-  }
-
+  .section { padding: 80px 5%; }
+  .nav-desktop-links { display: none !important; }
   .nav-hamburger {
     display: flex !important;
     width: 44px !important;
@@ -318,22 +359,14 @@ html {
     justify-content: center !important;
     gap: 0 !important;
   }
-
   .nav-hamburger span {
     width: 22px !important;
     height: 2px !important;
     border-radius: 999px !important;
     transform-origin: center !important;
   }
-
-  .main-nav {
-    padding: 1.5rem 1.5rem !important;
-  }
-
-  .nav-logo-link {
-    left: 0.5rem !important;
-  }
-
+  .main-nav { padding: 1.5rem 1.5rem !important; }
+  .nav-logo-link { left: 0.5rem !important; }
   .nav-logo {
     height: 32px !important;
     transform: translateY(3px) scale(1) !important;
@@ -350,50 +383,19 @@ html {
 }
 
 @media (min-width: 768px) {
-  .nav-logo {
-    transform: translateY(3px) scale(1.2);
-  }
+  .nav-logo { transform: translateY(3px) scale(1.2); }
 }
 
-/* About Section Stats Grid Reverse Pyramid Layout for Mobile */
+/* —— MOBILE STATS GRID —— */
 @media (max-width: 600px) {
   .about-stats-grid {
     grid-template-columns: 1fr 1fr !important;
     gap: 1.2rem 0.8rem !important;
   }
-
-  .about-stats-grid>div:last-child {
+  .about-stats-grid > div:last-child {
     grid-column: 1 / span 2 !important;
     justify-self: center;
     width: 100%;
     max-width: 260px;
-    /* centers the third card nicely */
   }
-}
-
-/* Social Icons */
-.social-icon {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(0, 229, 255, 0.16);
-  border-radius: 50%;
-  color: var(--spice-blue);
-  background: rgba(0, 229, 255, 0.03);
-  box-shadow: 0 0 10px rgba(0, 229, 255, 0.05);
-  transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out), border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), transform 0.2s var(--ease-out);
-}
-
-.social-icon:hover {
-  background: var(--spice-blue);
-  color: #050403;
-  border-color: var(--spice-blue);
-  box-shadow: 0 0 20px var(--spice-blue);
-  transform: translateY(-2px);
-}
-
-.social-icon:active {
-  transform: scale(0.93);
 }
