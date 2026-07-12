@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { socialLinks } from '../data/content';
 
 export default function SponsorsSection() {
   const categories = [

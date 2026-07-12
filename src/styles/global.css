@@ -10,9 +10,9 @@
 
 :root {
   /* —— DUNE: Arrakis Sand & Spice Melange —— */
-  --gold: #d29c38;
-  --gold-light: #f7ca72;
-  --gold-glow: rgba(210, 156, 56, 0.35);
+  --gold: #b87a14;
+  --gold-light: #d4921e;
+  --gold-glow: rgba(184, 122, 20, 0.45);
   --spice-amber: #b8860b;
   --spice-ember: rgba(184, 134, 11, 0.45);
   --sand: #c2a87b;
@@ -82,6 +82,29 @@ body {
   position: relative;
 }
 
+/* —— SYNTHWAVE: Hero title static horizontal bands —— */
+.hero-title-scanlines,
+.hero-tagline-scanlines {
+  position: relative;
+}
+
+.hero-title-scanlines::before,
+.hero-tagline-scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 229, 255, 0.07) 2px,
+    rgba(0, 229, 255, 0.07) 4px
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 4;
+}
+
 /* —— DETROIT: Android HUD Scanline + DUNE: Cinematic Sand Vignette + LED Column —— */
 body::after {
   content: '';
@@ -89,13 +112,11 @@ body::after {
   inset: 0;
   background:
     radial-gradient(circle, transparent 25%, rgba(4, 3, 2, 0.88) 100%),
-    repeating-linear-gradient(
-      0deg,
+    repeating-linear-gradient(0deg,
       transparent,
       transparent 2px,
       rgba(0, 0, 0, 0.06) 2px,
-      rgba(0, 0, 0, 0.06) 4px
-    ),
+      rgba(0, 0, 0, 0.06) 4px),
     linear-gradient(90deg, rgba(210, 156, 56, 0.01), rgba(0, 229, 255, 0.005), rgba(0, 136, 255, 0.008));
   background-size: 100% 100%, 100% 4px, 8px 100%;
   z-index: 9999;
@@ -128,14 +149,29 @@ a {
   text-decoration: none;
   transition: color 0.3s;
 }
-a:hover { color: var(--gold); }
 
-img { max-width: 100%; height: auto; }
+a:hover {
+  color: var(--gold);
+}
 
-::selection { background: var(--gold-glow); color: var(--text-primary); }
+img {
+  max-width: 100%;
+  height: auto;
+}
 
-::-webkit-scrollbar { display: none; }
-html { scrollbar-width: none; -ms-overflow-style: none; }
+::selection {
+  background: var(--gold-glow);
+  color: var(--text-primary);
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
 
 /* —— SECTION LAYOUT —— */
 .section {
@@ -161,33 +197,104 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
   box-shadow: 0 0 12px var(--spice-blue-glow);
 }
 
+/* —— SYNTHWAVE: Hero text static horizontal bands —— */
+.hero-title-scanlines,
+.hero-tagline-scanlines {
+  position: relative;
+}
+
+.hero-title-scanlines::before,
+.hero-tagline-scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 229, 255, 0.2) 2px,
+    rgba(0, 229, 255, 0.2) 4px
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 4;
+}
+
 /* —— DUNE: Shimmering spice-drift animation —— */
 @keyframes shimmer {
-  0%, 100% { background-position: 0% center; }
-  50% { background-position: 100% center; }
+
+  0%,
+  100% {
+    background-position: 0% center;
+  }
+
+  50% {
+    background-position: 100% center;
+  }
 }
 
 @keyframes led-pulse {
-  0%, 100% { opacity: 0.3; box-shadow: 0 0 6px var(--spice-blue); }
-  50% { opacity: 1; box-shadow: 0 0 18px var(--spice-blue), 0 0 36px var(--spice-blue-glow); }
+
+  0%,
+  100% {
+    opacity: 0.3;
+    box-shadow: 0 0 6px var(--spice-blue);
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 18px var(--spice-blue), 0 0 36px var(--spice-blue-glow);
+  }
 }
 
 @keyframes sand-drift {
-  0% { transform: translateY(0) rotate(0deg); opacity: 0.15; }
-  50% { transform: translateY(-4px) rotate(0.5deg); opacity: 0.3; }
-  100% { transform: translateY(0) rotate(0deg); opacity: 0.15; }
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.15;
+  }
+
+  50% {
+    transform: translateY(-4px) rotate(0.5deg);
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.15;
+  }
 }
 
 @keyframes instability {
-  0%, 100% { clip-path: inset(0 0 0 0); }
-  5% { clip-path: inset(30% 0 0 0); }
-  10% { clip-path: inset(0 0 20% 0); }
-  15% { clip-path: inset(0 0 0 0); }
+
+  0%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+
+  5% {
+    clip-path: inset(30% 0 0 0);
+  }
+
+  10% {
+    clip-path: inset(0 0 20% 0);
+  }
+
+  15% {
+    clip-path: inset(0 0 0 0);
+  }
 }
 
 @keyframes hud-flicker {
-  0%, 99.5%, 100% { opacity: 0.5; }
-  99.6% { opacity: 0.95; }
+
+  0%,
+  99.5%,
+  100% {
+    opacity: 0.5;
+  }
+
+  99.6% {
+    opacity: 0.95;
+  }
 }
 
 /* —— SECTION TITLES: Dune Gold + Detroit Cyan gradient —— */
@@ -282,7 +389,9 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
   transform: translateY(-1px);
 }
 
-.btn-primary:active { transform: scale(0.96); }
+.btn-primary:active {
+  transform: scale(0.96);
+}
 
 .btn-secondary {
   font-family: var(--font-heading);
@@ -310,11 +419,19 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
   transform: translateY(-1px);
 }
 
-.btn-secondary:active { transform: scale(0.96); }
+.btn-secondary:active {
+  transform: scale(0.96);
+}
 
 /* —— UTILITY —— */
-.text-glow-gold { text-shadow: 0 0 20px var(--gold-glow); }
-.text-glow-spice { text-shadow: 0 0 20px var(--spice-blue-glow); }
+.text-glow-gold {
+  text-shadow: 0 0 20px var(--gold-glow);
+}
+
+.text-glow-spice {
+  text-shadow: 0 0 20px var(--spice-blue-glow);
+}
+
 .text-gradient {
   background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--spice-blue));
   -webkit-background-clip: text;
@@ -345,12 +462,20 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
   transform: translateY(-2px);
 }
 
-.social-icon:active { transform: scale(0.93); }
+.social-icon:active {
+  transform: scale(0.93);
+}
 
 /* —— RESPONSIVE —— */
 @media (max-width: 768px) {
-  .section { padding: 80px 5%; }
-  .nav-desktop-links { display: none !important; }
+  .section {
+    padding: 80px 5%;
+  }
+
+  .nav-desktop-links {
+    display: none !important;
+  }
+
   .nav-hamburger {
     display: flex !important;
     width: 44px !important;
@@ -359,14 +484,22 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
     justify-content: center !important;
     gap: 0 !important;
   }
+
   .nav-hamburger span {
     width: 22px !important;
     height: 2px !important;
     border-radius: 999px !important;
     transform-origin: center !important;
   }
-  .main-nav { padding: 1.5rem 1.5rem !important; }
-  .nav-logo-link { left: 0.5rem !important; }
+
+  .main-nav {
+    padding: 1.5rem 1.5rem !important;
+  }
+
+  .nav-logo-link {
+    left: 0.5rem !important;
+  }
+
   .nav-logo {
     height: 32px !important;
     transform: translateY(3px) scale(1) !important;
@@ -383,7 +516,9 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
 }
 
 @media (min-width: 768px) {
-  .nav-logo { transform: translateY(3px) scale(1.2); }
+  .nav-logo {
+    transform: translateY(3px) scale(1.2);
+  }
 }
 
 /* —— MOBILE STATS GRID —— */
@@ -392,7 +527,8 @@ html { scrollbar-width: none; -ms-overflow-style: none; }
     grid-template-columns: 1fr 1fr !important;
     gap: 1.2rem 0.8rem !important;
   }
-  .about-stats-grid > div:last-child {
+
+  .about-stats-grid>div:last-child {
     grid-column: 1 / span 2 !important;
     justify-self: center;
     width: 100%;

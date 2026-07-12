@@ -164,7 +164,7 @@ export default function HeroSection({ ready = true }) {
           fontWeight: 900,
           letterSpacing: '0.2em',
           textIndent: '0.2em',
-          background: 'linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 40%, #fff 60%, var(--spice-blue) 85%, var(--cyber-blue) 100%)',
+          background: 'linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 35%, var(--spice-blue) 65%, var(--cyber-blue) 85%, var(--gold) 100%)',
           backgroundSize: '200% 200%',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
@@ -172,7 +172,7 @@ export default function HeroSection({ ready = true }) {
           marginBottom: '0.4rem',
           textTransform: 'uppercase',
           position: 'relative',
-          zIndex: 1,
+          zIndex: 3,
           animation: 'shimmer 4s ease-in-out infinite',
         }}
       >
@@ -190,13 +190,13 @@ export default function HeroSection({ ready = true }) {
           fontWeight: 700,
           letterSpacing: '0.25em',
           textTransform: 'uppercase',
-          background: 'linear-gradient(90deg, var(--gold), #fff 50%, var(--spice-blue))',
+          background: 'linear-gradient(90deg, var(--gold), var(--gold-light) 40%, var(--spice-blue) 70%, var(--gold) 100%)',
           backgroundSize: '200% auto',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           marginBottom: '1.2rem',
           position: 'relative',
-          zIndex: 1,
+          zIndex: 3,
           animation: 'shimmer 4s linear infinite',
         }}
       >
