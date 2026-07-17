@@ -62,6 +62,20 @@ export default function Navigation() {
           transition: 'background 0.4s, box-shadow 0.4s, border-color 0.4s',
         }}
       >
+        {/* Top-edge cyan LED strip */}
+        <motion.div
+          animate={{ opacity: [0.3, 0.6, 0.3] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent, var(--spice-blue), transparent)',
+            pointerEvents: 'none',
+          }}
+        />
         {/* Logo + DBH temple LED */}
         <Link
           to="/"
@@ -86,18 +100,9 @@ export default function Navigation() {
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           </picture>
-          <motion.div
-            animate={{ opacity: [0.3, 1, 0.3], scale: [0.92, 1.12, 0.92] }}
-            transition={{ duration: 2.2, repeat: Infinity }}
-            className="nav-desktop-links"
-            style={{
-              width: '7px',
-              height: '7px',
-              borderRadius: '50%',
-              background: 'var(--spice-blue)',
-              boxShadow: '0 0 10px var(--spice-blue), 0 0 20px var(--spice-blue-glow)',
-              marginLeft: '0.3rem',
-            }}
+          <span
+            className="led-dot led-dot--ring nav-desktop-links"
+            style={{ marginLeft: '0.3rem' }}
           />
         </Link>
 
@@ -150,6 +155,7 @@ export default function Navigation() {
                   fontSize: '0.68rem',
                   opacity: 0.5,
                   color: 'var(--spice-blue)',
+                  textShadow: '0 0 6px rgba(0,229,255,0.3)',
                 }}>
                   [{indexStr}]
                 </span>
@@ -270,8 +276,19 @@ export default function Navigation() {
                 boxShadow: '0 12px 40px rgba(0,0,0,0.7), 0 0 28px rgba(229,169,60,0.04)',
                 padding: '1.2rem',
                 overflow: 'hidden',
+                position: 'relative',
               }}
             >
+              {/* Drawer top-edge cyan line */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '10%',
+                right: '10%',
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, var(--spice-blue), transparent)',
+              }} />
+
               {/* DBH header */}
               <div style={{
                 display: 'flex',
@@ -357,6 +374,7 @@ export default function Navigation() {
                           fontSize: '0.72rem',
                           opacity: 0.45,
                           color: 'var(--spice-blue)',
+                          textShadow: '0 0 6px rgba(0,229,255,0.3)',
                         }}>
                           [{indexStr}]
                         </span>

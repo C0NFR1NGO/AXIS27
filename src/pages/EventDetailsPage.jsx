@@ -12,6 +12,17 @@ export default function EventDetailsPage() {
         <CosmicBackground />
       </div>
 
+      {/* Grid pattern overlay */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        zIndex: 0,
+        opacity: 0.03,
+        pointerEvents: 'none',
+        backgroundImage: 'linear-gradient(rgba(0,229,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.3) 1px, transparent 1px)',
+        backgroundSize: '60px 60px',
+      }} />
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -56,7 +67,7 @@ export default function EventDetailsPage() {
             textTransform: 'uppercase',
             letterSpacing: '0.1em',
             marginBottom: '2rem',
-            textShadow: '0 0 24px var(--gold-glow)',
+            textShadow: '0 0 24px var(--gold-glow), 0 0 48px rgba(0,229,255,0.1)',
           }}
         >
           {eventName}
@@ -76,7 +87,8 @@ export default function EventDetailsPage() {
             color: 'var(--spice-blue)',
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            boxShadow: '0 0 22px rgba(0, 229, 255, 0.12), inset 0 0 22px rgba(0, 229, 255, 0.02)',
+            boxShadow: '0 0 0 1px rgba(0,229,255,0.1), 0 0 22px rgba(0, 229, 255, 0.12), inset 0 0 22px rgba(0, 229, 255, 0.02)',
+            animation: 'coming-soon-pulse 3s ease-in-out infinite',
           }}
         >
           Coming Soon

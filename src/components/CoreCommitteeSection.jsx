@@ -29,6 +29,7 @@ export default function CoreCommitteeSection() {
           textAlign: 'center',
         }}
       >
+        <span className="led-dot" style={{ marginRight: '0.6rem', display: 'inline-block', verticalAlign: 'middle' }} />
         // CORE_COMMITTEE_LOADED //
       </motion.h3>
 
@@ -52,16 +53,11 @@ export default function CoreCommitteeSection() {
               textAlign: 'center',
             }}
           >
-            <motion.div
-              animate={{ opacity: [0.3, 1, 0.3] }}
-              transition={{ duration: 3, repeat: Infinity, delay: i * 0.4 }}
+            <span
+              className="led-dot led-dot--ring"
               style={{
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                background: 'var(--spice-blue)',
-                boxShadow: '0 0 8px var(--spice-blue)',
                 margin: '0 auto 0.5rem',
+                display: 'block',
               }}
             />
             <div style={{

@@ -78,10 +78,11 @@ export default function SponsorsSection() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                transition: 'border-color 0.3s',
+                borderLeft: '2px solid transparent',
+              transition: 'border-color 0.3s',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--gold)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(229,169,60,0.1)'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--gold)'; e.currentTarget.style.borderLeftColor = 'var(--gold)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(229,169,60,0.1)'; e.currentTarget.style.borderLeftColor = 'transparent'; }}
             >
               <span>{cat.label}</span>
               <span style={{

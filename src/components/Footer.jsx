@@ -71,8 +71,23 @@ export default function Footer() {
             ▲ 94%
           </motion.span>
         </span>
-        <span style={{ color: 'var(--gold)' }}>DIRECTIVE: IGNIS AETERNUM</span>
+        <motion.span
+          style={{ color: 'var(--gold)' }}
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          DIRECTIVE: IGNIS AETERNUM
+        </motion.span>
       </div>
+
+      {/* Gradient divider below status bar */}
+      <div style={{
+        height: '1px',
+        margin: '0 auto 2rem',
+        maxWidth: '480px',
+        background: 'linear-gradient(90deg, transparent, var(--gold) 20%, var(--spice-blue) 50%, var(--gold) 80%, transparent)',
+        opacity: 0.15,
+      }} />
 
       <div style={{ marginBottom: '2rem' }}>
         <Link to="/" style={{ display: 'inline-block' }}>
@@ -92,6 +107,7 @@ export default function Footer() {
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           marginBottom: '0.5rem',
+          textShadow: '0 0 24px rgba(201,145,26,0.3), 0 0 48px rgba(0,229,255,0.1)',
         }}>
           AXIS'27
         </div>
@@ -107,18 +123,7 @@ export default function Footer() {
       </div>
 
       {/* DBH temple LED pulsing above socials */}
-      <motion.div
-        animate={{ opacity: [0.3, 1, 0.3], scale: [0.95, 1.1, 0.95] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        style={{
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: 'var(--spice-blue)',
-          boxShadow: '0 0 14px var(--spice-blue), 0 0 24px var(--spice-blue-glow)',
-          margin: '0 auto 1.2rem',
-        }}
-      />
+      <div className="led-dot led-dot--ring" style={{ margin: '0 auto 1.2rem' }} />
 
       <div style={{
         display: 'flex',
@@ -170,7 +175,21 @@ export default function Footer() {
       }}>
         <p>VISVESVARAYA NATIONAL INSTITUTE OF TECHNOLOGY, NAGPUR</p>
         <p>AXIS Office, Student Activity Centre, VNIT, South Ambazari Road, Nagpur - 440010</p>
-        <p style={{ marginTop: '1rem', opacity: 0.45 }}>
+        <p style={{
+          marginTop: '1.5rem',
+          paddingTop: '1rem',
+          position: 'relative',
+          opacity: 0.45,
+        }}>
+          <span style={{
+            position: 'absolute',
+            top: 0,
+            left: '10%',
+            right: '10%',
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent, var(--gold) 20%, var(--spice-blue) 50%, var(--gold) 80%, transparent)',
+            opacity: 0.3,
+          }} />
           &copy; {new Date().getFullYear()} AXIS, VNIT Nagpur. All Rights Reserved.
         </p>
       </div>

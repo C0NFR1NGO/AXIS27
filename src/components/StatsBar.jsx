@@ -20,7 +20,10 @@ export default function StatsBar() {
         background: 'linear-gradient(180deg, rgba(13,10,8,0.8) 0%, rgba(7,5,3,0.94) 100%)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        borderTop: '1px solid rgba(229,169,60,0.14)',
+        borderTop: '1px solid transparent',
+        backgroundImage: 'linear-gradient(180deg, rgba(13,10,8,0.8) 0%, rgba(7,5,3,0.94) 100%), linear-gradient(90deg, transparent, rgba(0,229,255,0.15), transparent)',
+        backgroundOrigin: 'padding-box, border-box',
+        backgroundClip: 'padding-box, border-box',
         borderBottom: '1px solid rgba(0,229,255,0.1)',
       }}
     >

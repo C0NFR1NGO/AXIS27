@@ -96,6 +96,7 @@ export default function AboutPage() {
             width: '100%',
             padding: '2.5rem',
             marginBottom: '3rem',
+            borderTop: '1px solid rgba(0,229,255,0.08)',
           }}
         >
           <p style={{
@@ -136,16 +137,16 @@ export default function AboutPage() {
             style={{
               position: 'absolute', left: '-3.5rem', zIndex: 2,
               width: '40px', height: '40px', borderRadius: '50%',
-              border: '1px solid rgba(229,169,60,0.3)',
+              border: '1px solid rgba(0,229,255,0.2)',
               background: 'rgba(13,10,8,0.8)',
               backdropFilter: 'blur(8px)',
-              color: 'var(--gold)',
+              color: 'var(--spice-blue)',
               fontSize: '1.2rem', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'all 0.3s',
             }}
-            onMouseEnter={(e) => { e.target.style.background = 'rgba(229,169,60,0.15)'; e.target.style.borderColor = 'var(--gold)'; }}
-            onMouseLeave={(e) => { e.target.style.background = 'rgba(13,10,8,0.8)'; e.target.style.borderColor = 'rgba(229,169,60,0.3)'; }}
+            onMouseEnter={(e) => { e.target.style.background = 'rgba(0,229,255,0.15)'; e.target.style.borderColor = 'var(--spice-blue)'; }}
+            onMouseLeave={(e) => { e.target.style.background = 'rgba(13,10,8,0.8)'; e.target.style.borderColor = 'rgba(0,229,255,0.2)'; }}
           >
             ‹
           </button>
@@ -167,7 +168,10 @@ export default function AboutPage() {
                 style={{
                   minWidth: '220px', flex: '0 0 auto', padding: '1.5rem 1.25rem',
                   textAlign: 'center', position: 'relative',
+                  borderLeft: '2px solid rgba(201,145,26,0.2)',
+                  transition: 'border-color 0.3s',
                 }}
+                whileHover={{ borderLeftColor: 'var(--gold)' }}
               >
                 <div style={{
                   fontFamily: "'Orbitron', monospace", fontSize: '1.4rem', fontWeight: 800,
@@ -190,16 +194,16 @@ export default function AboutPage() {
             style={{
               position: 'absolute', right: '-3.5rem', zIndex: 2,
               width: '40px', height: '40px', borderRadius: '50%',
-              border: '1px solid rgba(229,169,60,0.3)',
+              border: '1px solid rgba(0,229,255,0.2)',
               background: 'rgba(13,10,8,0.8)',
               backdropFilter: 'blur(8px)',
-              color: 'var(--gold)',
+              color: 'var(--spice-blue)',
               fontSize: '1.2rem', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'all 0.3s',
             }}
-            onMouseEnter={(e) => { e.target.style.background = 'rgba(229,169,60,0.15)'; e.target.style.borderColor = 'var(--gold)'; }}
-            onMouseLeave={(e) => { e.target.style.background = 'rgba(13,10,8,0.8)'; e.target.style.borderColor = 'rgba(229,169,60,0.3)'; }}
+            onMouseEnter={(e) => { e.target.style.background = 'rgba(0,229,255,0.15)'; e.target.style.borderColor = 'var(--spice-blue)'; }}
+            onMouseLeave={(e) => { e.target.style.background = 'rgba(13,10,8,0.8)'; e.target.style.borderColor = 'rgba(0,229,255,0.2)'; }}
           >
             ›
           </button>

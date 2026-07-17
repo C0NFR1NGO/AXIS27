@@ -106,7 +106,7 @@ const inputStyle = {
   fontWeight: 500,
   color: 'var(--text-primary)',
   background: 'rgba(255,255,255,0.04)',
-  border: '1px solid rgba(139,92,246,0.2)',
+  border: '1px solid rgba(0,229,255,0.15)',
   borderRadius: '10px',
   outline: 'none',
   transition: 'border-color 0.3s, box-shadow 0.3s',
@@ -326,14 +326,14 @@ export default function ContactPage() {
                   onChange={handleChange}
                   style={{
                     ...inputStyle,
-                    borderColor: errors.name ? 'var(--glitch-red)' : 'rgba(139,92,246,0.2)',
+                    borderColor: errors.name ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)',
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--violet)';
-                    e.target.style.boxShadow = '0 0 16px rgba(139,92,246,0.15)';
+                    e.target.style.borderColor = 'var(--spice-blue)';
+                    e.target.style.boxShadow = '0 0 16px rgba(0,229,255,0.15)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = errors.name ? 'var(--glitch-red)' : 'rgba(139,92,246,0.2)';
+                    e.target.style.borderColor = errors.name ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)';
                     e.target.style.boxShadow = 'none';
                   }}
                 />
@@ -359,14 +359,14 @@ export default function ContactPage() {
                   onChange={handleChange}
                   style={{
                     ...inputStyle,
-                    borderColor: errors.email ? 'var(--glitch-red)' : 'rgba(139,92,246,0.2)',
+                    borderColor: errors.email ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)',
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--violet)';
-                    e.target.style.boxShadow = '0 0 16px rgba(139,92,246,0.15)';
+                    e.target.style.borderColor = 'var(--spice-blue)';
+                    e.target.style.boxShadow = '0 0 16px rgba(0,229,255,0.15)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = errors.email ? 'var(--glitch-red)' : 'rgba(139,92,246,0.2)';
+                    e.target.style.borderColor = errors.email ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)';
                     e.target.style.boxShadow = 'none';
                   }}
                 />
@@ -414,14 +414,14 @@ export default function ContactPage() {
                     onChange={handleChange}
                     style={{
                       ...inputStyle,
-                      borderColor: errors.phone ? 'var(--glitch-red)' : 'rgba(139,92,246,0.2)',
+                      borderColor: errors.phone ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)',
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = 'var(--violet)';
-                      e.target.style.boxShadow = '0 0 16px rgba(139,92,246,0.15)';
+                      e.target.style.borderColor = 'var(--spice-blue)';
+                      e.target.style.boxShadow = '0 0 16px rgba(0,229,255,0.15)';
                     }}
                     onBlur={(e) => {
-                      e.target.style.borderColor = errors.phone ? 'var(--glitch-red)' : 'rgba(139,92,246,0.2)';
+                      e.target.style.borderColor = errors.phone ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)';
                       e.target.style.boxShadow = 'none';
                     }}
                   />
@@ -450,14 +450,14 @@ export default function ContactPage() {
                     ...inputStyle,
                     resize: 'vertical',
                     minHeight: '120px',
-                    borderColor: errors.query ? 'var(--glitch-red)' : 'rgba(139,92,246,0.2)',
+                    borderColor: errors.query ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)',
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--violet)';
-                    e.target.style.boxShadow = '0 0 16px rgba(139,92,246,0.15)';
+                    e.target.style.borderColor = 'var(--spice-blue)';
+                    e.target.style.boxShadow = '0 0 16px rgba(0,229,255,0.15)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = errors.query ? 'var(--glitch-red)' : 'rgba(139,92,246,0.2)';
+                    e.target.style.borderColor = errors.query ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)';
                     e.target.style.boxShadow = 'none';
                   }}
                 />
@@ -480,27 +480,27 @@ export default function ContactPage() {
                   letterSpacing: '0.1em',
                   textTransform: 'uppercase',
                   padding: '0.85rem 2.8rem',
-                  border: `2px solid ${submitted ? 'var(--cyan)' : 'var(--violet)'}`,
-                  color: (submitted || submitting) ? 'var(--bg-deep)' : 'var(--violet)',
-                  background: submitted ? 'var(--cyan)' : submitting ? 'var(--violet)' : 'transparent',
+                  border: `2px solid ${submitted ? 'var(--cyan)' : 'var(--spice-blue)'}`,
+                  color: (submitted || submitting) ? 'var(--bg-deep)' : 'var(--spice-blue)',
+                  background: submitted ? 'var(--cyan)' : submitting ? 'var(--spice-blue)' : 'transparent',
                   cursor: (submitting || submitted) ? 'default' : 'pointer',
                   transition: 'all 0.3s',
-                  boxShadow: '0 0 20px rgba(139,92,246,0.15), inset 0 0 20px rgba(139,92,246,0.05)',
+                  boxShadow: '0 0 20px var(--gold-glow), inset 0 0 20px var(--spice-blue-glow)',
                   borderRadius: '4px',
                   opacity: submitting ? 0.8 : 1,
                 }}
                 onMouseEnter={(e) => {
                   if (!submitted && !submitting) {
-                    e.target.style.background = 'var(--violet)';
+                    e.target.style.background = 'var(--spice-blue)';
                     e.target.style.color = 'var(--bg-deep)';
-                    e.target.style.boxShadow = '0 0 40px rgba(139,92,246,0.4), inset 0 0 20px rgba(139,92,246,0.1)';
+                    e.target.style.boxShadow = '0 0 40px var(--gold-glow), inset 0 0 20px var(--spice-blue-glow)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!submitted && !submitting) {
                     e.target.style.background = 'transparent';
-                    e.target.style.color = 'var(--violet)';
-                    e.target.style.boxShadow = '0 0 20px rgba(139,92,246,0.15), inset 0 0 20px rgba(139,92,246,0.05)';
+                    e.target.style.color = 'var(--spice-blue)';
+                    e.target.style.boxShadow = '0 0 20px var(--gold-glow), inset 0 0 20px var(--spice-blue-glow)';
                   }
                 }}
               >
@@ -545,6 +545,7 @@ export default function ContactPage() {
                 color: 'var(--violet)',
                 marginBottom: '1.5rem',
                 letterSpacing: '0.08em',
+                textShadow: '0 0 12px rgba(0,229,255,0.2)',
               }}
             >
               Get in Touch
@@ -663,7 +664,7 @@ export default function ContactPage() {
             <iframe
               title="VNIT Nagpur Location"
               src="https://www.google.com/maps?q=Visvesvaraya+National+Institute+of+Technology+Nagpur&z=15&output=embed"
-              style={{ width: '100%', height: '100%', minHeight: '400px', border: 'none', display: 'block' }}
+              style={{ width: '100%', height: '100%', minHeight: '400px', border: '1px solid rgba(0,229,255,0.08)', borderRadius: '2px', display: 'block' }}
               allowFullScreen
               loading="lazy"
             />

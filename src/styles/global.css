@@ -10,28 +10,33 @@
 
 :root {
   /* —— DUNE: Arrakis Sand & Spice Melange —— */
-  --gold: #b87a14;
-  --gold-light: #d4921e;
-  --gold-glow: rgba(184, 122, 20, 0.45);
+  --gold: #c9911a;
+  --gold-light: #dca22a;
+  --gold-glow: rgba(201, 145, 26, 0.5);
   --spice-amber: #b8860b;
   --spice-ember: rgba(184, 134, 11, 0.45);
   --sand: #c2a87b;
   --sand-light: #e8dcc8;
+  --spice-haze: rgba(201, 145, 26, 0.06);
+  --dune-ember: rgba(180, 100, 10, 0.12);
 
   /* —— DETROIT: CyberLife LED Blue —— */
   --spice-blue: #00e5ff;
-  --spice-blue-glow: rgba(0, 229, 255, 0.3);
+  --spice-blue-glow: rgba(0, 229, 255, 0.35);
   --cyber-blue: #0088ff;
   --cyber-blue-glow: rgba(0, 136, 255, 0.25);
+  --cyber-led: #00e5ff;
+  --cyber-hologram: rgba(0, 229, 255, 0.06);
+  --cyber-panel: rgba(0, 229, 255, 0.03);
 
   /* —— DETROIT: Software Instability Red —— */
   --cyber-red: #ff3355;
   --cyber-red-glow: rgba(255, 51, 85, 0.35);
 
   /* —— DUNE: Obsidian desert depths —— */
-  --bg-deep: #070503;
-  --bg-mid: #0d0a08;
-  --bg-surface: #181410;
+  --bg-deep: #050302;
+  --bg-mid: #0b0907;
+  --bg-surface: #161210;
 
   /* —— Legacy aliases —— */
   --violet: var(--gold);
@@ -40,24 +45,30 @@
   --cyan: var(--spice-blue);
   --cyan-glow: var(--spice-blue-glow);
   --blue: var(--cyber-blue);
-  --blue-deep: #1a1510;
+  --blue-deep: #0e0c08;
   --glitch-red: var(--cyber-red);
 
   /* —— Typography —— */
-  --text-primary: #f5f2eb;
-  --text-secondary: #dcd6ca;
-  --text-muted: #8a8275;
+  --text-primary: #f0ece3;
+  --text-secondary: #c8c0b2;
+  --text-muted: #7a7268;
   --font-display: 'Cinzel', serif;
   --font-heading: 'Orbitron', sans-serif;
   --font-body: 'Rajdhani', sans-serif;
   --font-mono: 'Share Tech Mono', monospace;
+  --font-accent: 'Ethnocentric', sans-serif;
   --nav-height: 72px;
 
-  /* —— DBH-style easing curves —— */
+  /* —— Easing —— */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-cyber: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spice: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* —— Borders & Glows —— */
+  --border-glow: rgba(0, 229, 255, 0.08);
+  --border-gold: rgba(201, 145, 26, 0.15);
 }
 
 @font-face {
@@ -70,10 +81,12 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 body {
-  background: linear-gradient(135deg, #050403 0%, #0d0a08 50%, #17130f 100%);
+  background: linear-gradient(160deg, #040201 0%, #0b0907 40%, #100d0a 70%, #0a0806 100%);
   background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-body);
@@ -82,59 +95,48 @@ body {
   position: relative;
 }
 
-/* —— SYNTHWAVE: Hero title static horizontal bands —— */
-.hero-title-scanlines,
-.hero-tagline-scanlines {
-  position: relative;
-}
-
-.hero-title-scanlines::before,
-.hero-tagline-scanlines::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 229, 255, 0.07) 2px,
-    rgba(0, 229, 255, 0.07) 4px
-  );
-  background-size: 100% 4px;
-  pointer-events: none;
-  z-index: 4;
-}
-
-/* —— DETROIT: Android HUD Scanline + DUNE: Cinematic Sand Vignette + LED Column —— */
+/* —— DETROIT: HUD Scanline + DUNE: Sand Vignette + LED Column —— */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle, transparent 25%, rgba(4, 3, 2, 0.88) 100%),
+    radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(3, 2, 1, 0.7) 70%, rgba(3, 2, 1, 0.92) 100%),
     repeating-linear-gradient(0deg,
       transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.06) 2px,
-      rgba(0, 0, 0, 0.06) 4px),
-    linear-gradient(90deg, rgba(210, 156, 56, 0.01), rgba(0, 229, 255, 0.005), rgba(0, 136, 255, 0.008));
-  background-size: 100% 100%, 100% 4px, 8px 100%;
+      transparent 3px,
+      rgba(0, 0, 0, 0.03) 3px,
+      rgba(0, 0, 0, 0.03) 4px),
+    linear-gradient(90deg,
+      rgba(201, 145, 26, 0.008),
+      transparent 20%,
+      rgba(0, 229, 255, 0.004),
+      transparent 80%,
+      rgba(0, 136, 255, 0.006));
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.5;
 }
 
-/* —— DETROIT: Thin HUD border frame (desktop only) —— */
+/* —— DETROIT: HUD border frame with corner brackets (desktop only) —— */
 @media (min-width: 768px) {
   body::before {
     content: '';
     position: fixed;
-    inset: 12px;
-    border: 1px solid rgba(0, 229, 255, 0.04);
-    border-radius: 2px;
+    inset: 10px;
+    border: 1px solid rgba(0, 229, 255, 0.05);
     z-index: 9998;
     pointer-events: none;
-    opacity: 0.55;
+    opacity: 0.6;
+    background:
+      linear-gradient(to right, rgba(0, 229, 255, 0.12) 0px, transparent 40px) top left / 100% 1px no-repeat,
+      linear-gradient(to right, transparent calc(100% - 40px), rgba(0, 229, 255, 0.12)) bottom left / 100% 1px no-repeat,
+      linear-gradient(to bottom, rgba(0, 229, 255, 0.12) 0px, transparent 40px) top left / 1px 100% no-repeat,
+      linear-gradient(to bottom, transparent calc(100% - 40px), rgba(0, 229, 255, 0.12)) top right / 1px 100% no-repeat,
+      linear-gradient(to right, rgba(201, 145, 26, 0.08) 0px, transparent 30px) top left / 100% 1px no-repeat,
+      linear-gradient(to right, transparent calc(100% - 30px), rgba(201, 145, 26, 0.08)) bottom left / 100% 1px no-repeat,
+      linear-gradient(to bottom, rgba(201, 145, 26, 0.08) 0px, transparent 30px) top left / 1px 100% no-repeat,
+      linear-gradient(to bottom, transparent calc(100% - 30px), rgba(201, 145, 26, 0.08)) top right / 1px 100% no-repeat;
   }
 }
 
@@ -168,11 +170,6 @@ img {
   display: none;
 }
 
-html {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
 /* —— SECTION LAYOUT —— */
 .section {
   min-height: 60vh;
@@ -189,15 +186,15 @@ html {
   content: '';
   position: absolute;
   top: 0;
-  left: 10%;
-  right: 10%;
+  left: 8%;
+  right: 8%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), var(--spice-blue), var(--gold), transparent);
-  opacity: 0.20;
-  box-shadow: 0 0 12px var(--spice-blue-glow);
+  background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--spice-blue) 50%, var(--gold) 80%, transparent);
+  opacity: 0.25;
+  box-shadow: 0 0 16px var(--spice-blue-glow), 0 0 32px var(--gold-glow);
 }
 
-/* —— SYNTHWAVE: Hero text static horizontal bands —— */
+/* —— HERO SCANLINES: Detroit holographic banding —— */
 .hero-title-scanlines,
 .hero-tagline-scanlines {
   position: relative;
@@ -212,97 +209,105 @@ html {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 229, 255, 0.2) 2px,
-    rgba(0, 229, 255, 0.2) 4px
+    rgba(0, 229, 255, 0.15) 2px,
+    rgba(0, 229, 255, 0.15) 4px
   );
   background-size: 100% 4px;
   pointer-events: none;
   z-index: 4;
 }
 
-/* —— DUNE: Shimmering spice-drift animation —— */
+/* —— KEYFRAMES —— */
+
 @keyframes shimmer {
-
-  0%,
-  100% {
-    background-position: 0% center;
-  }
-
-  50% {
-    background-position: 100% center;
-  }
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
 }
 
 @keyframes led-pulse {
-
-  0%,
-  100% {
-    opacity: 0.3;
+  0%, 100% {
+    opacity: 0.25;
     box-shadow: 0 0 6px var(--spice-blue);
   }
-
   50% {
     opacity: 1;
-    box-shadow: 0 0 18px var(--spice-blue), 0 0 36px var(--spice-blue-glow);
+    box-shadow: 0 0 14px var(--spice-blue), 0 0 28px var(--spice-blue-glow);
   }
+}
+
+@keyframes led-ring-pulse {
+  0% {
+    box-shadow: 0 0 6px var(--spice-blue), 0 0 0 0 rgba(0, 229, 255, 0.3);
+  }
+  70% {
+    box-shadow: 0 0 10px var(--spice-blue), 0 0 0 10px rgba(0, 229, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 6px var(--spice-blue), 0 0 0 0 rgba(0, 229, 255, 0);
+  }
+}
+
+@keyframes spice-glow {
+  0%, 100% {
+    text-shadow: 0 0 20px var(--gold-glow);
+    filter: brightness(1);
+  }
+  50% {
+    text-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(201, 145, 26, 0.2);
+    filter: brightness(1.08);
+  }
+}
+
+@keyframes hud-scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
 }
 
 @keyframes sand-drift {
-  0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 0.15;
-  }
-
-  50% {
-    transform: translateY(-4px) rotate(0.5deg);
-    opacity: 0.3;
-  }
-
-  100% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 0.15;
-  }
+  0% { transform: translateY(0) rotate(0deg); opacity: 0.12; }
+  50% { transform: translateY(-3px) rotate(0.3deg); opacity: 0.25; }
+  100% { transform: translateY(0) rotate(0deg); opacity: 0.12; }
 }
 
 @keyframes instability {
-
-  0%,
-  100% {
-    clip-path: inset(0 0 0 0);
-  }
-
-  5% {
-    clip-path: inset(30% 0 0 0);
-  }
-
-  10% {
-    clip-path: inset(0 0 20% 0);
-  }
-
-  15% {
-    clip-path: inset(0 0 0 0);
-  }
+  0%, 100% { clip-path: inset(0 0 0 0); }
+  5% { clip-path: inset(30% 0 0 0); }
+  10% { clip-path: inset(0 0 20% 0); }
+  15% { clip-path: inset(0 0 0 0); }
 }
 
 @keyframes hud-flicker {
+  0%, 99.5%, 100% { opacity: 0.45; }
+  99.6% { opacity: 0.9; }
+}
 
-  0%,
-  99.5%,
-  100% {
-    opacity: 0.5;
+@keyframes border-glow-sweep {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes coming-soon-pulse {
+  0%, 100% {
+    border-color: var(--spice-blue);
+    box-shadow: 0 0 0 1px rgba(0,229,255,0.1), 0 0 22px rgba(0, 229, 255, 0.12), inset 0 0 22px rgba(0, 229, 255, 0.02);
   }
-
-  99.6% {
-    opacity: 0.95;
+  50% {
+    border-color: rgba(0, 229, 255, 0.5);
+    box-shadow: 0 0 0 1px rgba(0,229,255,0.2), 0 0 32px rgba(0, 229, 255, 0.18), inset 0 0 28px rgba(0, 229, 255, 0.04);
   }
 }
 
-/* —— SECTION TITLES: Dune Gold + Detroit Cyan gradient —— */
+/* —— SECTION TITLES —— */
 .section-title {
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 4.5vw, 3.2rem);
   font-weight: 700;
-  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 30%, var(--spice-blue) 70%, var(--gold) 100%);
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 25%, var(--spice-blue) 65%, var(--gold) 100%);
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -312,18 +317,18 @@ html {
   margin-bottom: 0.8rem;
   text-align: center;
   position: relative;
-  animation: shimmer 5s ease-in-out infinite;
+  animation: shimmer 6s ease-in-out infinite;
 }
 
 .section-title::after {
   content: '';
   display: block;
-  width: 150px;
+  width: 120px;
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--gold), var(--spice-blue), var(--gold), transparent);
   margin: 0.8rem auto 0;
   border-radius: 2px;
-  box-shadow: 0 0 20px var(--spice-blue-glow), 0 0 40px var(--gold-glow);
+  box-shadow: 0 0 16px var(--spice-blue-glow), 0 0 32px var(--gold-glow);
 }
 
 .section-subtitle {
@@ -337,27 +342,48 @@ html {
   line-height: 1.7;
 }
 
-/* —— DETROIT: DBH-style glass UI panel (square corners, sharp borders) —— */
+/* —— GLASS CARD: Detroit holographic panel —— */
 .glass-card {
-  background: rgba(13, 10, 8, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(229, 169, 60, 0.12);
+  background: rgba(8, 6, 4, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(201, 145, 26, 0.1);
   border-radius: 2px;
-  transition: border-color 0.3s var(--ease-cyber), transform 0.3s var(--ease-cyber), box-shadow 0.3s var(--ease-cyber);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.35s var(--ease-cyber), transform 0.35s var(--ease-cyber), box-shadow 0.35s var(--ease-cyber);
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-cyber);
 }
 
 .glass-card:hover {
-  border-color: var(--spice-blue);
-  box-shadow: 0 0 30px rgba(0, 229, 255, 0.12), 0 0 50px rgba(229, 169, 60, 0.04), inset 0 0 30px rgba(0, 229, 255, 0.02);
+  border-color: rgba(0, 229, 255, 0.3);
+  box-shadow:
+    0 0 24px rgba(0, 229, 255, 0.08),
+    0 0 48px rgba(201, 145, 26, 0.03),
+    inset 0 1px 0 rgba(0, 229, 255, 0.06);
   transform: translateY(-1px);
+}
+
+.glass-card:hover::before {
+  opacity: 1;
 }
 
 .glass-card:active {
   transform: scale(0.97);
 }
 
-/* —— DETROIT: Software instability jitter —— */
+/* —— INSTABILITY —— */
 .instability-text {
   animation: instability 8s steps(1) infinite;
 }
@@ -374,19 +400,34 @@ html {
   color: var(--gold);
   background: transparent;
   cursor: pointer;
-  transition: background 0.25s var(--ease-cyber), color 0.25s var(--ease-cyber), transform 0.25s var(--ease-cyber), box-shadow 0.25s var(--ease-cyber), border-color 0.25s var(--ease-cyber);
+  transition: all 0.3s var(--ease-cyber);
   text-decoration: none;
   display: inline-block;
   border-radius: 2px;
-  box-shadow: 0 0 18px rgba(229, 169, 60, 0.08), inset 0 0 18px rgba(229, 169, 60, 0.02);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 14px rgba(201, 145, 26, 0.06), inset 0 0 14px rgba(201, 145, 26, 0.02);
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(201, 145, 26, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s var(--ease-spice);
 }
 
 .btn-primary:hover {
   background: var(--gold);
   color: var(--bg-deep);
   border-color: var(--gold-light);
-  box-shadow: 0 0 40px rgba(229, 169, 60, 0.45), 0 0 60px var(--spice-ember);
+  box-shadow: 0 0 36px rgba(201, 145, 26, 0.5), 0 0 56px var(--spice-ember);
   transform: translateY(-1px);
+}
+
+.btn-primary:hover::after {
+  transform: translateX(100%);
 }
 
 .btn-primary:active {
@@ -404,19 +445,34 @@ html {
   color: var(--spice-blue);
   background: transparent;
   cursor: pointer;
-  transition: background 0.25s var(--ease-cyber), color 0.25s var(--ease-cyber), transform 0.25s var(--ease-cyber), box-shadow 0.25s var(--ease-cyber), border-color 0.25s var(--ease-cyber);
+  transition: all 0.3s var(--ease-cyber);
   text-decoration: none;
   display: inline-block;
   border-radius: 2px;
-  box-shadow: 0 0 18px rgba(0, 229, 255, 0.08), inset 0 0 18px rgba(0, 229, 255, 0.02);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.06), inset 0 0 14px rgba(0, 229, 255, 0.02);
+}
+
+.btn-secondary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s var(--ease-spice);
 }
 
 .btn-secondary:hover {
   background: var(--spice-blue);
   color: var(--bg-deep);
   border-color: #fff;
-  box-shadow: 0 0 40px rgba(0, 229, 255, 0.4), 0 0 60px rgba(0, 229, 255, 0.15);
+  box-shadow: 0 0 36px rgba(0, 229, 255, 0.45), 0 0 56px rgba(0, 229, 255, 0.12);
   transform: translateY(-1px);
+}
+
+.btn-secondary:hover::after {
+  transform: translateX(100%);
 }
 
 .btn-secondary:active {
@@ -425,11 +481,11 @@ html {
 
 /* —— UTILITY —— */
 .text-glow-gold {
-  text-shadow: 0 0 20px var(--gold-glow);
+  text-shadow: 0 0 20px var(--gold-glow), 0 0 40px rgba(201, 145, 26, 0.15);
 }
 
 .text-glow-spice {
-  text-shadow: 0 0 20px var(--spice-blue-glow);
+  text-shadow: 0 0 20px var(--spice-blue-glow), 0 0 40px rgba(0, 229, 255, 0.1);
 }
 
 .text-gradient {
@@ -446,19 +502,20 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(0, 229, 255, 0.16);
+  border: 1px solid rgba(0, 229, 255, 0.14);
   border-radius: 50%;
   color: var(--spice-blue);
-  background: rgba(0, 229, 255, 0.03);
-  box-shadow: 0 0 10px rgba(0, 229, 255, 0.03);
-  transition: background 0.3s var(--ease-cyber), color 0.3s var(--ease-cyber), border-color 0.3s var(--ease-cyber), box-shadow 0.3s var(--ease-cyber), transform 0.3s var(--ease-cyber);
+  background: rgba(0, 229, 255, 0.02);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.02);
+  transition: all 0.3s var(--ease-cyber);
+  position: relative;
 }
 
 .social-icon:hover {
   background: var(--spice-blue);
   color: #050403;
   border-color: var(--spice-blue);
-  box-shadow: 0 0 28px var(--spice-blue);
+  box-shadow: 0 0 24px var(--spice-blue), 0 0 48px rgba(0, 229, 255, 0.15);
   transform: translateY(-2px);
 }
 
@@ -466,10 +523,30 @@ html {
   transform: scale(0.93);
 }
 
+/* —— LED DOT UTILITY —— */
+.led-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--spice-blue);
+  box-shadow: 0 0 8px var(--spice-blue), 0 0 16px var(--spice-blue-glow);
+  animation: led-pulse 2.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.led-dot--ring {
+  animation: led-ring-pulse 2s ease-out infinite;
+}
+
+.led-dot--gold {
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold), 0 0 16px var(--gold-glow);
+}
+
 /* —— RESPONSIVE —— */
 @media (max-width: 768px) {
   .section {
-    padding: 80px 5%;
+    padding: 60px 5%;
   }
 
   .nav-desktop-links {
@@ -528,7 +605,7 @@ html {
     gap: 1.2rem 0.8rem !important;
   }
 
-  .about-stats-grid>div:last-child {
+  .about-stats-grid > div:last-child {
     grid-column: 1 / span 2 !important;
     justify-self: center;
     width: 100%;

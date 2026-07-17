@@ -47,7 +47,11 @@ export default function TeamCategoriesSection() {
             transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
             style={{
               padding: '1.5rem',
+              borderLeft: '2px solid transparent',
+              transition: 'border-color 0.3s var(--ease-cyber)',
             }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderLeftColor = 'var(--gold)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderLeftColor = 'transparent'; }}
           >
             <div style={{
               fontFamily: 'var(--font-mono)',

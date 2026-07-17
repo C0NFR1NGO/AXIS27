@@ -19,7 +19,8 @@ if (typeof document !== 'undefined' && !isMobile) {
   });
 }
 
-const DUST_COUNT = isMobile ? 650 : 4200;
+const DUST_COUNT = isMobile ? 650 : 3200;
+const SPICE_COUNT = isMobile ? 80 : 400;
 const NODE_COUNT = isMobile ? 50 : 450;
 const MAX_CONNECTIONS = isMobile ? 90 : 2600;
 const CONNECTION_DIST = isMobile ? 4.0 : 7.8;
@@ -27,6 +28,7 @@ const CONNECTION_DIST = isMobile ? 4.0 : 7.8;
 function ConstellationField() {
   const pointsRef = useRef();
   const dustRef = useRef();
+  const spiceRef = useRef();
   const linesRef = useRef();
   const { viewport } = useThree();
   const timeRef = useRef(0);
@@ -39,9 +41,9 @@ function ConstellationField() {
 
   const colorDistribution = useMemo(() => {
     const r = Math.random();
-    if (r < 0.35) return { goldRatio: 0.76, cyanRatio: 0.94 };
-    if (r < 0.7) return { goldRatio: 0.38, cyanRatio: 0.88 };
-    return { goldRatio: 0.58, cyanRatio: 0.9 };
+    if (r < 0.35) return { goldRatio: 0.7, cyanRatio: 0.8 };
+    if (r < 0.7) return { goldRatio: 0.35, cyanRatio: 0.8 };
+    return { goldRatio: 0.55, cyanRatio: 0.8 };
   }, []);
 
   const sizeScales = useMemo(() => {
@@ -127,6 +129,33 @@ function ConstellationField() {
   const lineColors = useMemo(() => new Float32Array(MAX_CONNECTIONS * 2 * 3), []);
   const dustOpacities = useMemo(() => new Float32Array(DUST_COUNT), []);
 
+  const spiceData = useMemo(() => {
+    const arr = [];
+    for (let i = 0; i < SPICE_COUNT; i++) {
+      arr.push({
+        x: (Math.random() - 0.5) * bounds.width * 1.25,
+        y: (Math.random() - 0.5) * bounds.height * 1.25,
+        z: (Math.random() - 0.5) * 36 - 10,
+        vx: (Math.random() - 0.5) * 0.0015,
+        vy: (Math.random() - 0.5) * 0.0015 + 0.0006,
+        phase: Math.random() * Math.PI * 2,
+        flicker: 0.3 + Math.random() * 0.5,
+      });
+    }
+    return arr;
+  }, [bounds]);
+
+  const spicePositions = useMemo(() => new Float32Array(SPICE_COUNT * 3), []);
+  const spiceColors = useMemo(() => {
+    const c = new Float32Array(SPICE_COUNT * 3);
+    for (let i = 0; i < SPICE_COUNT; i++) {
+      c[i * 3] = 0.78 + Math.random() * 0.08;
+      c[i * 3 + 1] = 0.5 + Math.random() * 0.1;
+      c[i * 3 + 2] = 0.12 + Math.random() * 0.08;
+    }
+    return c;
+  }, []);
+
   useFrame((state) => {
     const time = state.clock.elapsedTime;
     timeRef.current = time;
@@ -179,6 +208,24 @@ function ConstellationField() {
     }
     if (dustRef.current) {
       dustRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+
+    const sBoundX = viewport.width * 2.1;
+    const sBoundY = viewport.height * 2.1;
+    for (let i = 0; i < SPICE_COUNT; i++) {
+      const s = spiceData[i];
+      s.x += s.vx + Math.sin(time * 0.021 + s.phase) * 0.0005;
+      s.y += s.vy + Math.cos(time * 0.015 + s.phase) * 0.0005;
+      if (Math.abs(s.x) > sBoundX) s.x = -Math.sign(s.x) * sBoundX * 0.98;
+      if (s.y > sBoundY) s.y = -sBoundY;
+      if (s.y < -sBoundY) s.y = sBoundY;
+      const i3 = i * 3;
+      spicePositions[i3] = s.x;
+      spicePositions[i3 + 1] = s.y;
+      spicePositions[i3 + 2] = s.z;
+    }
+    if (spiceRef.current) {
+      spiceRef.current.geometry.attributes.position.needsUpdate = true;
     }
 
     let lineCount = 0;
@@ -236,6 +283,22 @@ function ConstellationField() {
 
   return (
     <>
+      <points ref={spiceRef}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[spicePositions, 3]} />
+          <bufferAttribute attach="attributes-color" args={[spiceColors, 3]} />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.03}
+          vertexColors
+          sizeAttenuation
+          transparent
+          opacity={0.5}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </points>
+
       <points ref={dustRef}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[dustPositions, 3]} />
@@ -287,9 +350,20 @@ function ConstellationField() {
 
 export default function CosmicBackground() {
   return (
-    <Canvas camera={{ position: [0, 0, 18], fov: 70 }}>
-      <color attach="background" args={['#070503']} />
-      <ConstellationField />
-    </Canvas>
+    <div style={{ position: 'absolute', inset: 0 }}>
+      <Canvas camera={{ position: [0, 0, 18], fov: 70 }}>
+        <color attach="background" args={['#070503']} />
+        <ConstellationField />
+      </Canvas>
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(ellipse, transparent 40%, rgba(5,3,2,0.4) 100%)',
+          pointerEvents: 'none',
+          zIndex: 1,
+        }}
+      />
+    </div>
   );
 }

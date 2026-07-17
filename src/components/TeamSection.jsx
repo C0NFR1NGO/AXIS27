@@ -45,6 +45,7 @@ export default function TeamSection() {
           textTransform: 'uppercase',
           marginBottom: '1.5rem',
         }}>
+          <span className="led-dot" style={{ marginRight: '0.5rem', display: 'inline-block', verticalAlign: 'middle' }} />
           // TEAM_COMPOSITION_SCAN //
         </div>
         <p style={{

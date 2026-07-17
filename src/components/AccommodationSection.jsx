@@ -48,17 +48,7 @@ export default function AccommodationSection() {
           alignItems: 'center',
           gap: '0.5rem',
         }}>
-          <motion.span
-            animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            style={{
-              width: '5px',
-              height: '5px',
-              borderRadius: '50%',
-              background: 'var(--spice-blue)',
-              boxShadow: '0 0 6px var(--spice-blue)',
-            }}
-          />
+          <span className="led-dot" />
           // HABITATION_INTERFACE // ACTIVE
         </div>
 
@@ -88,7 +78,7 @@ export default function AccommodationSection() {
                 gap: '0.6rem',
               }}
             >
-              <span style={{ color: 'var(--gold)', fontSize: '1.2rem' }}>◈</span>
+              <span style={{ color: 'var(--gold)', fontSize: '1.2rem', textShadow: '0 0 8px rgba(201,145,26,0.3)' }}>◈</span>
               {item}
             </motion.div>
           ))}

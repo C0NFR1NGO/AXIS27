@@ -66,7 +66,13 @@ export default function HeroSection({ ready = true }) {
           zIndex: 2,
         }}
       >
-        <div style={{ color: 'var(--spice-blue)', fontWeight: 700, marginBottom: '0.2rem' }}>// CYBERLIFE DIRECTIVE</div>
+        <motion.div
+          animate={{ textShadow: ['0 0 4px rgba(0,229,255,0.2)', '0 0 8px rgba(0,229,255,0.4)', '0 0 4px rgba(0,229,255,0.2)'] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ color: 'var(--spice-blue)', fontWeight: 700, marginBottom: '0.2rem' }}
+        >
+          // CYBERLIFE DIRECTIVE
+        </motion.div>
         <div>MODEL: AXIS-V270-X1</div>
         <div>
           SOFTWARE INSTABILITY:{' '}
@@ -113,7 +119,13 @@ export default function HeroSection({ ready = true }) {
           zIndex: 2,
         }}
       >
-        <div style={{ color: 'var(--gold)', fontWeight: 700, marginBottom: '0.2rem' }}>// INFINITE LIGHT</div>
+        <motion.div
+          animate={{ textShadow: ['0 0 4px rgba(0,229,255,0.2)', '0 0 8px rgba(0,229,255,0.4)', '0 0 4px rgba(0,229,255,0.2)'] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+          style={{ color: 'var(--gold)', fontWeight: 700, marginBottom: '0.2rem' }}
+        >
+          // INFINITE LIGHT
+        </motion.div>
         <div>TARGET: VNIT NAGPUR</div>
         <div>GPS: 21.1255° N / 79.0505° E</div>
         <div>KALADAN LINK: STABLE</div>
@@ -154,6 +166,19 @@ export default function HeroSection({ ready = true }) {
       </motion.div>
 
       {/* AXIS'27 — Dune title with spice shimmer */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 'min(600px, 80vw)',
+          height: 'min(400px, 60vw)',
+          background: 'radial-gradient(circle, rgba(201,145,26,0.08), transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
       <motion.h1
         initial={{ opacity: 0, y: 35 }}
         animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 35 }}
@@ -164,11 +189,11 @@ export default function HeroSection({ ready = true }) {
           fontWeight: 900,
           letterSpacing: '0.2em',
           textIndent: '0.2em',
-          background: 'linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 35%, var(--spice-blue) 65%, var(--cyber-blue) 85%, var(--gold) 100%)',
+          background: 'linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 25%, var(--spice-blue) 55%, var(--cyber-blue) 75%, var(--gold) 100%)',
           backgroundSize: '200% 200%',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          textShadow: '0 0 60px var(--gold-glow), 0 0 35px var(--spice-blue-glow)',
+          textShadow: '0 0 80px rgba(201,145,26,0.15), 0 0 120px rgba(0,229,255,0.08), 0 0 60px var(--gold-glow), 0 0 35px var(--spice-blue-glow)',
           marginBottom: '0.4rem',
           textTransform: 'uppercase',
           position: 'relative',
@@ -182,8 +207,12 @@ export default function HeroSection({ ready = true }) {
       {/* DUNE: Spice-drift tagline */}
       <motion.p
         initial={{ opacity: 0, y: 15 }}
-        animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
-        transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        animate={ready ? { opacity: 1, y: 0, letterSpacing: ['0.25em', '0.35em', '0.25em'] } : { opacity: 0, y: 15, letterSpacing: '0.25em' }}
+        transition={{
+          opacity: { duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] },
+          y: { duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] },
+          letterSpacing: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
+        }}
         style={{
           fontFamily: "var(--font-mono)",
           fontSize: 'clamp(1.25rem, 3.125vw, 1.81rem)',
