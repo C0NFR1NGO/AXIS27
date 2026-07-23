@@ -19,18 +19,15 @@ if (typeof document !== 'undefined' && !isMobile) {
   });
 }
 
-function createSeededRandom(seed) {
-  let s = seed;
-  return () => {
-    s |= 0;
-    s = (s + 0x6D2B79F5) | 0;
-    let t = Math.imul(s ^ (s >>> 15), 1 | s);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
+let _randSeed = 2027;
+function rand() {
+  _randSeed |= 0;
+  _randSeed = (_randSeed + 0x6D2B79F5) | 0;
+  let t = Math.imul(_randSeed ^ (_randSeed >>> 15), 1 | _randSeed);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 }
-
-const rand = createSeededRandom(2027);
+function resetRand() { _randSeed = 2027; }
 
 const DUST_COUNT = isMobile ? 650 : 3200;
 const SPICE_COUNT = isMobile ? 80 : 400;
@@ -39,6 +36,7 @@ const MAX_CONNECTIONS = isMobile ? 90 : 2600;
 const CONNECTION_DIST = isMobile ? 4.0 : 7.8;
 
 function ConstellationField() {
+  resetRand();
   const pointsRef = useRef();
   const dustRef = useRef();
   const spiceRef = useRef();
