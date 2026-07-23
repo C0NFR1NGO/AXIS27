@@ -19,6 +19,19 @@ if (typeof document !== 'undefined' && !isMobile) {
   });
 }
 
+function createSeededRandom(seed) {
+  let s = seed;
+  return () => {
+    s |= 0;
+    s = (s + 0x6D2B79F5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const rand = createSeededRandom(2027);
+
 const DUST_COUNT = isMobile ? 650 : 3200;
 const SPICE_COUNT = isMobile ? 80 : 400;
 const NODE_COUNT = isMobile ? 50 : 450;
@@ -40,14 +53,14 @@ function ConstellationField() {
   }), [viewport.width, viewport.height]);
 
   const colorDistribution = useMemo(() => {
-    const r = Math.random();
+    const r = rand();
     if (r < 0.35) return { goldRatio: 0.7, cyanRatio: 0.8 };
     if (r < 0.7) return { goldRatio: 0.35, cyanRatio: 0.8 };
     return { goldRatio: 0.55, cyanRatio: 0.8 };
   }, []);
 
   const sizeScales = useMemo(() => {
-    const scale = 0.85 + Math.random() * 0.4;
+    const scale = 0.85 + rand() * 0.4;
     return {
       dustSize: (isMobile ? 0.08 : 0.13) * scale,
       nodeSize: (isMobile ? 0.15 : 0.25) * scale,
@@ -58,17 +71,17 @@ function ConstellationField() {
   const nodes = useMemo(() => {
     const arr = [];
     for (let i = 0; i < NODE_COUNT; i++) {
-      const hx = (Math.random() - 0.5) * bounds.width;
-      const hy = (Math.random() - 0.5) * bounds.height;
+      const hx = (rand() - 0.5) * bounds.width;
+      const hy = (rand() - 0.5) * bounds.height;
       arr.push({
         x: hx, y: hy,
-        z: (Math.random() - 0.5) * (isMobile ? 12 : 22) - (isMobile ? 3 : 6),
-        vx: (Math.random() - 0.5) * (isMobile ? 0.012 : 0.024),
-        vy: (Math.random() - 0.5) * (isMobile ? 0.012 : 0.024),
-        vz: (Math.random() - 0.5) * 0.004,
-        phase: Math.random() * Math.PI * 2,
-        speed: 0.04 + Math.random() * 0.08,
-        range: isMobile ? (2.8 + Math.random() * 2.2) : (3.8 + Math.random() * 3.8),
+        z: (rand() - 0.5) * (isMobile ? 12 : 22) - (isMobile ? 3 : 6),
+        vx: (rand() - 0.5) * (isMobile ? 0.012 : 0.024),
+        vy: (rand() - 0.5) * (isMobile ? 0.012 : 0.024),
+        vz: (rand() - 0.5) * 0.004,
+        phase: rand() * Math.PI * 2,
+        speed: 0.04 + rand() * 0.08,
+        range: isMobile ? (2.8 + rand() * 2.2) : (3.8 + rand() * 3.8),
       });
     }
     return arr;
@@ -78,7 +91,7 @@ function ConstellationField() {
   const nodeColors = useMemo(() => {
     const c = new Float32Array(NODE_COUNT * 3);
     for (let i = 0; i < NODE_COUNT; i++) {
-      const r = Math.random();
+      const r = rand();
       if (r < colorDistribution.goldRatio) {
         c[i * 3] = 0.82; c[i * 3 + 1] = 0.61; c[i * 3 + 2] = 0.22;
       } else if (r < colorDistribution.cyanRatio) {
@@ -93,17 +106,17 @@ function ConstellationField() {
   const dustData = useMemo(() => {
     const arr = [];
     for (let i = 0; i < DUST_COUNT; i++) {
-      const hx = (Math.random() - 0.5) * bounds.width * 1.25;
-      const hy = (Math.random() - 0.5) * bounds.height * 1.25;
+      const hx = (rand() - 0.5) * bounds.width * 1.25;
+      const hy = (rand() - 0.5) * bounds.height * 1.25;
       arr.push({
         x: hx, y: hy,
-        z: (Math.random() - 0.5) * 36 - 10,
-        vx: (Math.random() - 0.5) * 0.005,
-        vy: (Math.random() - 0.5) * 0.005,
-        vz: (Math.random() - 0.5) * 0.002,
-        phase: Math.random() * Math.PI * 2,
-        speed: 0.07 + Math.random() * 0.14,
-        flicker: 0.3 + Math.random() * 0.7,
+        z: (rand() - 0.5) * 36 - 10,
+        vx: (rand() - 0.5) * 0.005,
+        vy: (rand() - 0.5) * 0.005,
+        vz: (rand() - 0.5) * 0.002,
+        phase: rand() * Math.PI * 2,
+        speed: 0.07 + rand() * 0.14,
+        flicker: 0.3 + rand() * 0.7,
       });
     }
     return arr;
@@ -113,7 +126,7 @@ function ConstellationField() {
   const dustColors = useMemo(() => {
     const c = new Float32Array(DUST_COUNT * 3);
     for (let i = 0; i < DUST_COUNT; i++) {
-      const r = Math.random();
+      const r = rand();
       if (r < colorDistribution.goldRatio) {
         c[i * 3] = 0.78; c[i * 3 + 1] = 0.53; c[i * 3 + 2] = 0.18;
       } else if (r < colorDistribution.cyanRatio) {
@@ -133,13 +146,13 @@ function ConstellationField() {
     const arr = [];
     for (let i = 0; i < SPICE_COUNT; i++) {
       arr.push({
-        x: (Math.random() - 0.5) * bounds.width * 1.25,
-        y: (Math.random() - 0.5) * bounds.height * 1.25,
-        z: (Math.random() - 0.5) * 36 - 10,
-        vx: (Math.random() - 0.5) * 0.0015,
-        vy: (Math.random() - 0.5) * 0.0015 + 0.0006,
-        phase: Math.random() * Math.PI * 2,
-        flicker: 0.3 + Math.random() * 0.5,
+        x: (rand() - 0.5) * bounds.width * 1.25,
+        y: (rand() - 0.5) * bounds.height * 1.25,
+        z: (rand() - 0.5) * 36 - 10,
+        vx: (rand() - 0.5) * 0.0015,
+        vy: (rand() - 0.5) * 0.0015 + 0.0006,
+        phase: rand() * Math.PI * 2,
+        flicker: 0.3 + rand() * 0.5,
       });
     }
     return arr;
@@ -149,9 +162,9 @@ function ConstellationField() {
   const spiceColors = useMemo(() => {
     const c = new Float32Array(SPICE_COUNT * 3);
     for (let i = 0; i < SPICE_COUNT; i++) {
-      c[i * 3] = 0.78 + Math.random() * 0.08;
-      c[i * 3 + 1] = 0.5 + Math.random() * 0.1;
-      c[i * 3 + 2] = 0.12 + Math.random() * 0.08;
+      c[i * 3] = 0.78 + rand() * 0.08;
+      c[i * 3 + 1] = 0.5 + rand() * 0.1;
+      c[i * 3 + 2] = 0.12 + rand() * 0.08;
     }
     return c;
   }, []);
