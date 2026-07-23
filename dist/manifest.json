@@ -1,0 +1,21 @@
+{
+  "name": "AXIS'27",
+  "short_name": "AXIS'27",
+  "description": "Central India's largest technical festival — VNIT Nagpur",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050302",
+  "theme_color": "#050302",
+  "icons": [
+    {
+      "src": "/images/logo-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/logo-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -12,6 +12,8 @@ import SponsorsPage from './pages/SponsorsPage';
 import AccommodationPage from './pages/AccommodationPage';
 import TeamPage from './pages/TeamPage';
 import ContactPage from './pages/ContactPage';
+import NotFoundPage from './pages/NotFoundPage';
+import RouteLoading from './components/RouteLoading';
 import useCursorDistortion from './hooks/useCursorDistortion';
 import './styles/global.css';
 
@@ -426,6 +428,7 @@ function AppContent() {
         style={{ pointerEvents: showSplash ? 'none' : 'auto' }}
       >
         <Navigation />
+        <RouteLoading />
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
@@ -444,6 +447,7 @@ function AppContent() {
               <Route path="/accommodation" element={<AccommodationPage />} />
               <Route path="/team" element={<TeamPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </motion.div>
         </AnimatePresence>

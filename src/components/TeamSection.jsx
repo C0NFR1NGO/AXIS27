@@ -40,10 +40,6 @@ function getInitials(name) {
 }
 
 function TeamMemberTile({ name, role, onClick }) {
-  const parts = name.split(' ');
-  const firstName = parts[0];
-  const lastName = parts.slice(1).join(' ');
-
   return (
     <motion.div
       className="glass-card"
@@ -416,7 +412,7 @@ export default function TeamSection() {
 
           {/* Roles */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            {section.roles.map((roleGroup, rIdx) => (
+            {section.roles.map((roleGroup) => (
               <div key={roleGroup.role}>
                 {/* Role label */}
                 <div style={{
