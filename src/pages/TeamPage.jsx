@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import TeamSection from '../components/TeamSection';
-import CoreCommitteeSection from '../components/CoreCommitteeSection';
-import TeamCategoriesSection from '../components/TeamCategoriesSection';
 
 export default function TeamPage() {
   return (
@@ -36,8 +34,6 @@ export default function TeamPage() {
         </Link>
       </motion.div>
       <TeamSection />
-      <CoreCommitteeSection />
-      <TeamCategoriesSection />
     </div>
   );
 }
