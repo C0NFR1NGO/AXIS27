@@ -75,7 +75,6 @@ export const navLinks = [
   { label: 'Sponsors', href: '/sponsors' },
   { label: 'Accommodation', href: '/accommodation' },
   { label: 'Team', href: '/team' },
-  { label: 'Gallery', href: '/gallery' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
