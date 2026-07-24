@@ -12,6 +12,7 @@ import SponsorsPage from './pages/SponsorsPage';
 import AccommodationPage from './pages/AccommodationPage';
 import TeamPage from './pages/TeamPage';
 import ContactPage from './pages/ContactPage';
+import GalleryPage from './pages/GalleryPage';
 import NotFoundPage from './pages/NotFoundPage';
 import RouteLoading from './components/RouteLoading';
 import useCursorDistortion from './hooks/useCursorDistortion';
@@ -447,6 +448,7 @@ function AppContent() {
               <Route path="/accommodation" element={<AccommodationPage />} />
               <Route path="/team" element={<TeamPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/gallery" element={<GalleryPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </motion.div>
