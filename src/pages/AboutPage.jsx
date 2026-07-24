@@ -48,7 +48,7 @@ export default function AboutPage() {
         </Link>
       </motion.div>
 
-      <div style={{ padding: '2rem 5% 4rem' }}>
+      <div style={{ flex: 1, padding: '2rem 5% 4rem' }}>
         {/* Horizontal tab bar */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
