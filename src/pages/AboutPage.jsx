@@ -48,128 +48,77 @@ export default function AboutPage() {
         </Link>
       </motion.div>
 
-      <div style={{ display: 'flex', flex: 1, padding: '2rem 5% 4rem', gap: '1.5rem' }}>
-        {/* Sidebar — DBH terminal window list */}
+      <div style={{ padding: '2rem 5% 4rem' }}>
+        {/* Horizontal tab bar */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            width: '200px',
-            flexShrink: 0,
-            border: '1px solid rgba(0,229,255,0.1)',
-            background: 'rgba(8,6,4,0.85)',
-            backdropFilter: 'blur(12px)',
-            display: 'flex',
-            flexDirection: 'column',
-            position: 'sticky',
-            top: 'calc(var(--nav-height) + 2rem)',
-            alignSelf: 'flex-start',
-          }}
-        >
-          {/* Sidebar header */}
-          <div style={{
-            padding: '0.8rem 1rem',
-            borderBottom: '1px solid rgba(0,229,255,0.08)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.65rem',
-            letterSpacing: '0.15em',
-            color: 'var(--text-muted)',
-            textTransform: 'uppercase',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.5rem',
-          }}>
-            <span style={{ color: 'var(--spice-blue)' }}>●</span>
-            WINDOWS
-            <span style={{ flex: 1 }} />
-            <span style={{ color: 'var(--spice-blue)', opacity: 0.5 }}>02</span>
-          </div>
-
-          {/* Tab list */}
+            justifyContent: 'center',
+            gap: '0',
+            marginBottom: '2rem',
+            fontFamily: 'var(--font-body)',
+            fontSize: '0.95rem',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+          }}
+        >
           {windows.map((win, i) => {
             const isActive = activeWindow === win.id;
             return (
-              <button
-                key={win.id}
-                onClick={() => setActiveWindow(win.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.7rem',
-                  padding: '0.9rem 1rem',
-                  border: 'none',
-                  borderBottom: '1px solid rgba(255,255,255,0.03)',
-                  background: isActive ? 'rgba(0,229,255,0.06)' : 'transparent',
-                  cursor: 'pointer',
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '0.88rem',
-                  fontWeight: isActive ? 700 : 500,
-                  letterSpacing: '0.06em',
-                  color: isActive ? 'var(--spice-blue)' : 'var(--text-secondary)',
-                  textTransform: 'uppercase',
-                  textAlign: 'left',
-                  transition: 'all 0.25s var(--ease-cyber)',
-                  borderLeft: isActive ? '2px solid var(--spice-blue)' : '2px solid transparent',
-                  boxShadow: isActive ? 'inset 0 0 20px rgba(0,229,255,0.04)' : 'none',
-                  position: 'relative',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
-                    e.currentTarget.style.color = 'var(--gold)';
-                    e.currentTarget.style.borderLeftColor = 'rgba(201,145,26,0.3)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = 'var(--text-secondary)';
-                    e.currentTarget.style.borderLeftColor = 'transparent';
-                  }
-                }}
-              >
-                <span style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.7rem',
-                  opacity: 0.4,
-                  color: 'var(--spice-blue)',
-                  minWidth: '24px',
-                }}>
-                  [{String(i + 1).padStart(2, '0')}]
-                </span>
-                <span style={{ flex: 1 }}>{win.label}</span>
-                <span style={{
-                  fontSize: '0.5rem',
-                  color: isActive ? 'var(--spice-blue)' : 'var(--text-muted)',
-                  textShadow: isActive ? '0 0 8px var(--spice-blue-glow)' : 'none',
-                }}>
-                  {win.indicator}
-                </span>
-              </button>
+              <span key={win.id} style={{ display: 'flex', alignItems: 'center' }}>
+                {i > 0 && (
+                  <span style={{
+                    color: 'var(--text-muted)',
+                    opacity: 0.3,
+                    margin: '0 1.2rem',
+                    fontSize: '0.9rem',
+                  }}>
+                    |
+                  </span>
+                )}
+                <button
+                  onClick={() => setActiveWindow(win.id)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: '0.95rem',
+                    fontWeight: isActive ? 700 : 500,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    color: isActive ? 'var(--spice-blue)' : 'var(--text-muted)',
+                    padding: '0.5rem 0.2rem',
+                    transition: 'color 0.25s var(--ease-cyber)',
+                    textShadow: isActive ? '0 0 12px rgba(0,229,255,0.2)' : 'none',
+                    position: 'relative',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)';
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) e.currentTarget.style.color = 'var(--text-muted)';
+                  }}
+                >
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.7rem',
+                    opacity: 0.4,
+                    marginRight: '0.4rem',
+                  }}>
+                    [{String(i + 1).padStart(2, '0')}]
+                  </span>
+                  {win.label}
+                </button>
+              </span>
             );
           })}
-
-          {/* Sidebar footer */}
-          <div style={{
-            marginTop: 'auto',
-            padding: '0.8rem 1rem',
-            borderTop: '1px solid rgba(0,229,255,0.08)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.6rem',
-            color: 'var(--text-muted)',
-            letterSpacing: '0.1em',
-            opacity: 0.5,
-          }}>
-            CYBERLIFE v2.7 // ACTIVE
-          </div>
         </motion.div>
-
-        {/* Window content area */}
-        <motion.div
-          layout
-          style={{ flex: 1, minWidth: 0 }}
-        >
+        <motion.div layout style={{ minWidth: 0 }}>
           <AnimatePresence mode="wait">
             {activeWindow === 'about' && (
               <motion.div
