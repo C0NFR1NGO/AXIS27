@@ -50,8 +50,8 @@
 
   /* —— Typography —— */
   --text-primary: #f0ece3;
-  --text-secondary: #c8c0b2;
-  --text-muted: #7a7268;
+  --text-secondary: #e0dbd0;
+  --text-muted: #a8a098;
   --font-display: 'Cinzel', serif;
   --font-heading: 'Orbitron', sans-serif;
   --font-body: 'Rajdhani', sans-serif;
@@ -337,7 +337,7 @@ img {
   color: var(--text-secondary);
   text-align: center;
   max-width: 680px;
-  margin-bottom: 2.5rem;
+  margin: 0 auto 2.5rem;
   letter-spacing: 0.06em;
   line-height: 1.7;
 }

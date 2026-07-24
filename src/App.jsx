@@ -15,6 +15,12 @@ import ContactPage from './pages/ContactPage';
 import NotFoundPage from './pages/NotFoundPage';
 import RouteLoading from './components/RouteLoading';
 import useCursorDistortion from './hooks/useCursorDistortion';
+import { AuthProvider } from './contexts/AuthContext';
+import AdminLoginPage from './pages/AdminLoginPage';
+import AdminLayout from './admin/AdminLayout';
+import AdminDashboardPage from './admin/AdminDashboardPage';
+import AdminPlaceholderPage from './admin/AdminPlaceholderPage';
+import AdminUsersPage from './admin/AdminUsersPage';
 import './styles/global.css';
 
 function SplashScreen({ onComplete }) {
@@ -447,6 +453,21 @@ function AppContent() {
               <Route path="/accommodation" element={<AccommodationPage />} />
               <Route path="/team" element={<TeamPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboardPage />} />
+                <Route path="gallery" element={<AdminPlaceholderPage section="gallery" />} />
+                <Route path="events" element={<AdminPlaceholderPage section="events" />} />
+                <Route path="workshops" element={<AdminPlaceholderPage section="workshops" />} />
+                <Route path="registrations" element={<AdminPlaceholderPage section="registrations" />} />
+                <Route path="sponsors" element={<AdminPlaceholderPage section="sponsors" />} />
+                <Route path="team" element={<AdminPlaceholderPage section="team" />} />
+                <Route path="emails" element={<AdminPlaceholderPage section="emails" />} />
+                <Route path="users" element={<AdminUsersPage />} />
+              </Route>
+              
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </motion.div>
@@ -460,7 +481,9 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </BrowserRouter>
   );
 }
