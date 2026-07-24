@@ -185,8 +185,8 @@ export default function AboutPage() {
                   <span style={{ flex: 1 }} />
                   <span style={{ opacity: 0.4 }}>ID: A01</span>
                 </div>
-                <div style={{ border: '1px solid rgba(0,229,255,0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem' }}>
-                  <section style={{ textAlign: 'center' }}>
+                <div style={{ border: '1px solid rgba(0,229,255,0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
+                  <section>
                     <h2 className="section-title" style={{ marginTop: 0 }}>About AXIS</h2>
                     <p className="section-subtitle">The story of Central India's largest technical festival</p>
 
@@ -230,8 +230,8 @@ export default function AboutPage() {
                   <span style={{ flex: 1 }} />
                   <span style={{ opacity: 0.4 }}>ID: A02</span>
                 </div>
-                <div style={{ border: '1px solid rgba(0,229,255,0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem' }}>
-                  <section style={{ textAlign: 'center' }}>
+                <div style={{ border: '1px solid rgba(0,229,255,0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
+                  <section>
                     <h2 className="section-title" style={{ marginTop: 0 }}>Our Journey</h2>
                     <p className="section-subtitle">The AXIS timeline — from Odyssey to Ignis Aeternum</p>
 
