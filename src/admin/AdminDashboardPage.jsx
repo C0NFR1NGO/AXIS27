@@ -78,10 +78,10 @@ export default function AdminDashboardPage() {
               <Link to={stat.link} style={styles.statCard}>
                 <div style={styles.statIcon}>{stat.icon}</div>
                 <div style={styles.statValue}>
-                  {stat.label === 'Pending Reviews' 
-                    ? galleryStats.pending 
-                    : stat.label === 'Gallery Photos' 
-                      ? galleryStats.approved 
+                  {stat.label === 'Pending Reviews'
+                    ? galleryStats.pending
+                    : stat.label === 'Gallery Photos'
+                      ? galleryStats.approved
                       : stat.value}
                 </div>
                 <div style={styles.statLabel}>{stat.label}</div>
@@ -132,10 +132,10 @@ export default function AdminDashboardPage() {
               <div key={index} style={styles.activityItem}>
                 <div style={{
                   ...styles.activityDot,
-                  background: activity.type === 'registration' 
-                    ? 'var(--spice-blue)' 
-                    : activity.type === 'gallery' 
-                      ? 'var(--gold)' 
+                  background: activity.type === 'registration'
+                    ? 'var(--spice-blue)'
+                    : activity.type === 'gallery'
+                      ? 'var(--gold)'
                       : '#00e5ff',
                 }}></div>
                 <div style={styles.activityContent}>
@@ -183,12 +183,14 @@ export default function AdminDashboardPage() {
 
 const styles = {
   container: {
-    maxWidth: '1200px',
+    maxWidth: '100%',
     margin: '0 auto',
+    padding: '0',
+    boxSizing: 'border-box',
   },
   title: {
     fontFamily: "'Ethnocentric', sans-serif",
-    fontSize: '2rem',
+    fontSize: 'clamp(1.5rem, 4vw, 2rem)',
     fontWeight: 800,
     letterSpacing: '0.15em',
     background: 'linear-gradient(135deg, #fff 0%, var(--gold) 50%, var(--spice-blue) 100%)',
@@ -198,20 +200,20 @@ const styles = {
   },
   subtitle: {
     fontFamily: 'var(--font-mono)',
-    fontSize: '0.75rem',
-    color: 'var(--text-muted)',
+    fontSize: 'clamp(0.7rem, 2vw, 0.75rem)',
+    color: '#ccc',
     letterSpacing: '0.1em',
     marginBottom: '2rem',
   },
   statsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-    gap: '1.5rem',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    gap: '1rem',
     marginBottom: '2rem',
   },
   statCard: {
     display: 'block',
-    padding: '1.5rem',
+    padding: '1.25rem',
     background: 'rgba(12, 10, 8, 0.6)',
     border: '1px solid rgba(229,169,60,0.1)',
     borderRadius: '2px',
@@ -219,6 +221,10 @@ const styles = {
     position: 'relative',
     overflow: 'hidden',
     transition: 'all 0.3s ease',
+    minHeight: '140px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   statIcon: {
     fontSize: '1.5rem',
@@ -226,7 +232,7 @@ const styles = {
   },
   statValue: {
     fontFamily: "'Ethnocentric', sans-serif",
-    fontSize: '2.5rem',
+    fontSize: 'clamp(1.8rem, 5vw, 2.5rem)',
     fontWeight: 800,
     color: '#fff',
     lineHeight: 1,
@@ -235,7 +241,7 @@ const styles = {
   statLabel: {
     fontFamily: 'var(--font-mono)',
     fontSize: '0.7rem',
-    color: 'var(--text-muted)',
+    color: '#ccc',
     letterSpacing: '0.1em',
     textTransform: 'uppercase',
   },
@@ -273,7 +279,7 @@ const styles = {
     background: 'rgba(12, 10, 8, 0.6)',
     border: '1px solid rgba(229,169,60,0.1)',
     borderRadius: '2px',
-    color: 'var(--text-secondary)',
+    color: '#ccc',
     textDecoration: 'none',
     fontFamily: 'var(--font-mono)',
     fontSize: '0.75rem',
@@ -311,7 +317,7 @@ const styles = {
   activityMessage: {
     fontFamily: 'var(--font-mono)',
     fontSize: '0.75rem',
-    color: 'var(--text-secondary)',
+    color: '#ccc',
     letterSpacing: '0.05em',
     margin: 0,
     marginBottom: '0.25rem',
@@ -319,12 +325,12 @@ const styles = {
   activityTime: {
     fontFamily: 'var(--font-mono)',
     fontSize: '0.65rem',
-    color: 'var(--text-muted)',
+    color: '#888',
     letterSpacing: '0.08em',
   },
   statusGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
     gap: '1rem',
   },
   statusItem: {
@@ -339,7 +345,7 @@ const styles = {
   statusLabel: {
     fontFamily: 'var(--font-mono)',
     fontSize: '0.7rem',
-    color: 'var(--text-muted)',
+    color: '#888',
     letterSpacing: '0.08em',
   },
   statusValue: {

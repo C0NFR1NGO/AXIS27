@@ -14,17 +14,11 @@ export default function ProtectedRoute({ children }) {
   }
 
   if (!user) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (!isAdmin) {
-    return (
-      <div style={styles.unauthorized}>
-        <h1 style={styles.title}>ACCESS DENIED</h1>
-        <p style={styles.text}>You are not authorized to access this area.</p>
-        <p style={styles.email}>{user.email}</p>
-      </div>
-    );
+    return <Navigate to="/" replace />;
   }
 
   return children;

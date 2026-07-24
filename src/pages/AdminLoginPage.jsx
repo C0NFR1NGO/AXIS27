@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 
 export default function AdminLoginPage() {
-  const { signInWithGoogle, user } = useAuth();
+  const { signInWithGoogle, user, isAdmin } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -21,24 +21,7 @@ export default function AdminLoginPage() {
   };
 
   if (user) {
-    return (
-      <div style={styles.container}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          style={styles.card}
-        >
-          <div style={styles.logoContainer}>
-            <img src="/images/logo-icon.png" alt="AXIS'27" style={styles.logo} />
-          </div>
-          <h1 style={styles.title}>Already Signed In</h1>
-          <p style={styles.subtitle}>Welcome back, {user.email}</p>
-          <Link to="/admin" style={styles.dashboardButton}>
-            Go to Dashboard
-          </Link>
-        </motion.div>
-      </div>
-    );
+    return <Navigate to={isAdmin ? '/admin' : '/'} replace />;
   }
 
   return (
@@ -53,8 +36,8 @@ export default function AdminLoginPage() {
           <img src="/images/logo-icon.png" alt="AXIS'27" style={styles.logo} />
         </div>
         
-        <h1 style={styles.title}>AXIS'27 Admin</h1>
-        <p style={styles.subtitle}>Sign in to access the admin dashboard</p>
+        <h1 style={styles.title}>AXIS'27</h1>
+        <p style={styles.subtitle}>Login to enter the world of AXIS</p>
 
         {error && (
           <div style={styles.error}>
@@ -89,7 +72,7 @@ export default function AdminLoginPage() {
         </div>
 
         <p style={styles.footer}>
-          Authorized personnel only. All actions are logged.
+          Login to enter the world of AXIS
         </p>
 
         <Link to="/" style={styles.backLink}>

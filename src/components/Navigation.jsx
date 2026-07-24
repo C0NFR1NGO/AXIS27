@@ -3,6 +3,77 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { navLinks } from '../data/content';
 
+function LoginButton({ isMobile = false, onMobileClick }) {
+  const baseStyle = {
+    fontFamily: "var(--font-mono)",
+    fontSize: isMobile ? '0.95rem' : '0.68rem',
+    fontWeight: 700,
+    letterSpacing: isMobile ? '0.1em' : '0.12em',
+    textTransform: 'uppercase',
+    color: 'var(--spice-blue)',
+    textDecoration: 'none',
+    borderRadius: '2px',
+    border: '1px solid rgba(0,229,255,0.25)',
+    background: 'rgba(0,229,255,0.08)',
+    transition: 'all 0.3s var(--ease-cyber)',
+    whiteSpace: 'nowrap',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.3rem',
+  };
+
+  const mobileStyle = {
+    ...baseStyle,
+    padding: '0.85rem 1rem',
+    marginTop: '0.5rem',
+    fontFamily: "var(--font-heading)",
+    fontSize: '0.95rem',
+    fontWeight: 700,
+    letterSpacing: '0.1em',
+    border: '1px solid rgba(0,229,255,0.3)',
+    background: 'rgba(0,229,255,0.08)',
+    boxShadow: '0 0 18px rgba(0,229,255,0.08)',
+    width: '100%',
+  };
+
+  const desktopStyle = {
+    ...baseStyle,
+    padding: '0.5rem 1rem',
+    border: '1px solid rgba(0,229,255,0.25)',
+    background: 'rgba(0,229,255,0.08)',
+    marginLeft: '1rem',
+  };
+
+  const hoverStyle = isMobile
+    ? { background: 'rgba(0,229,255,0.15)', boxShadow: '0 0 24px rgba(0,229,255,0.15)' }
+    : { background: 'rgba(0,229,255,0.15)', boxShadow: '0 0 16px rgba(0,229,255,0.15)' };
+
+  const leaveStyle = isMobile
+    ? { background: 'rgba(0,229,255,0.08)', boxShadow: '0 0 18px rgba(0,229,255,0.08)' }
+    : { background: 'rgba(0,229,255,0.08)', boxShadow: 'none' };
+
+  return (
+    <Link
+      to="/login"
+      onClick={onMobileClick}
+      style={isMobile ? mobileStyle : desktopStyle}
+      onMouseEnter={(e) => { e.currentTarget.style.background = hoverStyle.background; e.currentTarget.style.boxShadow = hoverStyle.boxShadow; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = leaveStyle.background; e.currentTarget.style.boxShadow = leaveStyle.boxShadow; }}
+    >
+      <span style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: isMobile ? '0.72rem' : '0.6rem',
+        opacity: 0.45,
+        color: 'var(--spice-blue)',
+        textShadow: '0 0 6px rgba(0,229,255,0.3)',
+      }}>
+        [SIGNUP/LOGIN]
+      </span>
+    </Link>
+  );
+}
+
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -45,7 +116,7 @@ export default function Navigation() {
           zIndex: 1000,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           padding: '1rem 1.5rem',
           borderRadius: '2px',
           background: scrolled
@@ -84,8 +155,6 @@ export default function Navigation() {
             display: 'flex',
             alignItems: 'center',
             flexShrink: 0,
-            position: 'absolute',
-            left: '1.5rem',
             gap: '0.5rem',
             zIndex: 10,
           }}
@@ -107,7 +176,7 @@ export default function Navigation() {
         </Link>
 
         {/* Desktop Nav — DBH monospace indices */}
-        <div className="nav-desktop-links" style={{ display: 'flex', gap: '0.2rem', alignItems: 'center' }}>
+        <div className="nav-desktop-links" style={{ display: 'flex', gap: '0.2rem', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
           {navLinks.map((link, i) => {
             const isActive = location.pathname === link.href;
             const indexStr = String(i + 1).padStart(2, '0');
@@ -121,7 +190,7 @@ export default function Navigation() {
                   fontWeight: isActive ? 700 : 500,
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
-                  color: isActive ? 'var(--gold)' : 'var(--text-secondary)',
+                  color: isActive ? 'var(--gold)' : '#fff',
                   textDecoration: 'none',
                   padding: '0.4rem 0.9rem',
                   borderRadius: '2px',
@@ -144,7 +213,7 @@ export default function Navigation() {
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.color = 'var(--text-secondary)';
+                    e.currentTarget.style.color = '#fff';
                     e.currentTarget.style.background = 'transparent';
                     e.currentTarget.style.borderColor = 'transparent';
                   }
@@ -157,7 +226,7 @@ export default function Navigation() {
                   color: 'var(--spice-blue)',
                   textShadow: '0 0 6px rgba(0,229,255,0.3)',
                 }}>
-                  [{indexStr}]
+                  [{String(i + 1).padStart(2, '0')}]
                 </span>
                 {link.label}
               </Link>
@@ -181,7 +250,12 @@ export default function Navigation() {
           </motion.span>
         </div>
 
-        {/* Hamburger */}
+        {/* Desktop Login Button - Right aligned */}
+        <div className="nav-desktop-login">
+          <LoginButton isMobile={false} />
+        </div>
+
+        {/* Hamburger (mobile only) */}
         <button
           className="nav-hamburger"
           onClick={() => setMenuOpen((o) => !o)}
@@ -208,7 +282,7 @@ export default function Navigation() {
               display: 'block',
               width: '22px',
               height: '2px',
-              background: 'var(--text-muted)',
+              background: '#fff',
               borderRadius: '999px',
               transformOrigin: 'center',
             }}
@@ -220,7 +294,7 @@ export default function Navigation() {
               width: '22px',
               height: '2px',
               marginTop: '4px',
-              background: 'var(--text-muted)',
+              background: '#fff',
               borderRadius: '999px',
               transformOrigin: 'center',
             }}
@@ -232,7 +306,7 @@ export default function Navigation() {
               width: '22px',
               height: '2px',
               marginTop: '4px',
-              background: 'var(--text-muted)',
+              background: '#fff',
               borderRadius: '999px',
               transformOrigin: 'center',
             }}
@@ -318,7 +392,10 @@ export default function Navigation() {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              {/* Login Button at very top of drawer */}
+              <LoginButton isMobile={true} onMobileClick={() => setMenuOpen(false)} />
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginTop: '0.5rem' }}>
                 {navLinks.map((link, i) => {
                   const isActive = location.pathname === link.href;
                   const indexStr = String(i + 1).padStart(2, '0');
@@ -339,7 +416,7 @@ export default function Navigation() {
                           fontWeight: isActive ? 700 : 500,
                           letterSpacing: '0.1em',
                           textTransform: 'uppercase',
-                          color: isActive ? 'var(--spice-blue)' : 'rgba(220,214,202,0.9)',
+                          color: isActive ? 'var(--spice-blue)' : '#fff',
                           textDecoration: 'none',
                           padding: '0.85rem 1rem',
                           borderRadius: '2px',
@@ -365,7 +442,7 @@ export default function Navigation() {
                         onMouseLeave={(e) => {
                           if (!isActive) {
                             e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
-                            e.currentTarget.style.color = 'rgba(220,214,202,0.9)';
+                            e.currentTarget.style.color = '#fff';
                           }
                         }}
                       >
@@ -376,7 +453,7 @@ export default function Navigation() {
                           color: 'var(--spice-blue)',
                           textShadow: '0 0 6px rgba(0,229,255,0.3)',
                         }}>
-                          [{indexStr}]
+                          [{String(i + 1).padStart(2, '0')}]
                         </span>
                         {link.label}
                       </Link>
@@ -392,7 +469,7 @@ export default function Navigation() {
                 borderTop: '1px solid rgba(255,255,255,0.04)',
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.65rem',
-                color: 'var(--text-muted)',
+                color: '#ccc',
                 letterSpacing: '0.1em',
                 lineHeight: 1.6,
                 display: 'flex',
@@ -408,3 +485,13 @@ export default function Navigation() {
     </>
   );
 }
+
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+  @media (max-width: 768px) {
+    .nav-desktop-login {
+      display: none !important;
+    }
+  }
+`;
+document.head.appendChild(styleSheet);

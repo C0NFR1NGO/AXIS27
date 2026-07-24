@@ -83,6 +83,7 @@ const inputStyle = {
   borderRadius: '10px',
   outline: 'none',
   transition: 'border-color 0.3s, box-shadow 0.3s',
+  boxSizing: 'border-box',
 };
 
 const labelStyle = {
@@ -109,9 +110,13 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitError, setSubmitError] = useState(false);
+  const [web3formsError, setWeb3formsError] = useState(null);
 
   const WEB3FORMS_URL = 'https://api.web3forms.com/submit';
   const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
+
+  // Check if Web3Forms key is configured
+  const isWeb3FormsConfigured = WEB3FORMS_ACCESS_KEY && WEB3FORMS_ACCESS_KEY.length > 10;
 
   const validate = () => {
     const newErrors = {};
@@ -147,9 +152,16 @@ export default function ContactPage() {
       return;
     }
 
+    if (!isWeb3FormsConfigured) {
+      setSubmitError(true);
+      setSubmitMessage('Contact form is not configured. Please contact us directly via email.');
+      return;
+    }
+
     setSubmitting(true);
     setSubmitError(false);
     setSubmitMessage('');
+    setWeb3formsError(null);
 
     const phone = formData.phone.trim()
       ? `${formData.countryCode} ${formData.phone.trim()}`
@@ -181,8 +193,15 @@ export default function ContactPage() {
           setSubmitMessage('');
         }, 5000);
       } else {
-        setSubmitError(true);
-        setSubmitMessage(data.message || 'Something went wrong. Please try again.');
+        // Handle Web3Forms specific errors
+        const errorMsg = data.message || 'Something went wrong. Please try again.';
+        if (errorMsg.toLowerCase().includes('uuid') || errorMsg.toLowerCase().includes('access_key')) {
+          setWeb3formsError('Invalid Web3Forms access key. Please contact admin to configure a valid key.');
+          setSubmitMessage('Configuration error. Please contact us directly via email.');
+        } else {
+          setSubmitError(true);
+          setSubmitMessage(errorMsg);
+        }
       }
     } catch {
       setSubmitError(true);
@@ -256,6 +275,7 @@ export default function ContactPage() {
             padding: '2.5rem',
             width: '100%',
             maxWidth: '1000px',
+            boxSizing: 'border-box',
           }}
         >
           <h3
@@ -281,6 +301,36 @@ export default function ContactPage() {
           >
             Fill out the form below and we'll get back to you as soon as possible.
           </p>
+
+          {!isWeb3FormsConfigured && (
+            <div style={{
+              padding: '1rem',
+              background: 'rgba(255,51,85,0.1)',
+              border: '1px solid rgba(255,51,85,0.3)',
+              borderRadius: '8px',
+              marginBottom: '1.5rem',
+              color: '#ff3555',
+              fontFamily: "'Rajdhani', sans-serif",
+              fontSize: '0.85rem',
+            }}>
+              ⚠️ Contact form is not configured. Please email us directly at {contactInfo.email}
+            </div>
+          )}
+
+          {web3formsError && (
+            <div style={{
+              padding: '1rem',
+              background: 'rgba(255,51,85,0.1)',
+              border: '1px solid rgba(255,51,85,0.3)',
+              borderRadius: '8px',
+              marginBottom: '1.5rem',
+              color: '#ff3555',
+              fontFamily: "'Rajdhani', sans-serif",
+              fontSize: '0.85rem',
+            }}>
+              {web3formsError}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} noValidate>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
@@ -355,14 +405,15 @@ export default function ContactPage() {
                 <label htmlFor="contact-phone" style={labelStyle}>
                   Phone Number <span style={{ color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.05em' }}>(optional)</span>
                 </label>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <select
                     name="countryCode"
                     value={formData.countryCode}
                     onChange={handleChange}
                     style={{
                       ...inputStyle,
-                      width: '120px',
+                      width: 'auto',
+                      minWidth: '120px',
                       flexShrink: 0,
                       cursor: 'pointer',
                       appearance: 'none',
@@ -387,6 +438,8 @@ export default function ContactPage() {
                     onChange={handleChange}
                     style={{
                       ...inputStyle,
+                      flex: 1,
+                      minWidth: '200px',
                       borderColor: errors.phone ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)',
                     }}
                     onFocus={(e) => {
@@ -442,7 +495,7 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
               <button
                 type="submit"
                 disabled={submitting || submitted}
@@ -452,32 +505,26 @@ export default function ContactPage() {
                   fontWeight: 700,
                   letterSpacing: '0.1em',
                   textTransform: 'uppercase',
-                  padding: '0.85rem 2.8rem',
-                  border: `2px solid ${submitted ? 'var(--cyan)' : 'var(--spice-blue)'}`,
-                  color: (submitted || submitting) ? 'var(--bg-deep)' : 'var(--spice-blue)',
-                  background: submitted ? 'var(--cyan)' : submitting ? 'var(--spice-blue)' : 'transparent',
-                  cursor: (submitting || submitted) ? 'default' : 'pointer',
+                  padding: '0.875rem 2rem',
+                  background: 'linear-gradient(135deg, var(--spice-blue), var(--cyber-blue))',
+                  color: '#0d0a08',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: submitting ? 'not-allowed' : 'pointer',
                   transition: 'all 0.3s',
-                  boxShadow: '0 0 20px var(--gold-glow), inset 0 0 20px var(--spice-blue-glow)',
-                  borderRadius: '4px',
-                  opacity: submitting ? 0.8 : 1,
-                }}
-                onMouseEnter={(e) => {
-                  if (!submitted && !submitting) {
-                    e.target.style.background = 'var(--spice-blue)';
-                    e.target.style.color = 'var(--bg-deep)';
-                    e.target.style.boxShadow = '0 0 40px var(--gold-glow), inset 0 0 20px var(--spice-blue-glow)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!submitted && !submitting) {
-                    e.target.style.background = 'transparent';
-                    e.target.style.color = 'var(--spice-blue)';
-                    e.target.style.boxShadow = '0 0 20px var(--gold-glow), inset 0 0 20px var(--spice-blue-glow)';
-                  }
+                  opacity: submitting ? 0.7 : 1,
                 }}
               >
-                {submitted ? '✓ Sent!' : submitting ? 'Sending…' : 'Submit Query'}
+                {submitting ? (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ width: '16px', height: '16px', border: '2px solid #0d0a08', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></span>
+                    Sending...
+                  </span>
+                ) : submitted ? (
+                  'Sent Successfully!'
+                ) : (
+                  'Send Query'
+                )}
               </button>
 
               {submitMessage && (
@@ -496,20 +543,23 @@ export default function ContactPage() {
           </form>
         </motion.div>
 
+        {/* Contact Details & Map - RESPONSIVE GRID */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-80px' }}
+          className="contact-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '2rem',
+            gridTemplateColumns: '1fr',
+            gap: '1.5rem',
             width: '100%',
             maxWidth: '1000px',
           }}
         >
-          <motion.div variants={itemVariants} className="glass-card" style={{ padding: '2rem' }}>
+          {/* Contact Info Card */}
+          <motion.div variants={itemVariants} className="glass-card" style={{ padding: '2rem', minHeight: '320px' }}>
             <h3
               style={{
                 fontFamily: "'Orbitron', monospace",
@@ -544,7 +594,7 @@ export default function ContactPage() {
                     fontFamily: "'Rajdhani', sans-serif",
                     fontSize: '0.95rem',
                     color: 'var(--text-secondary)',
-                    lineHeight: 1.6,
+                    lineHeight: 1.7,
                   }}
                 >
                   {contactInfo.address}
@@ -590,12 +640,42 @@ export default function ContactPage() {
                     letterSpacing: '0.15em',
                     textTransform: 'uppercase',
                     color: 'var(--cyan)',
-                    marginBottom: '0.75rem',
+                    marginBottom: '0.25rem',
+                  }}
+                >
+                  Phone
+                </div>
+                <a
+                  href={`tel:${contactInfo.phone}`}
+                  style={{
+                    fontFamily: "'Rajdhani', sans-serif",
+                    fontSize: '0.95rem',
+                    color: 'var(--text-secondary)',
+                    textDecoration: 'none',
+                    transition: 'color 0.3s',
+                  }}
+                  onMouseEnter={(e) => { e.target.style.color = 'var(--gold)'; }}
+                  onMouseLeave={(e) => { e.target.style.color = 'var(--text-secondary)'; }}
+                >
+                  {contactInfo.phone}
+                </a>
+              </div>
+
+              <div>
+                <div
+                  style={{
+                    fontFamily: "'Rajdhani', sans-serif",
+                    fontSize: '0.7rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.15em',
+                    textTransform: 'uppercase',
+                    color: 'var(--cyan)',
+                    marginBottom: '0.25rem',
                   }}
                 >
                   Social
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
                   {Object.entries(socialLinks).map(([platform, url]) => (
                     <a
                       key={platform}
@@ -603,26 +683,28 @@ export default function ContactPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
-                        display: 'inline-flex',
+                        display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '50%',
-                        border: '1px solid rgba(229,169,60,0.25)',
-                        color: 'var(--text-muted)',
-                        textDecoration: 'none',
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '10px',
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(0,229,255,0.1)',
+                        color: 'var(--text-secondary)',
                         transition: 'all 0.3s',
                       }}
                       onMouseEnter={(e) => {
-                        e.target.style.color = '#fff';
-                        e.target.style.borderColor = hoverColors[platform];
-                        e.target.style.background = hoverColors[platform];
+                        e.currentTarget.style.background = hoverColors[platform];
+                        e.currentTarget.style.borderColor = hoverColors[platform];
+                        e.currentTarget.style.color = '#0d0a08';
+                        e.currentTarget.style.boxShadow = `0 0 20px ${hoverColors[platform]}`;
                       }}
                       onMouseLeave={(e) => {
-                        e.target.style.color = 'var(--text-muted)';
-                        e.target.style.borderColor = 'rgba(229,169,60,0.25)';
-                        e.target.style.background = 'transparent';
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                        e.currentTarget.style.borderColor = 'rgba(0,229,255,0.1)';
+                        e.currentTarget.style.color = 'var(--text-secondary)';
+                        e.currentTarget.style.boxShadow = 'none';
                       }}
                     >
                       {socialIcons[platform]}
@@ -633,14 +715,34 @@ export default function ContactPage() {
             </div>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="glass-card" style={{ padding: '0', overflow: 'hidden' }}>
-            <iframe
-              title="VNIT Nagpur Location"
-              src="https://www.google.com/maps?q=Visvesvaraya+National+Institute+of+Technology+Nagpur&z=15&output=embed"
-              style={{ width: '100%', height: '100%', minHeight: '400px', border: '1px solid rgba(0,229,255,0.08)', borderRadius: '2px', display: 'block' }}
-              allowFullScreen
-              loading="lazy"
-            />
+          {/* Map/Location Card */}
+          <motion.div variants={itemVariants} className="glass-card" style={{ padding: '2rem', minHeight: '320px', display: 'flex', flexDirection: 'column' }}>
+            <h3
+              style={{
+                fontFamily: "'Orbitron', monospace",
+                fontSize: '1.1rem',
+                fontWeight: 700,
+                color: 'var(--violet)',
+                marginBottom: '1.5rem',
+                letterSpacing: '0.08em',
+                textShadow: '0 0 12px rgba(0,229,255,0.2)',
+              }}
+            >
+              Our Location
+            </h3>
+            <div style={{ flex: 1, borderRadius: '10px', overflow: 'hidden', border: '1px solid rgba(0,229,255,0.1)' }}>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3764.5!2d79.045!3d21.12!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd616e!2sVNIT%20Nagpur!5e0!3m2!1sen!2sin!4v123456789"
+                width="100%"
+                height="100%"
+                minHeight="260px"
+                style={{ border: 0, borderRadius: '8px' }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="VNIT Nagpur Location"
+              />
+            </div>
           </motion.div>
         </motion.div>
       </section>
@@ -648,3 +750,12 @@ export default function ContactPage() {
   );
 }
 
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+  @media (min-width: 768px) {
+    .contact-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+  }
+`;
+document.head.appendChild(styleSheet);

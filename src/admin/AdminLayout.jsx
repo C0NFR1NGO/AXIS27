@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Outlet, NavLink, useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -24,13 +24,39 @@ function hasAccess(userRole, minRole) {
 export default function AdminLayout() {
   const { user, profile, role, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const sidebarLinks = allSidebarLinks.filter(link => hasAccess(role, link.minRole));
 
+  // Redirect function for role-based routing
+  const getRedirectUrl = (userRole) => {
+    if (userRole === 'super_admin' || userRole === 'admin' || userRole === 'moderator') {
+      return '/admin';
+    }
+    // For 'user' role, redirect to home page
+    return '/';
+  };
+
+  // Redirect based on role
+  useEffect(() => {
+    if (!loading && user && role) {
+      const redirectUrl = getRedirectUrl(role);
+      if (window.location.pathname === '/admin') {
+        const isInAdminArea = sidebarLinks.some(link => window.location.pathname.startsWith(link.path));
+        if (!isInAdminArea) {
+          navigate(redirectUrl, { replace: true });
+        }
+      } else if (window.location.pathname === '/login' && role !== 'user') {
+        // If logged in user has admin role and tries to access login page, redirect to admin
+        navigate(redirectUrl, { replace: true });
+      }
+    }
+  }, [role, loading, navigate, sidebarLinks]);
+
   const handleSignOut = async () => {
     await signOut();
-    navigate('/admin/login');
+    navigate('/');
   };
 
   if (loading) {
@@ -43,30 +69,11 @@ export default function AdminLayout() {
   }
 
   if (!user) {
-    navigate('/admin/login');
-    return null;
+    return <Navigate to="/login" replace />;
   }
 
   if (!profile || !hasAccess(role, 'moderator')) {
-    return (
-      <div style={styles.unauthorized}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          style={styles.unauthorizedCard}
-        >
-          <h1 style={styles.unauthorizedTitle}>ACCESS DENIED</h1>
-          <p style={styles.unauthorizedText}>
-            Your account does not have admin access.
-          </p>
-          <p style={styles.unauthorizedEmail}>{user?.email}</p>
-          <p style={styles.unauthorizedRole}>Role: {role}</p>
-          <button onClick={handleSignOut} style={styles.signOutButton}>
-            Sign Out
-          </button>
-        </motion.div>
-      </div>
-    );
+    return <Navigate to="/" replace />;
   }
 
   const roleDisplay = {
@@ -81,20 +88,39 @@ export default function AdminLayout() {
     moderator: 'var(--spice-blue)',
   };
 
+  // Close mobile sidebar on navigation
+  const handleNavClick = () => {
+    setSidebarOpen(false);
+    setMobileMenuOpen(false);
+  };
+
   return (
     <div style={styles.layout}>
-      <motion.aside
-        initial={false}
-        animate={{ width: sidebarOpen ? 260 : 70 }}
+      {/* Mobile sidebar overlay */}
+      {mobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          style={styles.mobileOverlay}
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar - Desktop: fixed, Mobile: slide-in drawer */}
+      <aside
+        className={`admin-sidebar${mobileMenuOpen ? ' sidebar-open' : ''}`}
         style={styles.sidebar}
       >
         <div style={styles.sidebarHeader}>
           <img src="/images/logo-icon.png" alt="AXIS'27" style={styles.sidebarLogo} />
-          {sidebarOpen && (
-            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={styles.sidebarTitle}>
-              ADMIN
-            </motion.span>
-          )}
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={styles.sidebarTitle}
+          >
+            ADMIN
+          </motion.span>
         </div>
 
         <nav style={styles.nav}>
@@ -104,17 +130,16 @@ export default function AdminLayout() {
               to={link.path}
               end={link.path === '/admin'}
               className="nav-link-item"
+              onClick={handleNavClick}
               style={({ isActive }) => ({
                 ...styles.navLink,
                 ...(isActive ? styles.navLinkActive : {}),
               })}
             >
               <span style={styles.navIcon}>{link.icon}</span>
-              {sidebarOpen && (
-                <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={styles.navLabel}>
-                  {link.label}
-                </motion.span>
-              )}
+              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={styles.navLabel}>
+                {link.label}
+              </motion.span>
             </NavLink>
           ))}
         </nav>
@@ -124,11 +149,84 @@ export default function AdminLayout() {
             {sidebarOpen ? '◁' : '▷'}
           </button>
         </div>
-      </motion.aside>
+      </aside>
+
+      {/* Mobile menu toggle button - only visible on mobile */}
+      <button
+        style={styles.mobileMenuToggle}
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        aria-label="Toggle menu"
+        aria-expanded={mobileMenuOpen}
+      >
+        <motion.span
+          animate={{ rotate: mobileMenuOpen ? 45 : 0, y: mobileMenuOpen ? 6 : 0 }}
+          style={{
+            display: 'block',
+            width: '22px',
+            height: '2px',
+            background: '#fff',
+            borderRadius: '999px',
+            transformOrigin: 'center',
+          }}
+        />
+        <motion.span
+          animate={{ opacity: mobileMenuOpen ? 0 : 1, scaleX: mobileMenuOpen ? 0 : 1 }}
+          style={{
+            display: 'block',
+            width: '22px',
+            height: '2px',
+            marginTop: '4px',
+            background: '#fff',
+            borderRadius: '999px',
+            transformOrigin: 'center',
+          }}
+        />
+        <motion.span
+          animate={{ rotate: mobileMenuOpen ? -45 : 0, y: mobileMenuOpen ? -6 : 0 }}
+          style={{
+            display: 'block',
+            width: '22px',
+            height: '2px',
+            marginTop: '4px',
+            background: '#fff',
+            borderRadius: '999px',
+            transformOrigin: 'center',
+          }}
+        />
+      </button>
 
       <main style={styles.main}>
         <header style={styles.topbar}>
           <div style={styles.topbarLeft}>
+            <button
+              style={styles.sidebarToggle}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle sidebar"
+            >
+              <span style={{
+                display: 'block',
+                width: '22px',
+                height: '2px',
+                background: '#fff',
+                margin: '4px 0',
+                borderRadius: '999px',
+              }} />
+              <span style={{
+                display: 'block',
+                width: '16px',
+                height: '2px',
+                background: '#fff',
+                margin: '4px 0',
+                borderRadius: '999px',
+              }} />
+              <span style={{
+                display: 'block',
+                width: '22px',
+                height: '2px',
+                background: '#fff',
+                borderRadius: '999px',
+              }} />
+            </button>
             <h2 style={styles.pageTitle}>AXIS'27 Control Center</h2>
           </div>
           <div style={styles.topbarRight}>
@@ -168,13 +266,17 @@ const styles = {
     background: '#0d0a08',
   },
   sidebar: {
-    background: 'rgba(12, 10, 8, 0.95)',
+    background: 'rgba(12, 10, 8, 0.98)',
     borderRight: '1px solid rgba(229,169,60,0.1)',
     display: 'flex',
     flexDirection: 'column',
     position: 'fixed',
-    height: '100vh',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: '260px',
     zIndex: 100,
+    transition: 'transform 0.3s ease',
   },
   sidebarHeader: {
     padding: '1.5rem',
@@ -207,7 +309,7 @@ const styles = {
     alignItems: 'center',
     gap: '0.75rem',
     padding: '0.875rem 1.5rem',
-    color: 'var(--text-muted)',
+    color: '#fff',
     textDecoration: 'none',
     fontFamily: 'var(--font-mono)',
     fontSize: '0.75rem',
@@ -238,7 +340,7 @@ const styles = {
     background: 'transparent',
     border: '1px solid rgba(229,169,60,0.15)',
     borderRadius: '2px',
-    color: 'var(--text-muted)',
+    color: '#fff',
     cursor: 'pointer',
     fontFamily: 'var(--font-mono)',
     fontSize: '0.7rem',
@@ -255,13 +357,15 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '1rem 2rem',
-    background: 'rgba(12, 10, 8, 0.8)',
+    padding: '1rem 1.5rem',
+    background: 'rgba(12, 10, 8, 0.9)',
     borderBottom: '1px solid rgba(229,169,60,0.08)',
     backdropFilter: 'blur(10px)',
     position: 'sticky',
     top: 0,
     zIndex: 50,
+    gap: '1rem',
+    flexWrap: 'wrap',
   },
   topbarLeft: {
     display: 'flex',
@@ -272,7 +376,7 @@ const styles = {
     fontFamily: 'var(--font-heading)',
     fontSize: '0.85rem',
     fontWeight: 600,
-    color: 'var(--text-secondary)',
+    color: '#fff',
     letterSpacing: '0.1em',
     textTransform: 'uppercase',
   },
@@ -304,8 +408,9 @@ const styles = {
   userEmail: {
     fontFamily: 'var(--font-mono)',
     fontSize: '0.7rem',
-    color: 'var(--text-muted)',
+    color: '#fff',
     letterSpacing: '0.05em',
+    whiteSpace: 'nowrap',
   },
   signOutTopbar: {
     padding: '0.5rem 1rem',
@@ -321,8 +426,10 @@ const styles = {
   },
   content: {
     flex: 1,
-    padding: '2rem',
+    padding: '1.5rem',
     overflowY: 'auto',
+    width: '100%',
+    boxSizing: 'border-box',
   },
   loading: {
     minHeight: '100vh',
@@ -336,7 +443,7 @@ const styles = {
   loadingText: {
     fontFamily: 'var(--font-mono)',
     fontSize: '0.7rem',
-    color: 'var(--text-muted)',
+    color: '#fff',
     letterSpacing: '0.2em',
   },
   spinner: {
@@ -374,7 +481,7 @@ const styles = {
   unauthorizedText: {
     fontFamily: 'var(--font-mono)',
     fontSize: '0.8rem',
-    color: 'var(--text-muted)',
+    color: '#fff',
     letterSpacing: '0.08em',
     marginBottom: '0.5rem',
   },
@@ -388,7 +495,7 @@ const styles = {
   unauthorizedRole: {
     fontFamily: 'var(--font-mono)',
     fontSize: '0.65rem',
-    color: 'var(--text-muted)',
+    color: '#fff',
     letterSpacing: '0.05em',
     marginBottom: '1.5rem',
   },
@@ -404,6 +511,28 @@ const styles = {
     cursor: 'pointer',
     transition: 'all 0.3s ease',
   },
+  // Mobile-specific styles
+  mobileOverlay: {
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(0,0,0,0.5)',
+    zIndex: 99,
+  },
+  mobileMenuToggle: {
+    display: 'none',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '0.5rem',
+    zIndex: 101,
+  },
+  sidebarToggle: {
+    display: 'none',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '0.5rem',
+  },
 };
 
 const styleSheet = document.createElement('style');
@@ -414,6 +543,58 @@ styleSheet.textContent = `
   .nav-link-item:hover {
     color: var(--gold) !important;
     background: rgba(229,169,60,0.03) !important;
+  }
+
+  /* Desktop: sidebar always visible */
+  @media (min-width: 1025px) {
+    .admin-sidebar {
+      transform: translateX(0) !important;
+    }
+    .mobileMenuToggle {
+      display: none !important;
+    }
+  }
+
+  /* Mobile: sidebar hidden by default, slides in when open */
+  @media (max-width: 1024px) {
+    .admin-sidebar {
+      transform: translateX(-100%);
+      box-shadow: 4px 0 24px rgba(0,0,0,0.4);
+      z-index: 200;
+    }
+    .admin-sidebar.sidebar-open {
+      transform: translateX(0) !important;
+    }
+    .main {
+      margin-left: 0 !important;
+    }
+    .topbar {
+      flex-wrap: wrap;
+    }
+    .sidebarToggle, .mobileMenuToggle {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .topbar {
+      padding: 0.75rem 1rem;
+    }
+    .pageTitle {
+      font-size: 0.75rem;
+    }
+    .content {
+      padding: 1rem !important;
+    }
+    .userEmail {
+      display: none;
+    }
+    .roleBadge {
+      padding: 0.2rem 0.5rem;
+      font-size: 0.55rem;
+    }
   }
 `;
 document.head.appendChild(styleSheet);

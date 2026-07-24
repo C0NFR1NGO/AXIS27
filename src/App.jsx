@@ -1,27 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import EventsPage from './pages/EventsPage';
-import EventDetailsPage from './pages/EventDetailsPage';
-import WorkshopsPage from './pages/WorkshopsPage';
-import SponsorsPage from './pages/SponsorsPage';
-import AccommodationPage from './pages/AccommodationPage';
-import TeamPage from './pages/TeamPage';
-import ContactPage from './pages/ContactPage';
-import NotFoundPage from './pages/NotFoundPage';
 import RouteLoading from './components/RouteLoading';
 import useCursorDistortion from './hooks/useCursorDistortion';
 import { AuthProvider } from './contexts/AuthContext';
-import AdminLoginPage from './pages/AdminLoginPage';
-import AdminLayout from './admin/AdminLayout';
-import AdminDashboardPage from './admin/AdminDashboardPage';
-import AdminPlaceholderPage from './admin/AdminPlaceholderPage';
-import AdminUsersPage from './admin/AdminUsersPage';
 import './styles/global.css';
+
+const HomePage = lazy(() => import('./pages/HomePage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const EventsPage = lazy(() => import('./pages/EventsPage'));
+const EventDetailsPage = lazy(() => import('./pages/EventDetailsPage'));
+const WorkshopsPage = lazy(() => import('./pages/WorkshopsPage'));
+const SponsorsPage = lazy(() => import('./pages/SponsorsPage'));
+const AccommodationPage = lazy(() => import('./pages/AccommodationPage'));
+const TeamPage = lazy(() => import('./pages/TeamPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage'));
+const AdminLayout = lazy(() => import('./admin/AdminLayout'));
+const AdminDashboardPage = lazy(() => import('./admin/AdminDashboardPage'));
+const AdminPlaceholderPage = lazy(() => import('./admin/AdminPlaceholderPage'));
+const AdminUsersPage = lazy(() => import('./admin/AdminUsersPage'));
 
 function SplashScreen({ onComplete }) {
   const [logs, setLogs] = useState([]);
@@ -443,7 +444,8 @@ function AppContent() {
             exit={{ opacity: 0, scale: 0.995, y: -4 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Routes location={location}>
+            <Suspense fallback={<RouteLoading />}>
+              <Routes location={location}>
               <Route path="/" element={<HomePage ready={!showSplash} />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/events" element={<EventsPage />} />
@@ -454,8 +456,8 @@ function AppContent() {
               <Route path="/team" element={<TeamPage />} />
               <Route path="/contact" element={<ContactPage />} />
               
-              {/* Admin Routes */}
-              <Route path="/admin/login" element={<AdminLoginPage />} />
+              {/* Auth Routes */}
+              <Route path="/login" element={<AdminLoginPage />} />
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboardPage />} />
                 <Route path="gallery" element={<AdminPlaceholderPage section="gallery" />} />
@@ -469,7 +471,8 @@ function AppContent() {
               </Route>
               
               <Route path="*" element={<NotFoundPage />} />
-            </Routes>
+              </Routes>
+            </Suspense>
           </motion.div>
         </AnimatePresence>
         <Footer />

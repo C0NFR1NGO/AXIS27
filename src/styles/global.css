@@ -317,6 +317,7 @@ img {
   margin-bottom: 0.8rem;
   text-align: center;
   position: relative;
+  will-change: background-position;
   animation: shimmer 6s ease-in-out infinite;
 }
 
@@ -385,6 +386,7 @@ img {
 
 /* —— INSTABILITY —— */
 .instability-text {
+  will-change: opacity;
   animation: instability 8s steps(1) infinite;
 }
 
@@ -530,11 +532,13 @@ img {
   border-radius: 50%;
   background: var(--spice-blue);
   box-shadow: 0 0 8px var(--spice-blue), 0 0 16px var(--spice-blue-glow);
+  will-change: opacity;
   animation: led-pulse 2.5s ease-in-out infinite;
   flex-shrink: 0;
 }
 
 .led-dot--ring {
+  will-change: opacity, transform;
   animation: led-ring-pulse 2s ease-out infinite;
 }
 
