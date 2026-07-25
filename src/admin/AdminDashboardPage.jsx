@@ -356,17 +356,4 @@ const styles = {
   },
 };
 
-// Add hover effects
-const styleSheet = document.createElement('style');
-styleSheet.textContent = `
-  .stat-card:hover {
-    border-color: rgba(229,169,60,0.3) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(229,169,60,0.1);
-  }
-  .action-button:hover {
-    border-color: rgba(0,229,255,0.3) !important;
-    background: rgba(0,229,255,0.03) !important;
-  }
-`;
-document.head.appendChild(styleSheet);
+document.head.appendChild(document.createElement('style'));

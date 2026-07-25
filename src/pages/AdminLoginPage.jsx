@@ -204,40 +204,12 @@ const styles = {
     letterSpacing: '0.1em',
     transition: 'color 0.3s',
   },
-  dashboardButton: {
-    display: 'inline-block',
-    marginTop: '1.5rem',
-    padding: '0.75rem 2rem',
-    background: 'linear-gradient(135deg, var(--gold), var(--spice-blue))',
-    color: '#0d0a08',
-    textDecoration: 'none',
-    fontFamily: 'var(--font-heading)',
-    fontSize: '0.85rem',
-    fontWeight: 700,
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase',
-    borderRadius: '2px',
-    transition: 'all 0.3s ease',
-  },
 };
 
-// Add keyframes for spinner
 const styleSheet = document.createElement('style');
 styleSheet.textContent = `
   @keyframes spin {
     to { transform: rotate(360deg); }
-  }
-  .google-button:hover {
-    background: #f5f5f5 !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-  }
-  .dashboard-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(229,169,60,0.3) !important;
-  }
-  .back-link:hover {
-    color: var(--gold) !important;
   }
 `;
 document.head.appendChild(styleSheet);

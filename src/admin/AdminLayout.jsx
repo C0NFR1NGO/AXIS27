@@ -24,7 +24,6 @@ function hasAccess(userRole, minRole) {
 export default function AdminLayout() {
   const { user, profile, role, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const sidebarLinks = allSidebarLinks.filter(link => hasAccess(role, link.minRole));
@@ -143,12 +142,6 @@ export default function AdminLayout() {
             </NavLink>
           ))}
         </nav>
-
-        <div style={styles.sidebarFooter}>
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} style={styles.toggleButton}>
-            {sidebarOpen ? '◁' : '▷'}
-          </button>
-        </div>
       </aside>
 
       {/* Mobile menu toggle button - only visible on mobile */}
@@ -330,22 +323,6 @@ const styles = {
   navLabel: {
     whiteSpace: 'nowrap',
   },
-  sidebarFooter: {
-    padding: '1rem',
-    borderTop: '1px solid rgba(229,169,60,0.08)',
-  },
-  toggleButton: {
-    width: '100%',
-    padding: '0.5rem',
-    background: 'transparent',
-    border: '1px solid rgba(229,169,60,0.15)',
-    borderRadius: '2px',
-    color: '#fff',
-    cursor: 'pointer',
-    fontFamily: 'var(--font-mono)',
-    fontSize: '0.7rem',
-    transition: 'all 0.3s ease',
-  },
   main: {
     flex: 1,
     marginLeft: '260px',
@@ -453,63 +430,6 @@ const styles = {
     borderTopColor: 'var(--gold)',
     borderRadius: '50%',
     animation: 'spin 0.8s linear infinite',
-  },
-  unauthorized: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: '#0d0a08',
-    padding: '2rem',
-  },
-  unauthorizedCard: {
-    textAlign: 'center',
-    padding: '3rem',
-    background: 'rgba(12, 10, 8, 0.8)',
-    border: '1px solid rgba(255,51,85,0.2)',
-    borderRadius: '2px',
-    maxWidth: '400px',
-  },
-  unauthorizedTitle: {
-    fontFamily: "'Ethnocentric', sans-serif",
-    fontSize: '1.5rem',
-    fontWeight: 800,
-    letterSpacing: '0.15em',
-    color: '#ff3555',
-    marginBottom: '1rem',
-  },
-  unauthorizedText: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '0.8rem',
-    color: '#fff',
-    letterSpacing: '0.08em',
-    marginBottom: '0.5rem',
-  },
-  unauthorizedEmail: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '0.7rem',
-    color: 'var(--spice-blue)',
-    letterSpacing: '0.05em',
-    marginBottom: '0.25rem',
-  },
-  unauthorizedRole: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '0.65rem',
-    color: '#fff',
-    letterSpacing: '0.05em',
-    marginBottom: '1.5rem',
-  },
-  signOutButton: {
-    padding: '0.75rem 2rem',
-    background: 'transparent',
-    border: '1px solid rgba(255,51,85,0.3)',
-    borderRadius: '2px',
-    color: '#ff3555',
-    fontFamily: 'var(--font-mono)',
-    fontSize: '0.75rem',
-    letterSpacing: '0.1em',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
   },
   // Mobile-specific styles
   mobileOverlay: {

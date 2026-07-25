@@ -179,7 +179,6 @@ export default function Navigation() {
         <div className="nav-desktop-links" style={{ display: 'flex', gap: '0.2rem', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
           {navLinks.map((link, i) => {
             const isActive = location.pathname === link.href;
-            const indexStr = String(i + 1).padStart(2, '0');
             return (
               <Link
                 key={link.href}
@@ -398,7 +397,6 @@ export default function Navigation() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginTop: '0.5rem' }}>
                 {navLinks.map((link, i) => {
                   const isActive = location.pathname === link.href;
-                  const indexStr = String(i + 1).padStart(2, '0');
                   return (
                     <motion.div
                       key={link.href}

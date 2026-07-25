@@ -89,21 +89,6 @@ export const socialLinks = {
 
 export const aboutText = `AXIS is the annual technical festival of the Visvesvaraya National Institute of Technology, Nagpur. Started in 2001 as Odyssey, AXIS has grown to become one of the largest technical festivals in India and the largest in Central India. Organising 35+ events, exhibitions and workshops encompassing multiple engineering disciplines, AXIS annually attracts over 35,000 students from across the country.`;
 
-export const workshopInfo = {
-  title: 'Workshops',
-  description: 'Hands-on workshops on cutting-edge technologies including AI/ML, Ethical Hacking, Generative AI, Robotics, and more. Stay tuned for the 2027 workshop lineup.',
-};
-
-export const accommodationInfo = {
-  title: 'Accommodation',
-  description: 'Comfortable accommodation arrangements are available for out-of-town participants within the VNIT campus. Details will be announced closer to the event dates.',
-};
-
-export const teamInfo = {
-  title: 'Our Team',
-  description: 'AXIS is entirely student-organized. At its helm are the core committee members who oversee all aspects of the fest.',
-};
-
 export const contactInfo = {
   title: 'Contact Us',
   description: 'We\'d love to hear from you. Reach out to us for inquiries, collaborations, or any questions about AXIS\'27.',

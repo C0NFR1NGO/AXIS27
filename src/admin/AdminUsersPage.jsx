@@ -345,6 +345,5 @@ styleSheet.textContent = `
   @keyframes spin { to { transform: rotate(360deg); } }
   select:hover { border-color: rgba(229,169,60,0.4) !important; }
   select:focus { border-color: var(--gold) !important; }
-  .table-row:hover { background: rgba(229,169,60,0.02) !important; }
 `;
 document.head.appendChild(styleSheet);

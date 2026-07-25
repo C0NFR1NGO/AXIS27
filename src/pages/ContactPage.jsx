@@ -643,36 +643,6 @@ export default function ContactPage() {
                     marginBottom: '0.25rem',
                   }}
                 >
-                  Phone
-                </div>
-                <a
-                  href={`tel:${contactInfo.phone}`}
-                  style={{
-                    fontFamily: "'Rajdhani', sans-serif",
-                    fontSize: '0.95rem',
-                    color: 'var(--text-secondary)',
-                    textDecoration: 'none',
-                    transition: 'color 0.3s',
-                  }}
-                  onMouseEnter={(e) => { e.target.style.color = 'var(--gold)'; }}
-                  onMouseLeave={(e) => { e.target.style.color = 'var(--text-secondary)'; }}
-                >
-                  {contactInfo.phone}
-                </a>
-              </div>
-
-              <div>
-                <div
-                  style={{
-                    fontFamily: "'Rajdhani', sans-serif",
-                    fontSize: '0.7rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.15em',
-                    textTransform: 'uppercase',
-                    color: 'var(--cyan)',
-                    marginBottom: '0.25rem',
-                  }}
-                >
                   Social
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>

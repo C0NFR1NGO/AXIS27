@@ -42,8 +42,6 @@ function ConstellationField() {
   const spiceRef = useRef();
   const linesRef = useRef();
   const { viewport } = useThree();
-  const timeRef = useRef(0);
-  const instabilityRef = useRef(0);
 
   const bounds = useMemo(() => ({
     width: viewport.width * 2.8,
@@ -169,13 +167,10 @@ function ConstellationField() {
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    timeRef.current = time;
     const mx = mouse.x * viewport.width * 0.5;
     const my = mouse.y * viewport.height * 0.5;
     const boundX = viewport.width * 1.85;
     const boundY = viewport.height * 1.85;
-
-    instabilityRef.current = 0.85 + Math.sin(time * 0.7) * 0.15 + Math.sin(time * 1.3) * 0.08;
 
     for (let i = 0; i < NODE_COUNT; i++) {
       const n = nodes[i];

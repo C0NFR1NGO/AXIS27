@@ -48,40 +48,8 @@ const styles = {
     color: 'var(--text-muted)',
     letterSpacing: '0.2em',
   },
-  unauthorized: {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: '#0d0a08',
-    textAlign: 'center',
-    padding: '2rem',
-  },
-  title: {
-    fontFamily: "'Ethnocentric', sans-serif",
-    fontSize: '1.5rem',
-    fontWeight: 800,
-    letterSpacing: '0.15em',
-    color: '#ff3555',
-    marginBottom: '1rem',
-  },
-  text: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '0.8rem',
-    color: 'var(--text-muted)',
-    letterSpacing: '0.08em',
-    marginBottom: '0.5rem',
-  },
-  email: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '0.7rem',
-    color: 'var(--spice-blue)',
-    letterSpacing: '0.05em',
-  },
 };
 
-// Add keyframes
 const styleSheet = document.createElement('style');
 styleSheet.textContent = `
   @keyframes spin {
