@@ -29,10 +29,10 @@ function rand() {
 }
 function resetRand() { _randSeed = 2027; }
 
-const DUST_COUNT = isMobile ? 650 : 3200;
-const SPICE_COUNT = isMobile ? 80 : 400;
-const NODE_COUNT = isMobile ? 50 : 450;
-const MAX_CONNECTIONS = isMobile ? 90 : 2600;
+const DUST_COUNT = isMobile ? 650 : 1600;
+const SPICE_COUNT = isMobile ? 80 : 200;
+const NODE_COUNT = isMobile ? 50 : 200;
+const MAX_CONNECTIONS = isMobile ? 90 : 1000;
 const CONNECTION_DIST = isMobile ? 4.0 : 7.8;
 
 function ConstellationField() {

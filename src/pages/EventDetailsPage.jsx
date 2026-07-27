@@ -1,6 +1,7 @@
+import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useParams } from 'react-router-dom';
-import CosmicBackground from '../components/CosmicBackground';
+const CosmicBackground = lazy(() => import('../components/CosmicBackground'));
 
 export default function EventDetailsPage() {
   const { eventId } = useParams();
@@ -9,7 +10,9 @@ export default function EventDetailsPage() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
       <div style={{ position: 'absolute', inset: 0, zIndex: -1 }}>
-        <CosmicBackground />
+        <Suspense fallback={null}>
+          <CosmicBackground />
+        </Suspense>
       </div>
 
       {/* Grid pattern overlay */}

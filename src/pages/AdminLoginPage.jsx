@@ -33,7 +33,7 @@ export default function AdminLoginPage() {
         style={styles.card}
       >
         <div style={styles.logoContainer}>
-          <img src="/images/logo-icon.png" alt="AXIS'27" style={styles.logo} />
+          <img src="/images/logo-icon.webp" alt="AXIS'27" style={styles.logo} />
         </div>
         
         <h1 style={styles.title}>AXIS'27</h1>
@@ -206,10 +206,3 @@ const styles = {
   },
 };
 
-const styleSheet = document.createElement('style');
-styleSheet.textContent = `
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-`;
-document.head.appendChild(styleSheet);

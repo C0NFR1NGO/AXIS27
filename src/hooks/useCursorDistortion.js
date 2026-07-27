@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 
-export default function useCursorDistortion() {
+export default function useCursorDistortion(disabled = false) {
   useEffect(() => {
+    if (disabled) return;
     if ('ontouchstart' in window) return;
 
     const cursor = document.createElement('div');

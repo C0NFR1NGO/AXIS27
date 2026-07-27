@@ -128,7 +128,7 @@ export default function Navigation() {
           boxShadow: scrolled
             ? '0 8px 32px rgba(0,0,0,0.6), 0 0 18px rgba(0,229,255,0.08)'
             : '0 4px 20px rgba(0,0,0,0.35)',
-          backdropFilter: 'blur(14px)',
+          backdropFilter: 'blur(6px)',
           WebkitBackdropFilter: 'blur(14px)',
           transition: 'background 0.4s, box-shadow 0.4s, border-color 0.4s',
         }}
@@ -162,7 +162,7 @@ export default function Navigation() {
           <picture>
             <source media="(min-width: 768px)" srcSet="/images/logo.png" />
             <img
-              src="/images/logo-icon.png"
+              src="/images/logo-icon.webp"
               alt="AXIS'27"
               className="nav-logo"
               style={{ filter: 'brightness(1.4)' }}
@@ -327,7 +327,7 @@ export default function Navigation() {
               inset: 0,
               zIndex: 3000,
               background: 'rgba(7,5,3,0.97)',
-              backdropFilter: 'blur(10px)',
+              backdropFilter: 'blur(4px)',
               WebkitBackdropFilter: 'blur(10px)',
               display: 'flex',
               alignItems: 'flex-start',
@@ -483,13 +483,3 @@ export default function Navigation() {
     </>
   );
 }
-
-const styleSheet = document.createElement('style');
-styleSheet.textContent = `
-  @media (max-width: 768px) {
-    .nav-desktop-login {
-      display: none !important;
-    }
-  }
-`;
-document.head.appendChild(styleSheet);

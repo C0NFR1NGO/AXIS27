@@ -17,7 +17,7 @@ export default function Footer() {
         padding: '3rem 5% 2rem',
         textAlign: 'center',
         background: 'linear-gradient(0deg, rgba(7,5,3,0.98) 0%, rgba(13,10,8,0.92) 60%, transparent 100%)',
-        backdropFilter: 'blur(8px)',
+        backdropFilter: 'blur(4px)',
         WebkitBackdropFilter: 'blur(8px)',
       }}
     >
@@ -67,6 +67,7 @@ export default function Footer() {
           <img
             src="/images/logo.png"
             alt="AXIS'27"
+            loading="lazy"
             style={{ height: '60px', width: 'auto', objectFit: 'contain', marginBottom: '1rem' }}
             onError={(e) => { e.target.style.display = 'none'; }}
           />

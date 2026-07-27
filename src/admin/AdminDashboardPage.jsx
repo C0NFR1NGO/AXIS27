@@ -355,5 +355,3 @@ const styles = {
     letterSpacing: '0.1em',
   },
 };
-
-document.head.appendChild(document.createElement('style'));

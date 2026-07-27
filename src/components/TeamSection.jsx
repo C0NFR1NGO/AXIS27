@@ -140,7 +140,7 @@ function MemberModal({ member, role, category, onClose }) {
         inset: 0,
         zIndex: 10000,
         background: 'rgba(3,2,1,0.85)',
-        backdropFilter: 'blur(12px)',
+        backdropFilter: 'blur(4px)',
         WebkitBackdropFilter: 'blur(12px)',
         display: 'flex',
         alignItems: 'center',

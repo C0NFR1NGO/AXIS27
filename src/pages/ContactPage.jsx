@@ -719,13 +719,3 @@ export default function ContactPage() {
     </div>
   );
 }
-
-const styleSheet = document.createElement('style');
-styleSheet.textContent = `
-  @media (min-width: 768px) {
-    .contact-grid {
-      grid-template-columns: 1fr 1fr !important;
-    }
-  }
-`;
-document.head.appendChild(styleSheet);

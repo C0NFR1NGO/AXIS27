@@ -135,7 +135,7 @@ export default function StatsBar() {
         gap: 'clamp(2rem, 5vw, 4rem)', padding: '3rem 5%',
         position: 'relative', zIndex: 1, flexWrap: 'wrap',
         background: 'linear-gradient(180deg, rgba(13,10,8,0.8) 0%, rgba(7,5,3,0.94) 100%)',
-        backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+        backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
         borderTop: '1px solid transparent',
         backgroundImage: 'linear-gradient(180deg, rgba(13,10,8,0.8) 0%, rgba(7,5,3,0.94) 100%), linear-gradient(90deg, transparent, rgba(0,229,255,0.15), transparent)',
         backgroundOrigin: 'padding-box, border-box',

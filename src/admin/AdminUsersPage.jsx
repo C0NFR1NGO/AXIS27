@@ -340,10 +340,3 @@ const styles = {
   },
 };
 
-const styleSheet = document.createElement('style');
-styleSheet.textContent = `
-  @keyframes spin { to { transform: rotate(360deg); } }
-  select:hover { border-color: rgba(229,169,60,0.4) !important; }
-  select:focus { border-color: var(--gold) !important; }
-`;
-document.head.appendChild(styleSheet);

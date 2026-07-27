@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Share+Tech+Mono&family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
-
 *,
 *::before,
 *::after {
@@ -63,7 +61,7 @@
 
 @font-face {
   font-family: 'Ethnocentric';
-  src: url('/fonts/Ethnocentric.ttf') format('truetype');
+  src: url('/fonts/Ethnocentric.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -247,7 +245,6 @@ img {
   margin-bottom: 0.8rem;
   text-align: center;
   position: relative;
-  will-change: background-position;
   animation: shimmer 6s ease-in-out infinite;
 }
 
@@ -276,8 +273,8 @@ img {
 /* —— GLASS CARD: Detroit holographic panel —— */
 .glass-card {
   background: rgba(8, 6, 4, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(201, 145, 26, 0.1);
   border-radius: 2px;
   position: relative;
@@ -440,13 +437,11 @@ img {
   border-radius: 50%;
   background: var(--spice-blue);
   box-shadow: 0 0 8px var(--spice-blue), 0 0 16px var(--spice-blue-glow);
-  will-change: opacity;
   animation: led-pulse 2.5s ease-in-out infinite;
   flex-shrink: 0;
 }
 
 .led-dot--ring {
-  will-change: opacity, transform;
   animation: led-ring-pulse 2s ease-out infinite;
 }
 
@@ -524,3 +519,83 @@ img {
     max-width: 260px;
   }
 }
+
+/* Consolidated: @keyframes spin (was in AdminLayout, AdminLoginPage, AdminUsersPage, ProtectedRoute) */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Consolidated: .contact-grid responsive (was in ContactPage.jsx) */
+@media (min-width: 768px) {
+  .contact-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* Consolidated: .nav-desktop-login mobile hide (was in Navigation.jsx) */
+@media (max-width: 768px) {
+  .nav-desktop-login {
+    display: none !important;
+  }
+}
+
+/* Consolidated: .nav-link-item hover (was in AdminLayout.jsx) */
+.nav-link-item:hover {
+  color: var(--gold) !important;
+  background: rgba(229,169,60,0.03) !important;
+}
+
+/* Consolidated: AdminLayout responsive sidebar (was in AdminLayout.jsx) */
+@media (min-width: 1025px) {
+  .admin-sidebar {
+    transform: translateX(0) !important;
+  }
+  .mobileMenuToggle {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.4);
+    z-index: 200;
+  }
+  .admin-sidebar.sidebar-open {
+    transform: translateX(0) !important;
+  }
+  .main {
+    margin-left: 0 !important;
+  }
+  .topbar {
+    flex-wrap: wrap;
+  }
+  .sidebarToggle, .mobileMenuToggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    padding: 0.75rem 1rem;
+  }
+  .pageTitle {
+    font-size: 0.75rem;
+  }
+  .content {
+    padding: 1rem !important;
+  }
+  .userEmail {
+    display: none;
+  }
+  .roleBadge {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.55rem;
+  }
+}
+
+/* Consolidated: Admin select hover/focus (was in AdminUsersPage.jsx) */
+select:hover { border-color: rgba(229,169,60,0.4) !important; }
+select:focus { border-color: var(--gold) !important; }

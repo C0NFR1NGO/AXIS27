@@ -1,0 +1,1 @@
+import{a as e,r as t}from"./framer-bP0Zz0-I.js";var n=e();function r({children:e}){return(0,n.jsx)(t.div,{initial:{opacity:0,scale:.92,y:30},whileInView:{opacity:1,scale:1,y:0},viewport:{once:!0,margin:`-80px`},transition:{duration:.75,ease:[.22,1,.36,1]},children:e})}export{r as t};

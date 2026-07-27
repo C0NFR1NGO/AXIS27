@@ -52,13 +52,13 @@ function SplashScreen({ onComplete }) {
       } else {
         clearInterval(interval);
       }
-    }, 210);
+    }, 170);
 
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(onComplete, 3600);
+    const timer = setTimeout(onComplete, 2000);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -237,7 +237,7 @@ function SplashScreen({ onComplete }) {
                 }}
               />
               <motion.img
-                src="/images/logo-icon.png"
+                src="/images/logo-icon.webp"
                 alt="AXIS'27"
                 initial={{ opacity: 0, scale: 0.88, rotate: 0 }}
                 animate={{ opacity: 1, scale: 1, rotate: 360 }}
@@ -368,7 +368,7 @@ function SplashScreen({ onComplete }) {
               <motion.div
                 initial={{ width: '0%' }}
                 animate={{ width: '100%' }}
-                transition={{ duration: 3.0, ease: [0.65, 0, 0.35, 1] }}
+                transition={{ duration: 1.8, ease: [0.65, 0, 0.35, 1] }}
                 style={{
                   height: '100%',
                   background: 'linear-gradient(90deg, var(--gold), var(--spice-blue), var(--cyber-blue))',
@@ -399,7 +399,7 @@ function AppContent() {
     if (typeof window === 'undefined' || location.pathname !== '/') return false;
     return window.sessionStorage.getItem('axis27-home-intro-seen') !== '1';
   });
-  useCursorDistortion();
+  useCursorDistortion(location.pathname.startsWith('/admin') || location.pathname === '/login');
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {

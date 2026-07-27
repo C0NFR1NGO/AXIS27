@@ -1,12 +1,15 @@
+import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import CosmicBackground from '../components/CosmicBackground';
+const CosmicBackground = lazy(() => import('../components/CosmicBackground'));
 
 export default function NotFoundPage() {
   return (
     <>
       <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
-        <CosmicBackground />
+        <Suspense fallback={null}>
+          <CosmicBackground />
+        </Suspense>
       </div>
       <div style={{
         minHeight: '100vh',

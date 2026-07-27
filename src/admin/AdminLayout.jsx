@@ -112,7 +112,7 @@ export default function AdminLayout() {
         style={styles.sidebar}
       >
         <div style={styles.sidebarHeader}>
-          <img src="/images/logo-icon.png" alt="AXIS'27" style={styles.sidebarLogo} />
+          <img src="/images/logo-icon.webp" alt="AXIS'27" style={styles.sidebarLogo} />
           <motion.span
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -337,7 +337,7 @@ const styles = {
     padding: '1rem 1.5rem',
     background: 'rgba(12, 10, 8, 0.9)',
     borderBottom: '1px solid rgba(229,169,60,0.08)',
-    backdropFilter: 'blur(10px)',
+    backdropFilter: 'blur(4px)',
     position: 'sticky',
     top: 0,
     zIndex: 50,
@@ -454,67 +454,3 @@ const styles = {
     padding: '0.5rem',
   },
 };
-
-const styleSheet = document.createElement('style');
-styleSheet.textContent = `
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  .nav-link-item:hover {
-    color: var(--gold) !important;
-    background: rgba(229,169,60,0.03) !important;
-  }
-
-  /* Desktop: sidebar always visible */
-  @media (min-width: 1025px) {
-    .admin-sidebar {
-      transform: translateX(0) !important;
-    }
-    .mobileMenuToggle {
-      display: none !important;
-    }
-  }
-
-  /* Mobile: sidebar hidden by default, slides in when open */
-  @media (max-width: 1024px) {
-    .admin-sidebar {
-      transform: translateX(-100%);
-      box-shadow: 4px 0 24px rgba(0,0,0,0.4);
-      z-index: 200;
-    }
-    .admin-sidebar.sidebar-open {
-      transform: translateX(0) !important;
-    }
-    .main {
-      margin-left: 0 !important;
-    }
-    .topbar {
-      flex-wrap: wrap;
-    }
-    .sidebarToggle, .mobileMenuToggle {
-      display: flex !important;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .topbar {
-      padding: 0.75rem 1rem;
-    }
-    .pageTitle {
-      font-size: 0.75rem;
-    }
-    .content {
-      padding: 1rem !important;
-    }
-    .userEmail {
-      display: none;
-    }
-    .roleBadge {
-      padding: 0.2rem 0.5rem;
-      font-size: 0.55rem;
-    }
-  }
-`;
-document.head.appendChild(styleSheet);
