@@ -40,7 +40,7 @@
   --text-primary: #f0ece3;
   --text-secondary: #e0dbd0;
   --text-muted: #a8a098;
-  --font-display: 'Cinzel', serif;
+  --font-display: 'Audiowide', sans-serif;
   --font-heading: 'Orbitron', sans-serif;
   --font-body: 'Rajdhani', sans-serif;
   --font-mono: 'Share Tech Mono', monospace;
@@ -79,7 +79,6 @@ body {
   color: var(--text-primary);
   font-family: var(--font-body);
   overflow-x: hidden;
-  cursor: none;
   position: relative;
 }
 
@@ -125,12 +124,6 @@ body::after {
       linear-gradient(to right, transparent calc(100% - 30px), rgba(201, 145, 26, 0.08)) bottom left / 100% 1px no-repeat,
       linear-gradient(to bottom, rgba(201, 145, 26, 0.08) 0px, transparent 30px) top left / 1px 100% no-repeat,
       linear-gradient(to bottom, transparent calc(100% - 30px), rgba(201, 145, 26, 0.08)) top right / 1px 100% no-repeat;
-  }
-}
-
-@media (hover: none) and (pointer: coarse) {
-  body {
-    cursor: auto;
   }
 }
 
@@ -228,6 +221,23 @@ img {
     border-color: rgba(0, 229, 255, 0.5);
     box-shadow: 0 0 0 1px rgba(0,229,255,0.2), 0 0 32px rgba(0, 229, 255, 0.18), inset 0 0 28px rgba(0, 229, 255, 0.04);
   }
+}
+
+/* —— HERO HUD GLOW: cheap text-shadow pulse (no JS animation) —— */
+@keyframes hud-glow-cyan {
+  0%, 100% { text-shadow: 0 0 4px rgba(0,229,255,0.2); }
+  50% { text-shadow: 0 0 8px rgba(0,229,255,0.4); }
+}
+
+@keyframes hud-glow-gold {
+  0%, 100% { text-shadow: 0 0 4px rgba(229,169,60,0.2); }
+  50% { text-shadow: 0 0 8px rgba(229,169,60,0.4); }
+}
+
+/* —— HERO TAGLINE: letter-spacing drift (cheaper via CSS animation) —— */
+@keyframes hero-tagline-drift {
+  0%, 100% { letter-spacing: 0.25em; }
+  50% { letter-spacing: 0.32em; }
 }
 
 /* —— SECTION TITLES —— */

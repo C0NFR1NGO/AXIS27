@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { aboutText } from '../data/content';
 import TypewriterText from '../components/TypewriterText';
+import ScrambleTitle from '../components/ScrambleTitle';
 
 const milestones = [
   { year: '2001', event: 'Founded as Odyssey — VNIT\'s first tech fest' },
@@ -11,9 +12,8 @@ const milestones = [
   { year: '2015', event: 'Featured NDRF & DRDO exhibitions' },
   { year: '2020', event: 'Pioneered hybrid format during the pandemic' },
   { year: '2025', event: 'Record 35,000+ participants from 200+ colleges' },
+  { year: '2026', event: 'AXIS\'26 — "Innovation, Action, Inspiration"; 16-drone show, ISRO & defence exhibits, National Insights lecture series' },
   { year: '2027', event: 'AXIS\'27 — Ignis Aeternum: Illuminating the Infinite' },
-  { year: 'Past Guests', event: 'Information coming soon', placeholder: true },
-  { year: 'Past Artists', event: 'Information coming soon', placeholder: true },
 ];
 
 const windows = [
@@ -24,6 +24,9 @@ const windows = [
 
 function TimelineSection() {
   const timelineRef = useRef(null);
+  const LAST = milestones.length - 1;
+  const accent = (i) => (i === LAST ? 'var(--gold)' : 'var(--spice-blue)');
+  const accentRgba = (i) => (i === LAST ? 'rgba(229,169,60,' : 'rgba(0,229,255,');
 
   const scroll = (dir) => {
     const el = timelineRef.current;
@@ -41,68 +44,86 @@ function TimelineSection() {
     requestAnimationFrame(step);
   };
 
+  const arrowBtn = {
+    position: 'absolute', top: '50%', transform: 'translateY(-50%)', zIndex: 2,
+    width: '40px', height: '40px', borderRadius: '50%',
+    border: '1px solid rgba(0,229,255,0.2)',
+    background: 'rgba(13,10,8,0.8)',
+    backdropFilter: 'blur(8px)',
+    color: 'var(--spice-blue)',
+    fontSize: '1.2rem', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    transition: 'all 0.3s',
+  };
+
   return (
-    <div style={{ position: 'relative', width: '100%', maxWidth: '900px', margin: '0 auto', display: 'flex', alignItems: 'center' }}>
-      <button onClick={() => scroll(-1)} style={{
-        position: 'absolute', left: '-3.5rem', zIndex: 2,
-        width: '40px', height: '40px', borderRadius: '50%',
-        border: '1px solid rgba(0,229,255,0.2)',
-        background: 'rgba(13,10,8,0.8)',
-        backdropFilter: 'blur(4px)',
-        color: 'var(--spice-blue)',
-        fontSize: '1.2rem', cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        transition: 'all 0.3s',
-      }}
+    <div style={{ position: 'relative', width: '100%', maxWidth: '900px', margin: '0 auto', padding: '1rem 0 2rem' }}>
+      <button onClick={() => scroll(-1)} style={{ ...arrowBtn, left: '-3.5rem' }}
         onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0,229,255,0.15)'; e.currentTarget.style.borderColor = 'var(--spice-blue)'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(13,10,8,0.8)'; e.currentTarget.style.borderColor = 'rgba(0,229,255,0.2)'; }}
       >
         ‹
       </button>
+
       <div ref={timelineRef} style={{
         display: 'flex', gap: '1rem', width: '100%', overflowX: 'auto',
-        padding: '1rem 0',
+        scrollbarWidth: 'none', padding: '0.5rem 0',
       }}>
-        {milestones.map((m, i) => (
-          <motion.div key={m.year} initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.5, delay: i * 0.15 }}
-            className="glass-card" style={{
-              minWidth: m.placeholder ? '200px' : '220px', flex: '0 0 auto', padding: '1.5rem 1.25rem',
-              textAlign: 'center', position: 'relative',
-              borderLeft: `2px solid ${m.placeholder ? 'rgba(0,229,255,0.15)' : 'rgba(201,145,26,0.2)'}`,
-              transition: 'border-color 0.3s',
-              opacity: m.placeholder ? 0.5 : 1,
-            }}
-            whileHover={{ borderLeftColor: m.placeholder ? 'var(--spice-blue)' : 'var(--gold)' }}
-          >
-            <div style={{
-              fontFamily: "'Orbitron', monospace", fontSize: m.placeholder ? '0.85rem' : '1.4rem', fontWeight: 800,
-              color: m.placeholder ? 'var(--spice-blue)' : 'var(--violet)', marginBottom: '0.5rem',
-            }}>
-              {m.placeholder ? '// TBD //' : m.year}
-            </div>
-            <div style={{
-              fontFamily: "'Rajdhani', sans-serif", fontSize: '0.9rem',
-              color: 'var(--text-secondary)', lineHeight: 1.5,
-            }}>
-              {m.event}
-            </div>
-          </motion.div>
-        ))}
+        {milestones.map((p, i) => {
+          const isLast = i === LAST;
+          const ac = accent(i);
+          return (
+            <motion.div key={p.year} initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="glass-card" style={{
+                width: '260px', flex: '0 0 auto',
+                padding: '1rem 1.15rem', position: 'relative',
+                display: 'flex', flexDirection: 'column',
+                background: 'rgba(10,8,6,0.72)',
+                border: `1px solid ${accentRgba(i)}0.22)`,
+                borderRadius: '6px', overflow: 'hidden',
+                transition: 'border-color 0.35s, box-shadow 0.35s, transform 0.35s',
+              }}
+              whileHover={{ y: -4, borderColor: ac, boxShadow: `0 0 26px ${accentRgba(i)}0.14)` }}
+            >
+              {/* Top accent bar */}
+              <div style={{
+                position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
+                background: `linear-gradient(90deg, ${ac}, ${accentRgba(i)}0.2))`,
+              }} />
+
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                <span style={{
+                  fontFamily: 'var(--font-mono)', fontSize: '0.55rem', letterSpacing: '0.14em',
+                  color: 'var(--text-muted)', opacity: 0.65,
+                }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span style={{
+                  fontFamily: "'Orbitron', monospace", fontSize: '1.2rem', fontWeight: 800,
+                  letterSpacing: '0.03em', color: ac,
+                  textShadow: isLast ? '0 0 18px rgba(229,169,60,0.5)' : '0 0 14px rgba(0,229,255,0.3)',
+                }}>
+                  {p.year}
+                </span>
+              </div>
+
+              <div style={{ width: '100%', height: '1px', margin: '0.55rem 0', background: `${accentRgba(i)}0.18)` }} />
+
+              <div style={{
+                fontFamily: "'Rajdhani', sans-serif", fontSize: '0.85rem', lineHeight: 1.5,
+                color: 'var(--text-secondary)', opacity: 0.95, flex: 1,
+              }}>
+                {p.event}
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
-      <button onClick={() => scroll(1)} style={{
-        position: 'absolute', right: '-3.5rem', zIndex: 2,
-        width: '40px', height: '40px', borderRadius: '50%',
-        border: '1px solid rgba(0,229,255,0.2)',
-        background: 'rgba(13,10,8,0.8)',
-        backdropFilter: 'blur(4px)',
-        color: 'var(--spice-blue)',
-        fontSize: '1.2rem', cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        transition: 'all 0.3s',
-      }}
+
+      <button onClick={() => scroll(1)} style={{ ...arrowBtn, right: '-3.5rem' }}
         onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0,229,255,0.15)'; e.currentTarget.style.borderColor = 'var(--spice-blue)'; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(13,10,8,0.8)'; e.currentTarget.style.borderColor = 'rgba(0,229,255,0.2)'; }}
       >
@@ -187,7 +208,7 @@ export default function AboutPage() {
                 </div>
                 <div style={{ border: '1px solid rgba(0,229,255,0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
                   <section>
-                    <h2 className="section-title" style={{ marginTop: 0 }}>About AXIS</h2>
+                    <ScrambleTitle text="About AXIS" style={{ marginTop: 0 }} />
                     <p className="section-subtitle">The story of Central India's largest technical festival</p>
 
                     <div className="glass-card" style={{ maxWidth: '800px', width: '100%', padding: '2.5rem', margin: '0 auto 3rem', borderTop: '1px solid rgba(0,229,255,0.08)' }}>
@@ -232,7 +253,7 @@ export default function AboutPage() {
                 </div>
                 <div style={{ border: '1px solid rgba(0,229,255,0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
                   <section>
-                    <h2 className="section-title" style={{ marginTop: 0 }}>Our Journey</h2>
+                    <ScrambleTitle text="Our Journey" style={{ marginTop: 0 }} />
                     <p className="section-subtitle">The AXIS timeline — from Odyssey to Ignis Aeternum</p>
 
                     <div style={{ maxWidth: '900px', margin: '0 auto 4rem' }}>
@@ -267,7 +288,7 @@ export default function AboutPage() {
                   <span style={{ opacity: 0.4 }}>ID: A03</span>
                 </div>
                 <div style={{ border: '1px solid rgba(0,229,255,0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
-                  <h2 className="section-title" style={{ marginTop: 0 }}>Gallery</h2>
+                  <ScrambleTitle text="Gallery" style={{ marginTop: 0 }} />
                   <p className="section-subtitle">Photos from AXIS'27 will be displayed soon.</p>
                   <div style={{ width: '100%', maxWidth: '600px', margin: '0 auto', padding: '4rem 2rem', border: '1px solid var(--border-gold)', borderRadius: '2px', background: 'rgba(8,6,4,0.6)' }}>
                     <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--text-muted)', letterSpacing: '0.12em', marginBottom: '1rem' }}>

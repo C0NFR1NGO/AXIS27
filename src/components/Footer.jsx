@@ -62,42 +62,27 @@ export default function Footer() {
         opacity: 0.15,
       }} />
 
-      <div style={{ marginBottom: '2rem' }}>
-        <Link to="/" style={{ display: 'inline-block' }}>
+      <div style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Link to="/" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <img
             src="/images/logo.png"
             alt="AXIS'27"
             loading="lazy"
-            style={{ height: '60px', width: 'auto', objectFit: 'contain', marginBottom: '1rem' }}
+            style={{ height: '80px', width: 'auto', objectFit: 'contain', display: 'block' }}
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         </Link>
-        <div style={{
-          fontFamily: "var(--font-display)",
-          fontSize: '1.4rem',
-          fontWeight: 700,
-          letterSpacing: '0.18em',
-          background: 'linear-gradient(135deg, var(--gold), var(--gold-light), var(--spice-blue))',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          marginBottom: '0.5rem',
-          textShadow: '0 0 24px rgba(201,145,26,0.3), 0 0 48px rgba(0,229,255,0.1)',
-        }}>
-          AXIS'27
-        </div>
         <div style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '0.72rem',
           letterSpacing: '0.22em',
           textTransform: 'uppercase',
           color: 'var(--text-muted)',
+          marginTop: '0.8rem',
         }}>
           IGNIS AETERNUM: ILLUMINATING THE INFINITE
         </div>
       </div>
-
-      {/* DBH temple LED pulsing above socials */}
-      <div className="led-dot led-dot--ring" style={{ margin: '0 auto 1.2rem' }} />
 
       <div style={{
         display: 'flex',

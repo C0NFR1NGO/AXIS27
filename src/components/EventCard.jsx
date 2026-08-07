@@ -40,18 +40,6 @@ export default function EventCard({ category, index }) {
               gap: '0.4rem',
             }}
           >
-            <motion.span
-              animate={{ opacity: [0.4, 1, 0.4] }}
-              transition={{ duration: 2.5, repeat: Infinity, delay: index * 0.3 }}
-              style={{
-                display: 'inline-block',
-                width: '5px',
-                height: '5px',
-                borderRadius: '50%',
-                background: 'var(--spice-blue)',
-                boxShadow: '0 0 6px var(--spice-blue)',
-              }}
-            />
             {category.subtitle}
           </motion.div>
           <h3 style={{

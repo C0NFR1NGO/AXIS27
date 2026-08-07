@@ -39,13 +39,9 @@ export default function HeroSection({ ready = true }) {
           zIndex: 2,
         }}
       >
-        <motion.div
-          animate={{ textShadow: ['0 0 4px rgba(0,229,255,0.2)', '0 0 8px rgba(0,229,255,0.4)', '0 0 4px rgba(0,229,255,0.2)'] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ color: 'var(--spice-blue)', fontWeight: 700, marginBottom: '0.2rem' }}
-        >
+        <div style={{ color: 'var(--spice-blue)', fontWeight: 700, marginBottom: '0.2rem', animation: 'hud-glow-cyan 3s ease-in-out infinite' }}>
           // CYBERLIFE DIRECTIVE
-        </motion.div>
+        </div>
         <div>MODEL: AXIS-V270-X1</div>
         <div>
           SOFTWARE INSTABILITY:{' '}
@@ -58,16 +54,6 @@ export default function HeroSection({ ready = true }) {
           </motion.span>
         </div>
         <div>STATUS: COMPATIBLE</div>
-        <div>
-          TEMPLE LED:{' '}
-          <motion.span
-            style={{ color: 'var(--spice-blue)' }}
-            animate={{ opacity: [0.3, 1, 0.3] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            PULSING [●]
-          </motion.span>
-        </div>
       </motion.div>
 
       {/* DETROIT: Right holographic HUD panel */}
@@ -92,50 +78,13 @@ export default function HeroSection({ ready = true }) {
           zIndex: 2,
         }}
       >
-        <motion.div
-          animate={{ textShadow: ['0 0 4px rgba(0,229,255,0.2)', '0 0 8px rgba(0,229,255,0.4)', '0 0 4px rgba(0,229,255,0.2)'] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-          style={{ color: 'var(--gold)', fontWeight: 700, marginBottom: '0.2rem' }}
-        >
+        <div style={{ color: 'var(--gold)', fontWeight: 700, marginBottom: '0.2rem', animation: 'hud-glow-gold 3s ease-in-out infinite' }}>
           // INFINITE LIGHT
-        </motion.div>
+        </div>
         <div>TARGET: VNIT NAGPUR</div>
         <div>GPS: 21.1255° N / 79.0505° E</div>
         <div>KALADAN LINK: STABLE</div>
         <div>ENCRYPTION: SHA-256 [SECURE]</div>
-      </motion.div>
-
-      {/* DBH instability indicator top-right */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={ready ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="nav-desktop-links"
-        style={{
-          position: 'absolute',
-          top: '2.5rem',
-          right: '3rem',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.6rem',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.7rem',
-          color: 'var(--spice-blue)',
-          zIndex: 2,
-        }}
-      >
-        <span>SOFTWARE INSTABILITY: ▲ 94%</span>
-        <motion.div
-          animate={{ opacity: [0.3, 1, 0.3], scale: [0.9, 1.15, 0.9] }}
-          transition={{ duration: 1.8, repeat: Infinity }}
-          style={{
-            width: '9px',
-            height: '9px',
-            borderRadius: '50%',
-            background: 'var(--spice-blue)',
-            boxShadow: '0 0 12px var(--spice-blue), 0 0 24px var(--spice-blue-glow)',
-          }}
-        />
       </motion.div>
 
       {/* AXIS'27 — Dune title with spice shimmer */}
@@ -180,12 +129,8 @@ export default function HeroSection({ ready = true }) {
       {/* DUNE: Spice-drift tagline */}
       <motion.p
         initial={{ opacity: 0, y: 15 }}
-        animate={ready ? { opacity: 1, y: 0, letterSpacing: ['0.25em', '0.35em', '0.25em'] } : { opacity: 0, y: 15, letterSpacing: '0.25em' }}
-        transition={{
-          opacity: { duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] },
-          y: { duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] },
-          letterSpacing: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
-        }}
+        animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+        transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         style={{
           fontFamily: "var(--font-mono)",
           fontSize: 'clamp(1.25rem, 3.125vw, 1.81rem)',
@@ -199,7 +144,7 @@ export default function HeroSection({ ready = true }) {
           marginBottom: '1.2rem',
           position: 'relative',
           zIndex: 3,
-          animation: 'shimmer 4s linear infinite',
+          animation: 'hero-tagline-drift 4s ease-in-out infinite, shimmer 4s linear infinite',
         }}
       >
         ILLUMINATING THE INFINITE

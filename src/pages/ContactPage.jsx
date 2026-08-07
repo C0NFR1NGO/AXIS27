@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { contactInfo, socialLinks } from '../data/content';
 import socialIcons from '../components/SocialIcons';
+import ScrambleTitle from '../components/ScrambleTitle';
 
 const hoverColors = {
   instagram: '#E4405F',
@@ -243,15 +244,7 @@ export default function ContactPage() {
       </motion.div>
 
       <section className="section" style={{ minHeight: 'auto', paddingBottom: '100px' }}>
-        <motion.h2
-          className="section-title"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.8 }}
-        >
-          {contactInfo.title}
-        </motion.h2>
+        <ScrambleTitle text={contactInfo.title} />
 
         <motion.p
           className="section-subtitle"

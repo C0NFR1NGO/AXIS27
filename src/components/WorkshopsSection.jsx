@@ -1,17 +1,10 @@
 import { motion } from 'framer-motion';
+import ScrambleTitle from './ScrambleTitle';
 
 export default function WorkshopsSection() {
   return (
     <section id="workshops" className="section">
-      <motion.h2
-        className="section-title"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      >
-        Workshops
-      </motion.h2>
+      <ScrambleTitle text="Workshops" />
 
       <motion.div
         className="glass-card"

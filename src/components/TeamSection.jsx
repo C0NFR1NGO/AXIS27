@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import ScrambleTitle from './ScrambleTitle';
 
 const teamData = [
   {
     category: 'Core Co-ordinators',
     roles: [
       { role: 'Head of Events', members: ['Kanishk Pantawane', 'Anuj Raut'] },
-      { role: 'Sponsorship Heads', tileRole: 'Sponsorship Head', members: ['Krishna Prasad', 'Sarth Dharpure', 'Sourabh Waghmare'] },
+      { role: 'Corporate Relations', tileRole: 'Corporate Relations', members: ['Krishna Prasad', 'Sarth Dharpure', 'Sourabh Waghmare'] },
     ],
   },
   {
@@ -18,15 +19,27 @@ const teamData = [
   },
   {
     category: 'Publicity In-charges',
-    roles: [
-      { role: 'JS Heads', tileRole: 'JS Head', members: ['Harsh Ambade', 'Soumya Mundhada'] },
-      { role: 'CA & Exhibitions Head', members: ['Krati Verma'] },
-      { role: 'Workshops Head', members: ['Prasad Kate'] },
-      { role: 'Guest & Hospitality Head', members: ['Krishita Nakhwa'] },
-      { role: 'DEXTER Head', members: ['Shrutik Unhale'] },
-      { role: 'Design Head', members: ['Utkarsha Shekhar'] },
-      { role: 'Web Head', members: ['Shreyas Rane'] },
-      { role: 'Social Media Manager', members: ['Shivraj Rathod'] },
+    groups: [
+      {
+        roles: [
+          { role: 'CA & Exhibitions Head', members: ['Krati Verma'] },
+          { role: 'Guest & Hospitality Head', members: ['Krishita Nakhwa'] },
+          { role: 'Workshops Head', members: ['Prasad Kate'] },
+        ],
+      },
+      {
+        roles: [
+          { role: 'JS Head', members: ['Harsh Ambade', 'Soumya Mundhada'] },
+          { role: 'DEXTER Head', members: ['Shrutik Unhale'] },
+        ],
+      },
+      {
+        roles: [
+          { role: 'Design Head', members: ['Utkarsha Shekhar'] },
+          { role: 'Web Head', members: ['Shreyas Rane'] },
+          { role: 'Social Media Lead', members: ['Shivraj Rathod'] },
+        ],
+      },
     ],
   },
 ];
@@ -340,17 +353,52 @@ function MemberModal({ member, role, category, onClose }) {
 export default function TeamSection() {
   const [selectedMember, setSelectedMember] = useState(null);
 
+  const renderRoleBlock = (roleGroup, section, layout) => {
+    const blockWidth = layout === 'column' && roleGroup.members.length > 1 ? '600px' : '340px';
+    return (
+    <div key={roleGroup.role} style={layout === 'column' ? { flex: '1 1 260px', maxWidth: blockWidth } : {}}>
+      {/* Role label */}
+      <div style={{
+        fontFamily: 'var(--font-heading)',
+        fontSize: '1rem',
+        fontWeight: 700,
+        color: 'var(--gold)',
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase',
+        marginBottom: '0.8rem',
+        textAlign: 'center',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '0.6rem',
+      }}>
+        {roleGroup.role}
+      </div>
+
+      {/* Members */}
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: '1rem',
+      }}>
+        {roleGroup.members.map((member) => (
+          <TeamMemberTile
+            key={member}
+            name={member}
+            role={roleGroup.tileRole || roleGroup.role}
+            category={section.category}
+            onClick={() => setSelectedMember({ name: member, role: roleGroup.tileRole || roleGroup.role, category: section.category })}
+          />
+        ))}
+      </div>
+    </div>
+    );
+  };
+
   return (
     <section id="team" className="section" style={{ minHeight: 'auto', paddingBottom: '40px' }}>
-      <motion.h2
-        className="section-title"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      >
-        Our Team
-      </motion.h2>
+      <ScrambleTitle text="Our Team" />
 
       <motion.p
         className="section-subtitle"
@@ -412,46 +460,13 @@ export default function TeamSection() {
 
           {/* Roles */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            {section.roles.map((roleGroup) => (
-              <div key={roleGroup.role}>
-                {/* Role label */}
-                <div style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                  color: 'var(--gold)',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  marginBottom: '0.8rem',
-                  textAlign: 'center',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.6rem',
-                }}>
-                  <span className="led-dot led-dot--gold" style={{ display: 'inline-block' }} />
-                  {roleGroup.role}
-                </div>
-
-                {/* Members row */}
-                <div style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  justifyContent: 'center',
-                  gap: '1rem',
-                }}>
-                  {roleGroup.members.map((member) => (
-                    <TeamMemberTile
-                      key={member}
-                      name={member}
-                      role={roleGroup.tileRole || roleGroup.role}
-                      category={section.category}
-                      onClick={() => setSelectedMember({ name: member, role: roleGroup.tileRole || roleGroup.role, category: section.category })}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
+            {section.groups
+              ? section.groups.map((group, gIdx) => (
+                  <div key={gIdx} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '2rem', alignItems: 'flex-start' }}>
+                    {group.roles.map((roleGroup) => renderRoleBlock(roleGroup, section, 'column'))}
+                  </div>
+                ))
+              : section.roles.map((roleGroup) => renderRoleBlock(roleGroup, section, 'row'))}
           </div>
         </motion.div>
       ))}

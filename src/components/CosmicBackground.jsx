@@ -29,10 +29,10 @@ function rand() {
 }
 function resetRand() { _randSeed = 2027; }
 
-const DUST_COUNT = isMobile ? 650 : 1600;
-const SPICE_COUNT = isMobile ? 80 : 200;
-const NODE_COUNT = isMobile ? 50 : 200;
-const MAX_CONNECTIONS = isMobile ? 90 : 1000;
+const DUST_COUNT = isMobile ? 650 : 1200;
+const SPICE_COUNT = isMobile ? 80 : 150;
+const NODE_COUNT = isMobile ? 50 : 120;
+const MAX_CONNECTIONS = isMobile ? 90 : 700;
 const CONNECTION_DIST = isMobile ? 4.0 : 7.8;
 
 function ConstellationField() {
@@ -257,9 +257,10 @@ function ConstellationField() {
         if (lineCount >= MAX_CONNECTIONS) break;
         const n2 = nodes[j];
         const dx = n1.x - n2.x, dy = n1.y - n2.y, dz = n1.z - n2.z;
-        const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
         const activeDist = isMobile ? CONNECTION_DIST : ((n1.range + n2.range) / 2.0);
-        if (d < activeDist) {
+        const dSq = dx * dx + dy * dy + dz * dz;
+        if (dSq < activeDist * activeDist) {
+          const d = Math.sqrt(dSq);
           const idx = lineCount * 6;
           linePositions[idx] = n1.x; linePositions[idx + 1] = n1.y; linePositions[idx + 2] = n1.z;
           linePositions[idx + 3] = n2.x; linePositions[idx + 4] = n2.y; linePositions[idx + 5] = n2.z;
@@ -357,7 +358,7 @@ function ConstellationField() {
 export default function CosmicBackground() {
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      <Canvas camera={{ position: [0, 0, 18], fov: 70 }}>
+      <Canvas camera={{ position: [0, 0, 18], fov: 70 }} dpr={[1, 1.5]} gl={{ antialias: false, powerPreference: 'high-performance' }}>
         <color attach="background" args={['#070503']} />
         <ConstellationField />
       </Canvas>

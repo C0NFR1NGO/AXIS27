@@ -13,8 +13,9 @@ function LoginButton({ isMobile = false, onMobileClick }) {
     color: 'var(--spice-blue)',
     textDecoration: 'none',
     borderRadius: '2px',
-    border: '1px solid rgba(0,229,255,0.25)',
-    background: 'rgba(0,229,255,0.08)',
+    border: '1px solid rgba(0,229,255,0.5)',
+    background: 'rgba(0,229,255,0.14)',
+    boxShadow: '0 0 12px rgba(0,229,255,0.12)',
     transition: 'all 0.3s var(--ease-cyber)',
     whiteSpace: 'nowrap',
     display: 'inline-flex',
@@ -31,27 +32,27 @@ function LoginButton({ isMobile = false, onMobileClick }) {
     fontSize: '0.95rem',
     fontWeight: 700,
     letterSpacing: '0.1em',
-    border: '1px solid rgba(0,229,255,0.3)',
-    background: 'rgba(0,229,255,0.08)',
-    boxShadow: '0 0 18px rgba(0,229,255,0.08)',
+    border: '1px solid rgba(0,229,255,0.55)',
+    background: 'rgba(0,229,255,0.14)',
+    boxShadow: '0 0 18px rgba(0,229,255,0.15)',
     width: '100%',
   };
 
   const desktopStyle = {
     ...baseStyle,
     padding: '0.5rem 1rem',
-    border: '1px solid rgba(0,229,255,0.25)',
-    background: 'rgba(0,229,255,0.08)',
+    border: '1px solid rgba(0,229,255,0.5)',
+    background: 'rgba(0,229,255,0.14)',
     marginLeft: '1rem',
   };
 
   const hoverStyle = isMobile
-    ? { background: 'rgba(0,229,255,0.15)', boxShadow: '0 0 24px rgba(0,229,255,0.15)' }
-    : { background: 'rgba(0,229,255,0.15)', boxShadow: '0 0 16px rgba(0,229,255,0.15)' };
+    ? { background: 'rgba(0,229,255,0.25)', boxShadow: '0 0 24px rgba(0,229,255,0.25)' }
+    : { background: 'rgba(0,229,255,0.25)', boxShadow: '0 0 16px rgba(0,229,255,0.25)' };
 
   const leaveStyle = isMobile
-    ? { background: 'rgba(0,229,255,0.08)', boxShadow: '0 0 18px rgba(0,229,255,0.08)' }
-    : { background: 'rgba(0,229,255,0.08)', boxShadow: 'none' };
+    ? { background: 'rgba(0,229,255,0.14)', boxShadow: '0 0 18px rgba(0,229,255,0.15)' }
+    : { background: 'rgba(0,229,255,0.14)', boxShadow: '0 0 12px rgba(0,229,255,0.12)' };
 
   return (
     <Link
@@ -64,9 +65,9 @@ function LoginButton({ isMobile = false, onMobileClick }) {
       <span style={{
         fontFamily: 'var(--font-mono)',
         fontSize: isMobile ? '0.72rem' : '0.6rem',
-        opacity: 0.45,
+        opacity: 0.9,
         color: 'var(--spice-blue)',
-        textShadow: '0 0 6px rgba(0,229,255,0.3)',
+        textShadow: '0 0 8px rgba(0,229,255,0.6)',
       }}>
         [SIGNUP/LOGIN]
       </span>
@@ -165,14 +166,10 @@ export default function Navigation() {
               src="/images/logo-icon.webp"
               alt="AXIS'27"
               className="nav-logo"
-              style={{ filter: 'brightness(1.4)' }}
+              style={{ filter: 'brightness(1.7) drop-shadow(0 0 6px rgba(0,229,255,0.25))' }}
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           </picture>
-          <span
-            className="led-dot led-dot--ring nav-desktop-links"
-            style={{ marginLeft: '0.3rem' }}
-          />
         </Link>
 
         {/* Desktop Nav — DBH monospace indices */}

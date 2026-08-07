@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import RouteLoading from './components/RouteLoading';
-import useCursorDistortion from './hooks/useCursorDistortion';
+import TextScramble from './components/TextScramble';
 import { AuthProvider } from './contexts/AuthContext';
 import './styles/global.css';
 
@@ -221,21 +221,6 @@ function SplashScreen({ onComplete }) {
               placeItems: 'center',
               boxShadow: 'inset 0 0 28px rgba(229,169,60,0.18), 0 0 40px rgba(0,0,0,0.6)',
             }}>
-              {/* DBH temple LED pulsing behind logo */}
-              <motion.div
-                animate={{ opacity: [0.3, 1, 0.3], scale: [0.95, 1.08, 0.95] }}
-                transition={{ duration: 2.2, repeat: Infinity }}
-                style={{
-                  position: 'absolute',
-                  width: '14px',
-                  height: '14px',
-                  borderRadius: '50%',
-                  background: 'var(--spice-blue)',
-                  boxShadow: '0 0 16px var(--spice-blue), 0 0 32px var(--spice-blue-glow)',
-                  top: '14px',
-                  right: '18px',
-                }}
-              />
               <motion.img
                 src="/images/logo-icon.webp"
                 alt="AXIS'27"
@@ -296,7 +281,7 @@ function SplashScreen({ onComplete }) {
               paddingBottom: '0.3rem',
             }}
           >
-            IGNIS AETERNUM: ILLUMINATING THE INFINITE
+            <TextScramble text="IGNIS AETERNUM: ILLUMINATING THE INFINITE" startDelay={800} />
           </motion.div>
 
           {/* DBH Holographic Diagnostics Terminal */}
@@ -399,8 +384,6 @@ function AppContent() {
     if (typeof window === 'undefined' || location.pathname !== '/') return false;
     return window.sessionStorage.getItem('axis27-home-intro-seen') !== '1';
   });
-  useCursorDistortion(location.pathname.startsWith('/admin') || location.pathname === '/login');
-
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
