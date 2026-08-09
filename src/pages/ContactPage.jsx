@@ -81,10 +81,24 @@ const inputStyle = {
   color: 'var(--text-primary)',
   background: 'rgba(255,255,255,0.04)',
   border: '1px solid rgba(0,229,255,0.15)',
-  borderRadius: '10px',
+  borderLeft: '3px solid var(--spice-blue)',
+  borderRadius: '2px',
   outline: 'none',
   transition: 'border-color 0.3s, box-shadow 0.3s',
   boxSizing: 'border-box',
+};
+
+const alertStyle = {
+  padding: '1rem 1.2rem',
+  background: 'rgba(255,51,85,0.06)',
+  border: '1px solid rgba(255,51,85,0.25)',
+  borderLeft: '3px solid var(--cyber-red)',
+  borderRadius: '2px',
+  marginBottom: '1.5rem',
+  color: '#ff6b85',
+  fontFamily: 'var(--font-mono)',
+  fontSize: '0.75rem',
+  letterSpacing: '0.06em',
 };
 
 const labelStyle = {
@@ -296,31 +310,13 @@ export default function ContactPage() {
           </p>
 
           {!isWeb3FormsConfigured && (
-            <div style={{
-              padding: '1rem',
-              background: 'rgba(255,51,85,0.1)',
-              border: '1px solid rgba(255,51,85,0.3)',
-              borderRadius: '8px',
-              marginBottom: '1.5rem',
-              color: '#ff3555',
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: '0.85rem',
-            }}>
-              ⚠️ Contact form is not configured. Please email us directly at {contactInfo.email}
+            <div style={alertStyle}>
+              // CONFIG PENDING // Queries can still reach us at {contactInfo.email} — or submit below and we'll follow up.
             </div>
           )}
 
           {web3formsError && (
-            <div style={{
-              padding: '1rem',
-              background: 'rgba(255,51,85,0.1)',
-              border: '1px solid rgba(255,51,85,0.3)',
-              borderRadius: '8px',
-              marginBottom: '1.5rem',
-              color: '#ff3555',
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: '0.85rem',
-            }}>
+            <div style={alertStyle}>
               {web3formsError}
             </div>
           )}
@@ -489,9 +485,10 @@ export default function ContactPage() {
             </div>
 
             <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              <button
+                <button
                 type="submit"
                 disabled={submitting || submitted}
+                className="btn-secondary"
                 style={{
                   fontFamily: "'Rajdhani', sans-serif",
                   fontSize: '1rem',
@@ -499,24 +496,25 @@ export default function ContactPage() {
                   letterSpacing: '0.1em',
                   textTransform: 'uppercase',
                   padding: '0.875rem 2rem',
-                  background: 'linear-gradient(135deg, var(--spice-blue), var(--cyber-blue))',
-                  color: '#0d0a08',
-                  border: 'none',
-                  borderRadius: '8px',
+                  border: '1px solid var(--spice-blue)',
+                  borderRadius: '2px',
                   cursor: submitting ? 'not-allowed' : 'pointer',
                   transition: 'all 0.3s',
                   opacity: submitting ? 0.7 : 1,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.6rem',
                 }}
               >
                 {submitting ? (
                   <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ width: '16px', height: '16px', border: '2px solid #0d0a08', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></span>
-                    Sending...
+                    <span style={{ width: '16px', height: '16px', border: '2px solid var(--spice-blue)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></span>
+                    Transmitting...
                   </span>
                 ) : submitted ? (
-                  'Sent Successfully!'
+                  '■ Transmission Complete'
                 ) : (
-                  'Send Query'
+                  'Send Query ▸'
                 )}
               </button>
 
@@ -651,7 +649,7 @@ export default function ContactPage() {
                         justifyContent: 'center',
                         width: '44px',
                         height: '44px',
-                        borderRadius: '10px',
+                        borderRadius: '50%',
                         background: 'rgba(255,255,255,0.05)',
                         border: '1px solid rgba(0,229,255,0.1)',
                         color: 'var(--text-secondary)',
@@ -693,13 +691,13 @@ export default function ContactPage() {
             >
               Our Location
             </h3>
-            <div style={{ flex: 1, borderRadius: '10px', overflow: 'hidden', border: '1px solid rgba(0,229,255,0.1)' }}>
+            <div style={{ flex: 1, borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(0,229,255,0.1)' }}>
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3764.5!2d79.045!3d21.12!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd616e!2sVNIT%20Nagpur!5e0!3m2!1sen!2sin!4v123456789"
+                src="https://www.google.com/maps?q=Visvesvaraya+National+Institute+of+Technology,+South+Ambazari+Road,+Nagpur,+Maharashtra+440010&z=15&output=embed"
                 width="100%"
                 height="100%"
                 minHeight="260px"
-                style={{ border: 0, borderRadius: '8px' }}
+                style={{ border: 0 }}
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

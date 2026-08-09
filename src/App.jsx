@@ -26,6 +26,7 @@ const AdminUsersPage = lazy(() => import('./admin/AdminUsersPage'));
 
 function SplashScreen({ onComplete }) {
   const [logs, setLogs] = useState([]);
+  const [skipped, setSkipped] = useState(false);
   const [instability, setInstability] = useState(92);
 
   useEffect(() => {
@@ -49,6 +50,7 @@ function SplashScreen({ onComplete }) {
         currentLog++;
         if (currentLog === 5) setInstability(94);
         if (currentLog === 6) setInstability(91);
+        if (currentLog === 7) setInstability(94);
       } else {
         clearInterval(interval);
       }
@@ -57,10 +59,17 @@ function SplashScreen({ onComplete }) {
     return () => clearInterval(interval);
   }, []);
 
+  const handleSkip = () => {
+    setSkipped(true);
+    onComplete();
+  };
+
   useEffect(() => {
     const timer = setTimeout(onComplete, 2000);
     return () => clearTimeout(timer);
   }, [onComplete]);
+
+  if (skipped) return null;
 
   return (
     <motion.div
@@ -369,9 +378,41 @@ function SplashScreen({ onComplete }) {
               letterSpacing: '0.08em',
               textAlign: 'right',
             }}>
-              LOADING: {Math.min(100, (logs.length / 10 * 100)).toFixed(0)}%
+              LOADING: {Math.min(100, (((logs.length + 1) / 10) * 100)).toFixed(0)}%
             </div>
           </div>
+
+          {/* Skip Intro */}
+          <button
+            onClick={handleSkip}
+            aria-label="Skip intro"
+            style={{
+              marginTop: '1.4rem',
+              background: 'none',
+              border: '1px solid rgba(0,229,255,0.15)',
+              borderRadius: '2px',
+              padding: '0.45rem 1.1rem',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.62rem',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              transition: 'color 0.25s var(--ease-cyber), border-color 0.25s var(--ease-cyber), box-shadow 0.25s var(--ease-cyber)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'var(--spice-blue)';
+              e.currentTarget.style.borderColor = 'var(--spice-blue)';
+              e.currentTarget.style.boxShadow = '0 0 14px rgba(0,229,255,0.18)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'var(--text-muted)';
+              e.currentTarget.style.borderColor = 'rgba(0,229,255,0.15)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            SKIP INTRO ▸
+          </button>
         </div>
       </motion.div>
     </motion.div>

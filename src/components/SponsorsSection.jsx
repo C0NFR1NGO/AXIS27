@@ -1,11 +1,22 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ScrambleTitle from './ScrambleTitle';
+import NotifyMe from './NotifyMe';
 
 export default function SponsorsSection() {
   return (
     <section id="sponsors" className="section">
       <ScrambleTitle text="Sponsors" />
+
+      <motion.p
+        className="section-subtitle"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
+        Partner with Central India's largest technical festival and put your brand in front of 35,000+ students.
+      </motion.p>
 
       <motion.div
         className="glass-card"
@@ -15,7 +26,7 @@ export default function SponsorsSection() {
         transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         style={{
           padding: '3rem 2.5rem',
-          maxWidth: '600px',
+          maxWidth: '900px',
           width: '100%',
           textAlign: 'center',
         }}
@@ -27,24 +38,31 @@ export default function SponsorsSection() {
           color: 'var(--gold)',
           letterSpacing: '0.12em',
           textTransform: 'uppercase',
-          marginBottom: '1rem',
+          marginBottom: '0.4rem',
         }}>
-          Coming Soon
+          Sponsorship Tiers
         </div>
         <div style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '0.65rem',
           color: 'var(--text-muted)',
           letterSpacing: '0.1em',
-          marginBottom: '2rem',
           opacity: 0.5,
+          marginBottom: '2.2rem',
         }}>
-          // SPONSOR_LIST_PENDING //
+          // PROSPECTUS COMING SOON — PARTNERSHIPS OPEN NOW //
         </div>
 
-        <Link to="/contact" className="btn-primary">
-          Contact Us to Be a Sponsor
-        </Link>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.8rem' }}>
+          <Link to="/contact" className="btn-primary">
+            Contact Us to Be a Sponsor
+          </Link>
+          <NotifyMe
+            interest="sponsorship"
+            title="Want the full sponsorship prospectus? Leave your email and we'll send it over the moment it's ready."
+            hint="// PROSPECTUS DELIVERY INCOMING //"
+          />
+        </div>
       </motion.div>
     </section>
   );
