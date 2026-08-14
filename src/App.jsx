@@ -29,6 +29,11 @@ function SplashScreen({ onComplete }) {
   const [skipped, setSkipped] = useState(false);
   const [instability, setInstability] = useState(92);
 
+  const handleSkip = () => {
+    setSkipped(true);
+    onComplete();
+  };
+
   useEffect(() => {
     const logList = [
       "CYBERLIFE INDUSTRIES INC.  |  REG: AXIS-v2.70",
@@ -44,6 +49,17 @@ function SplashScreen({ onComplete }) {
     ];
 
     let currentLog = 0;
+    let finished = false;
+    let completed = false;
+    const finish = () => {
+      if (completed) return;
+      completed = true;
+      clearTimeout(dismissTimer);
+      clearTimeout(fallbackTimer);
+      clearInterval(interval);
+      setTimeout(onComplete, 600);
+    };
+
     const interval = setInterval(() => {
       if (currentLog < logList.length) {
         setLogs(prev => [...prev, logList[currentLog]]);
@@ -52,21 +68,34 @@ function SplashScreen({ onComplete }) {
         if (currentLog === 6) setInstability(91);
         if (currentLog === 7) setInstability(94);
       } else {
-        clearInterval(interval);
+        finished = true;
+        finish();
       }
     }, 170);
 
-    return () => clearInterval(interval);
-  }, []);
+    // Fallback: if the interval stalls (e.g. tab throttled), show all logs and dismiss.
+    const fallbackTimer = setTimeout(() => {
+      if (!finished) {
+        setLogs(logList);
+        finish();
+      }
+    }, 2200);
 
-  const handleSkip = () => {
-    setSkipped(true);
-    onComplete();
-  };
+    // Auto-dismiss when all logs have rendered (logs.length === logList.length)
+    const dismissTimer = setInterval(() => {
+      setLogs(prev => {
+        if (prev.length >= logList.length) {
+          finish();
+        }
+        return prev;
+      });
+    }, 200);
 
-  useEffect(() => {
-    const timer = setTimeout(onComplete, 2000);
-    return () => clearTimeout(timer);
+    return () => {
+      clearInterval(interval);
+      clearInterval(dismissTimer);
+      clearTimeout(fallbackTimer);
+    };
   }, [onComplete]);
 
   if (skipped) return null;
@@ -378,7 +407,7 @@ function SplashScreen({ onComplete }) {
               letterSpacing: '0.08em',
               textAlign: 'right',
             }}>
-              LOADING: {Math.min(100, (((logs.length + 1) / 10) * 100)).toFixed(0)}%
+              LOADING: {Math.min(100, Math.round((logs.length / 10) * 100))}%
             </div>
           </div>
 

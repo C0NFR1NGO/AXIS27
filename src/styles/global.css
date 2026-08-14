@@ -530,7 +530,7 @@ img {
   }
 }
 
-/* Consolidated: @keyframes spin (was in AdminLayout, AdminLoginPage, AdminUsersPage, ProtectedRoute) */
+/* Consolidated: @keyframes spin (was in AdminLayout, AdminLoginPage, AdminUsersPage) */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
