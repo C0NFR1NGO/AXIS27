@@ -234,12 +234,6 @@ img {
   50% { text-shadow: 0 0 8px rgba(229,169,60,0.4); }
 }
 
-/* —— HERO TAGLINE: letter-spacing drift (cheaper via CSS animation) —— */
-@keyframes hero-tagline-drift {
-  0%, 100% { letter-spacing: 0.25em; }
-  50% { letter-spacing: 0.32em; }
-}
-
 /* —— SECTION TITLES —— */
 .section-title {
   font-family: var(--font-display);

@@ -144,7 +144,7 @@ export default function HeroSection({ ready = true }) {
           marginBottom: '1.2rem',
           position: 'relative',
           zIndex: 3,
-          animation: 'hero-tagline-drift 4s ease-in-out infinite, shimmer 4s linear infinite',
+          animation: 'shimmer 4s linear infinite',
         }}
       >
         ILLUMINATING THE INFINITE
