@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const STORAGE_KEY = 'axis27-notify-list';
+const WEB3FORMS_URL = 'https://api.web3forms.com/submit';
+const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
+const isWeb3FormsConfigured = WEB3FORMS_ACCESS_KEY && WEB3FORMS_ACCESS_KEY.length > 10;
 
 /**
  * NotifyMe — shared "notify me when live" email capture.
@@ -27,10 +30,11 @@ export function addNotifyEmail(email, interest = 'general') {
   return next;
 }
 
-export default function NotifyMe({ interest = 'general', compact = false, title, hint }) {
+export default function NotifyMe({ interest = 'general', _compact = false, title, hint }) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle | submitting | done | error
   const [existing, setExisting] = useState(false);
+  const [errorKind, setErrorKind] = useState('validation'); // validation | send
 
   useEffect(() => {
     const list = getNotifyList();
@@ -40,28 +44,61 @@ export default function NotifyMe({ interest = 'general', compact = false, title,
     }
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email.trim()) {
+      setErrorKind('validation');
       setStatus('error');
       return;
     }
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!re.test(email.trim())) {
+      setErrorKind('validation');
       setStatus('error');
       return;
     }
     setStatus('submitting');
     const list = getNotifyList();
-    const isDuplicate = list.some(entry => entry.email.toLowerCase() === email.trim().toLowerCase());
-    setTimeout(() => {
-      if (isDuplicate) {
+    const trimmed = email.trim();    const isDuplicate = list.some(entry => entry.email.toLowerCase() === trimmed.toLowerCase());
+
+    // No key configured (local dev): keep the localStorage ledger flow.
+    if (!isWeb3FormsConfigured) {
+      setTimeout(() => {
+        if (!isDuplicate) addNotifyEmail(trimmed, interest);
         setStatus('done');
-      } else {
-        addNotifyEmail(email.trim(), interest);
-        setStatus('done');
+      }, 350);
+      return;
+    }
+
+    if (isDuplicate) {
+      setStatus('done');
+      return;
+    }
+
+    try {
+      const res = await fetch(WEB3FORMS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `AXIS'27 notify-me: ${interest}`,
+          from_name: "AXIS'27 Website",
+          email: trimmed,
+          message: `Launch notification signup — interest: ${interest}, page: ${window.location.pathname}`,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Submission failed');
       }
-    }, 350);
+      addNotifyEmail(trimmed, interest);
+      setStatus('done');
+    } catch {
+      // Keep the lead locally even if the upstream send fails.
+      addNotifyEmail(trimmed, interest);
+      setErrorKind('send');
+      setStatus('error');
+    }
   };
 
   if (status === 'done') {
@@ -108,7 +145,7 @@ export default function NotifyMe({ interest = 'general', compact = false, title,
         <input
           type="email"
           value={email}
-          onChange={(e) => { setEmail(e.target.value); setStatus('idle'); }}
+          onChange={(e) => { setEmail(e.target.value); setStatus('idle'); setErrorKind('validation'); }}
           placeholder="your@email.com"
           aria-label="Email address for launch notifications"
           style={{
@@ -157,7 +194,11 @@ export default function NotifyMe({ interest = 'general', compact = false, title,
           color: 'var(--cyber-red)',
           letterSpacing: '0.06em',
         }}>
-          {email.trim() ? '// INVALID EMAIL FORMAT //' : '// EMAIL REQUIRED //'}
+          {errorKind === 'send'
+            ? '// TRANSMISSION FAILED — SAVED LOCALLY, PLEASE RETRY //'
+            : email.trim()
+              ? '// INVALID EMAIL FORMAT //'
+              : '// EMAIL REQUIRED //'}
         </div>
       )}
       {hint && (

@@ -121,7 +121,7 @@ function ConstellationField() {
       );
     }
     return arr;
-  }, [clusterSeeds]);
+  }, [bounds, clusterSeeds]);
 
   const nodePositions = useMemo(() => new Float32Array(NODE_COUNT * 3), []);
   const nodeColors = useMemo(() => {

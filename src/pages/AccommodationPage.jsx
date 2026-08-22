@@ -2,8 +2,13 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import AccommodationSection from '../components/AccommodationSection';
 import ZoomReveal from '../components/ZoomReveal';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function AccommodationPage() {
+  usePageMeta({
+    title: 'Accommodation',
+    description: 'Accommodation for outstation participants at AXIS\'27, VNIT Nagpur.',
+  });
   return (
     <div style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1 }}>
       <motion.div

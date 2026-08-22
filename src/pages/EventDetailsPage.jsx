@@ -1,14 +1,19 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useParams } from 'react-router-dom';
 import { eventCategories } from '../data/content';
 import NotifyMe from '../components/NotifyMe';
+import usePageMeta from '../hooks/usePageMeta';
 const CosmicBackground = lazy(() => import('../components/CosmicBackground'));
 
 export default function EventDetailsPage() {
   const { eventId } = useParams();
   const slug = eventId ? eventId.toLowerCase() : '';
   const eventName = eventId ? eventId.replace(/-/g, ' ') : 'Event';
+  usePageMeta({
+    title: `${eventName} — Event`,
+    description: `${eventName} at AXIS'27, the annual technical festival of VNIT Nagpur. Details and notifications.`,
+  });
 
   // Match the slug to a category + event entry when possible
   let matched = null;

@@ -2,8 +2,13 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import SponsorsSection from '../components/SponsorsSection';
 import ZoomReveal from '../components/ZoomReveal';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function SponsorsPage() {
+  usePageMeta({
+    title: 'Sponsors',
+    description: 'Partner with AXIS\'27, Central India\'s largest technical festival — 35,000+ students, 200+ colleges.',
+  });
   return (
     <div style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1 }}>
       <motion.div

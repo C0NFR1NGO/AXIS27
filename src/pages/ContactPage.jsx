@@ -113,6 +113,10 @@ const labelStyle = {
 };
 
 export default function ContactPage() {
+  usePageMeta({
+    title: 'Contact',
+    description: 'Get in touch with the AXIS\'27 team at VNIT Nagpur — queries, collaborations and partnerships.',
+  });
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -394,7 +398,7 @@ export default function ContactPage() {
                 <label htmlFor="contact-phone" style={labelStyle}>
                   Phone Number <span style={{ color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.05em' }}>(optional)</span>
                 </label>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                   <select
                     name="countryCode"
                     value={formData.countryCode}

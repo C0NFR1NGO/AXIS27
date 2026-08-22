@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import EventsSection from '../components/EventsSection';
 import { eventCategories } from '../data/content';
+import usePageMeta from '../hooks/usePageMeta';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -39,10 +39,10 @@ const jsonLd = {
 };
 
 export default function EventsPage() {
-  useEffect(() => {
-    document.title = "Events — AXIS'27 | VNIT Nagpur";
-    return () => { document.title = "AXIS'27 - Central India's Largest Technical Fest | VNIT Nagpur"; };
-  }, []);
+  usePageMeta({
+    title: 'Events',
+    description: "35+ technical events across Management, Software & Electronics, Robotics and more — Robowars, CTF, Drone Racing and Insomnia at AXIS'27, VNIT Nagpur.",
+  });
 
   return (
     <div style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1 }}>

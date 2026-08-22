@@ -2,8 +2,13 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import WorkshopsSection from '../components/WorkshopsSection';
 import ZoomReveal from '../components/ZoomReveal';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function WorkshopsPage() {
+  usePageMeta({
+    title: 'Workshops',
+    description: 'Hands-on workshops at AXIS\'27 — from AI and embedded systems to drones. VNIT Nagpur.',
+  });
   return (
     <div style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1 }}>
       <motion.div

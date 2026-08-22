@@ -51,7 +51,7 @@ export default function AdminLayout() {
         navigate(redirectUrl, { replace: true });
       }
     }
-  }, [role, loading, navigate, sidebarLinks]);
+  }, [user, role, loading, navigate, sidebarLinks]);
 
   const handleSignOut = async () => {
     await signOut();

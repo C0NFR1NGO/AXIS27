@@ -212,7 +212,7 @@ const styles = {
     marginBottom: '2rem',
   },
   statCard: {
-    display: 'block',
+    display: 'flex',
     padding: '1.25rem',
     background: 'rgba(12, 10, 8, 0.6)',
     border: '1px solid rgba(229,169,60,0.1)',
@@ -222,7 +222,6 @@ const styles = {
     overflow: 'hidden',
     transition: 'all 0.3s ease',
     minHeight: '140px',
-    display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
   },

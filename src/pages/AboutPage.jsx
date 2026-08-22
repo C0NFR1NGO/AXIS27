@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 import { aboutText } from '../data/content';
 import TypewriterText from '../components/TypewriterText';
 import ScrambleTitle from '../components/ScrambleTitle';
+import GallerySection from '../components/GallerySection';
+import NotableGuests from '../components/NotableGuests';
+import { notablePerformers } from '../data/content';
+import usePageMeta from '../hooks/usePageMeta';
 
 const milestones = [
   { year: '2001', event: 'Founded as Odyssey — VNIT\'s first tech fest' },
@@ -12,8 +16,7 @@ const milestones = [
   { year: '2015', event: 'Featured NDRF & DRDO exhibitions' },
   { year: '2020', event: 'Pioneered hybrid format during the pandemic' },
   { year: '2025', event: 'Record 35,000+ participants from 200+ colleges' },
-  { year: '2026', event: 'AXIS\'26 — "Innovation, Action, Inspiration"; 16-drone show, ISRO & defence exhibits, National Insights lecture series' },
-  { year: '2027', event: 'AXIS\'27 — Ignis Aeternum: Illuminating the Infinite' },
+  { year: '2026', event: 'AXIS\'26 — "Forging Across Timelines"; 16-drone show, ISRO & defence pavilions, National Insights lecture series' },
 ];
 
 const windows = [
@@ -134,6 +137,10 @@ function TimelineSection() {
 }
 
 export default function AboutPage() {
+  usePageMeta({
+    title: 'About',
+    description: "The story of AXIS — from Odyssey 2001 to Central India's largest technical festival. History, gallery and notable guests.",
+  });
   const [activeWindow, setActiveWindow] = useState('about');
 
   return (
@@ -261,17 +268,16 @@ export default function AboutPage() {
                     </div>
 
                     <h3 style={{ fontFamily: "'Orbitron', monospace", fontSize: '1.2rem', fontWeight: 700, color: 'var(--gold)', marginBottom: '2rem', letterSpacing: '0.1em', textTransform: 'uppercase', textAlign: 'center' }}>
-                      Past Guests & Artists
+                      Notable Guests
                     </h3>
 
-                    <div style={{ width: '100%', maxWidth: '600px', margin: '0 auto', padding: '3rem 2rem', border: '1px solid var(--border-gold)', borderRadius: '2px', background: 'rgba(8,6,4,0.6)' }}>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--text-muted)', letterSpacing: '0.12em', marginBottom: '1rem' }}>
-                        // COMING SOON //
-                      </div>
-                      <div style={{ fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'var(--text-secondary)', letterSpacing: '0.04em' }}>
-                        Information about past guests and artists will be added soon.
-                      </div>
-                    </div>
+                    <NotableGuests />
+
+                    <h3 style={{ fontFamily: "'Orbitron', monospace", fontSize: '1.2rem', fontWeight: 700, color: 'var(--gold)', margin: '4rem 0 2rem', letterSpacing: '0.1em', textTransform: 'uppercase', textAlign: 'center' }}>
+                      Notable Performers
+                    </h3>
+
+                    <NotableGuests people={notablePerformers} verb="PERFORMED" />
                   </section>
                 </div>
               </motion.div>
@@ -289,15 +295,8 @@ export default function AboutPage() {
                 </div>
                 <div style={{ border: '1px solid rgba(0,229,255,0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
                   <ScrambleTitle text="Gallery" style={{ marginTop: 0 }} />
-                  <p className="section-subtitle">Photos from AXIS'27 will be displayed soon.</p>
-                  <div style={{ width: '100%', maxWidth: '600px', margin: '0 auto', padding: '4rem 2rem', border: '1px solid var(--border-gold)', borderRadius: '2px', background: 'rgba(8,6,4,0.6)' }}>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--text-muted)', letterSpacing: '0.12em', marginBottom: '1rem' }}>
-                      // NO PHOTOS YET //
-                    </div>
-                    <div style={{ fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'var(--text-secondary)', letterSpacing: '0.04em' }}>
-                      Gallery coming soon. Check back after the fest!
-                    </div>
-                  </div>
+                  <p className="section-subtitle">Frames from the AXIS'27 desert floor</p>
+                  <GallerySection />
                 </div>
               </motion.div>
             )}

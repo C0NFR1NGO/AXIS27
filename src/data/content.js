@@ -89,6 +89,102 @@ export const socialLinks = {
 
 export const aboutText = `AXIS is the annual technical festival of the Visvesvaraya National Institute of Technology, Nagpur. Started in 2001 as Odyssey, AXIS has grown to become one of the largest technical festivals in India and the largest in Central India. Organising 35+ events, exhibitions and workshops encompassing multiple engineering disciplines, AXIS annually attracts over 35,000 students from across the country.`;
 
+export const galleryItems = [
+  { id: 'robowars', src: 'https://picsum.photos/seed/axis27-robowars/1200/1200', alt: 'Battle bots colliding in the Robowars arena', tag: 'ROBOWARS', span: 'large' },
+  { id: 'drone-show', src: 'https://picsum.photos/seed/axis27-drone-show/800/800', alt: 'The 16-drone night show over the open sky', tag: 'DRONE SHOW', span: '' },
+  { id: 'ctf', src: 'https://picsum.photos/seed/axis27-ctf/800/800', alt: 'Teams locked in a Capture The Flag terminal war', tag: 'CAPTURE THE FLAG', span: '' },
+  { id: 'concert', src: 'https://picsum.photos/seed/axis27-concert/800/1200', alt: 'The closing concert stage lit under a crimson glow', tag: 'CONCERT NIGHT', span: 'tall' },
+  { id: 'workshop', src: 'https://picsum.photos/seed/axis27-workshop/1200/800', alt: 'Students building circuits at a hardware workshop', tag: 'WORKSHOPS', span: 'wide' },
+  { id: 'expo', src: 'https://picsum.photos/seed/axis27-expo/800/800', alt: 'Defence and ISRO exhibition stalls drawing a crowd', tag: 'EXPO', span: '' },
+  { id: 'drone-flight', src: 'https://picsum.photos/seed/axis27-drone-flight/800/800', alt: 'A pilot drone climbing into the desert sky', tag: 'DRONE AT WORK', span: '' },
+  { id: 'robocup', src: 'https://picsum.photos/seed/axis27-robocup/1200/800', alt: 'Autonomous bots on the RoboCup field', tag: 'ROBOCUP', span: 'wide' },
+  { id: 'mechatryst', src: 'https://picsum.photos/seed/axis27-mechatryst/800/800', alt: 'An RC car screaming down the Mechatryst track', tag: 'MECHATRYST', span: '' },
+];
+
+export const notableGuests = [
+  {
+    id: 'kalam',
+    name: 'Dr. APJ Abdul Kalam',
+    role: 'Former President of India · Aerospace scientist · Missile Man of India',
+    year: 2014,
+    img: '/images/guests/kalam.jpg',
+    span: 'featured',
+  },
+  {
+    id: 'sunita-williams',
+    name: 'Sunita L. Williams',
+    role: 'NASA astronaut · Most time in spacewalk by a woman',
+    year: 2019,
+    img: '/images/guests/sunita-williams.jpg',
+  },
+  {
+    id: 'amish-tripathi',
+    name: 'Amish Tripathi',
+    role: 'Author of the Shiva Trilogy',
+    year: 2016,
+    img: '/images/guests/amish-tripathi.jpg',
+  },
+  {
+    id: 'vijender-chauhan',
+    name: 'Dr. Vijender Singh Chauhan',
+    role: 'Founder, Drishti IAS · The Vision Foundation',
+    year: 2023,
+    img: '/images/guests/vijender-chauhan.jpg',
+  },
+  {
+    id: 'hc-verma',
+    name: 'Prof. H.C. Verma',
+    role: 'Physicist · Padma Shri · Author of Concepts of Physics',
+    year: 2024,
+    img: '/images/guests/hc-verma.jpg',
+  },
+  {
+    id: 'acharya-prashant',
+    name: 'Acharya Prashant',
+    role: 'Spiritual teacher · Vedanta philosopher',
+    year: 2026,
+    img: '/images/guests/acharya-prashant.jpg',
+  },
+  {
+    id: 'sudhanshu-trivedi',
+    name: 'Dr. Sudhanshu Trivedi',
+    role: 'Member of Parliament, Rajya Sabha',
+    year: 2026,
+    img: '/images/guests/sudhanshu-trivedi.jpg',
+  },
+];
+
+export const notablePerformers = [
+  {
+    id: 'suhani-shah',
+    name: 'Suhani Shah',
+    role: 'Mentalist · Magician · Performing since age seven',
+    year: '2020',
+    img: '/images/performers/suhani-shah.jpg',
+  },
+  {
+    id: 'dj-shaan',
+    name: 'DJ Shaan',
+    role: 'DJ · Sunburn Campus headliner',
+    year: '2020',
+    img: '/images/performers/dj-shaan.jpg',
+  },
+  {
+    id: 'afishal',
+    name: 'Afishal',
+    role: 'Visual DJ · LED suit performer',
+    year: '2016',
+    img: '/images/performers/afishal.jpg',
+  },
+  {
+    id: 'illuminati',
+    name: 'Illuminati',
+    role: 'Dance crew · Pro-night headliners',
+    year: '2025 & 2026',
+    img: '/images/performers/illuminati.jpg',
+  },
+];
+
 export const contactInfo = {
   title: 'Contact Us',
   description: 'We\'d love to hear from you. Reach out to us for inquiries, collaborations, or any questions about AXIS\'27.',

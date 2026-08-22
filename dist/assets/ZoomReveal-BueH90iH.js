@@ -1,0 +1,1 @@
+import{i as e,o as t}from"./framer-DZVMnmUz.js";var n=t();function r({children:t}){return(0,n.jsx)(e.div,{initial:{opacity:0,scale:.92,y:30},whileInView:{opacity:1,scale:1,y:0},viewport:{once:!0,margin:`-80px`},transition:{duration:.75,ease:[.22,1,.36,1]},children:t})}export{r as t};

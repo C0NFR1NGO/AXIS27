@@ -487,10 +487,12 @@ function AppContent() {
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         style={{ pointerEvents: showSplash ? 'none' : 'auto' }}
       >
+        <a href="#main-content" className="skip-link">Skip to content</a>
         <Navigation />
         <RouteLoading />
         <AnimatePresence mode="wait">
           <motion.div
+            id="main-content"
             key={location.pathname}
             initial={{ opacity: 0, scale: 1.01, y: 6 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
