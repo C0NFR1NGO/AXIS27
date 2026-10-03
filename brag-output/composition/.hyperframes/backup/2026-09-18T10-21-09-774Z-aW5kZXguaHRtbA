@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>AXIS'27 — Ignis Aeternum</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #070503;
+        --surface: #0c0906;
+        --panel: #12100c;
+        --bone: #f2e4cc;
+        --sand: #e8c89a;
+        --ember: #ff7a1a;
+        --blue: #00a8e8;
+        --white: #f2f7fa;
+        --text-2: #ded2bd;
+        --text-dim: #9c9081;
+        --line-quiet: rgba(242, 228, 204, 0.1);
+        --seam-y: 57%;
+      }
+
+      @font-face {
+        font-family: 'Ethnocentric';
+        src: url('assets/fonts/Ethnocentric.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Audiowide';
+        src: url('assets/fonts/Audiowide-latin.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Inter Tight';
+        src: url('assets/fonts/InterTight-400-latin.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Inter Tight';
+        src: url('assets/fonts/InterTight-500-latin.woff2') format('woff2');
+        font-weight: 500;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Inter Tight';
+        src: url('assets/fonts/InterTight-600-latin.woff2') format('woff2');
+        font-weight: 600;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Inter Tight';
+        src: url('assets/fonts/InterTight-700-latin.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Martian Mono';
+        src: url('assets/fonts/MartianMono-400-latin.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: block;
+      }
+
+      html,
+      body {
+        margin: 0;
+        background: var(--ground);
+      }
+
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      /* ============ persistent world ============ */
+      #world {
+        position: absolute;
+        inset: 0;
+      }
+      #sky {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, #050302 0%, #070503 38%, #0d0906 62%, #161008 74%, #1b130d 86%, #241810 100%);
+      }
+      /* the dawn — the whole minute warms, then ignites */
+      #dawn {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg,
+          rgba(30, 18, 8, 0) 0%,
+          rgba(30, 18, 8, 0.35) 40%,
+          rgba(138, 64, 22, 0.62) 60%,
+          rgba(190, 88, 34, 0.9) 74%,
+          rgba(255, 122, 26, 0.95) 88%,
+          rgba(255, 150, 70, 1) 100%);
+        opacity: 0;
+      }
+      #glow-l {
+        position: absolute;
+        width: 760px;
+        height: 460px;
+        left: -150px;
+        top: 33%;
+        background: radial-gradient(closest-side, rgba(255, 138, 47, 0.34), transparent 70%);
+      }
+      #glow-r {
+        position: absolute;
+        width: 900px;
+        height: 500px;
+        right: -210px;
+        top: 29%;
+        background: radial-gradient(closest-side, rgba(255, 122, 26, 0.26), transparent 70%);
+      }
+      #stars {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+      #meteor {
+        position: absolute;
+        top: 22%;
+        left: -300px;
+        width: 300px;
+        height: 2px;
+        background: linear-gradient(90deg, rgba(255, 170, 90, 0), rgba(255, 190, 120, 0.85) 68%, #fff2dd 100%);
+        border-radius: 2px;
+        filter: drop-shadow(0 0 6px rgba(255, 170, 90, 0.8));
+        opacity: 0;
+      }
+      #moon-a {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        top: 9.5%;
+        left: 68%;
+        border-radius: 50%;
+        background: radial-gradient(circle at 38% 36%, #fff4dc, #d9c9a8 58%, rgba(217, 201, 168, 0) 72%);
+      }
+      #moon-b {
+        position: absolute;
+        width: 96px;
+        height: 96px;
+        top: 26.5%;
+        left: 93%;
+        border-radius: 50%;
+        background: radial-gradient(circle at 40% 34%, #ffdec0, #e0984f 55%, rgba(224, 152, 79, 0) 72%);
+      }
+      #seam {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: var(--seam-y);
+        height: 2px;
+        background: rgba(255, 122, 26, 0.95);
+        box-shadow: 0 0 14px rgba(255, 122, 26, 0.5), 0 0 42px rgba(255, 122, 26, 0.24);
+      }
+      #seam-glow {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: var(--seam-y);
+        height: 150px;
+        transform: translateY(-50%);
+        background: radial-gradient(closest-side, rgba(255, 150, 60, 0.42), rgba(255, 150, 60, 0.1) 46%, transparent 70%);
+      }
+      #seam-flare {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: var(--seam-y);
+        height: 110px;
+        transform: translateY(-50%);
+        background: radial-gradient(closest-side, rgba(255, 150, 60, 0.55), rgba(255, 150, 60, 0.14) 45%, transparent 70%);
+      }
+      #dunes {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 70%;
+        overflow: hidden;
+      }
+
+      /* ============ scene scaffolding ============ */
+      .clip {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+      .scene-inner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        text-align: center;
+        padding: 80px 140px;
+      }
+
+      /* ============ typography helpers ============ */
+      .warm-word {
+        color: var(--ember);
+      }
+      .cold-word {
+        color: var(--blue);
+      }
+      .eyebrow {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 26px;
+        letter-spacing: 0.55em;
+        text-indent: 0.55em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin: 0;
+      }
+      .warm-hairline {
+        width: 150px;
+        height: 2px;
+        background: var(--blue);
+        box-shadow: 0 0 10px rgba(0, 168, 232, 0.35);
+        margin: 0;
+      }
+
+      /* ============ scene 1 — hook ============ */
+      #hook-1,
+      #hook-2 {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 400;
+        font-size: 66px;
+        line-height: 1.25;
+        letter-spacing: 0.02em;
+        color: var(--bone);
+        max-width: 1500px;
+        margin: 0;
+        text-shadow: 0 1px 30px rgba(10, 6, 3, 0.95);
+      }
+      #hook-2 {
+        margin-top: 26px;
+        font-weight: 500;
+      }
+
+      /* ============ scene 2 — the wordmark ============ */
+      .title-scrim {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 1560px;
+        height: 560px;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(closest-side, rgba(4, 3, 2, 0.78), rgba(4, 3, 2, 0.35) 55%, rgba(4, 3, 2, 0) 78%);
+        pointer-events: none;
+      }
+      .glyph {
+        display: inline-block;
+      }
+      #wordmark,
+      #wordmark-final {
+        font-family: 'Ethnocentric', sans-serif;
+        font-weight: 400;
+        line-height: 1.02;
+        letter-spacing: 0.04em;
+        text-indent: 0.04em;
+        text-transform: uppercase;
+        color: var(--bone);
+        margin: 0;
+      }
+      #wordmark {
+        font-size: 190px;
+      }
+      #wordmark-final {
+        font-size: 252px;
+        margin-top: 64px;
+      }
+      #wm-glow,
+      #halo {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(closest-side, rgba(255, 150, 60, 0.3), rgba(255, 150, 60, 0.1) 52%, transparent 74%);
+        pointer-events: none;
+      }
+      #wm-glow {
+        width: 1450px;
+        height: 560px;
+      }
+      #halo {
+        width: 1240px;
+        height: 620px;
+        top: 46%;
+      }
+      #theme,
+      #theme-final {
+        font-family: 'Audiowide', sans-serif;
+        font-weight: 400;
+        font-size: 64px;
+        line-height: 1.2;
+        letter-spacing: 0.34em;
+        text-indent: 0.34em;
+        text-transform: uppercase;
+        color: var(--ember);
+        margin: 46px 0 0 0;
+        text-shadow: 0 0 30px rgba(255, 122, 26, 0.35), 0 1px 22px rgba(10, 6, 3, 0.9);
+      }
+      #claim {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 500;
+        font-size: 38px;
+        line-height: 1.35;
+        letter-spacing: 0.04em;
+        color: var(--text-2);
+        margin: 34px 0 0 0;
+        max-width: 1500px;
+        text-shadow: 0 1px 24px rgba(10, 6, 3, 0.9);
+      }
+
+      /* ============ scene 3 — the counters ============ */
+      #panel {
+        background: rgba(18, 16, 12, 0.86);
+        border: 1px solid var(--line-quiet);
+        border-top: 2px solid rgba(0, 168, 232, 0.42);
+        border-radius: 4px;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 30px 90px rgba(0, 0, 0, 0.55);
+        padding: 70px 96px 60px 96px;
+        display: flex;
+        gap: 96px;
+        align-items: flex-end;
+      }
+      .stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 26px;
+        min-width: 300px;
+      }
+      .statval-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+      }
+      .statval {
+        font-family: 'Audiowide', sans-serif;
+        font-weight: 400;
+        font-size: 112px;
+        line-height: 1;
+        color: var(--blue);
+        text-shadow: 0 0 34px rgba(0, 168, 232, 0.38);
+      }
+      .plussign {
+        font-family: 'Audiowide', sans-serif;
+        font-weight: 400;
+        font-size: 62px;
+        line-height: 1;
+        color: var(--blue);
+        margin-left: 8px;
+      }
+      .statlabel {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 26px;
+        letter-spacing: 0.3em;
+        text-indent: 0.3em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        border-top: 1px solid var(--line-quiet);
+        padding-top: 18px;
+      }
+      #panel-note {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 26px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin: 56px 0 0 0;
+        text-shadow: 0 1px 20px rgba(10, 6, 3, 0.9);
+      }
+
+      /* ============ scene 4 — the town ============ */
+      #domain-line {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 22px;
+        line-height: 1.6;
+        letter-spacing: 0.18em;
+        text-indent: 0.3em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin: 0 0 54px 0;
+        text-shadow: 0 1px 20px rgba(10, 6, 3, 0.9);
+      }
+      #cards {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        align-items: center;
+      }
+      .card-row {
+        display: flex;
+        flex-direction: row;
+        gap: 42px;
+        align-items: stretch;
+      }
+      .ecard {
+        width: 470px;
+        background: rgba(18, 16, 12, 0.9);
+        border: 1px solid var(--line-quiet);
+        border-radius: 4px;
+        padding: 44px 46px 40px 46px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+        position: relative;
+      }
+      .ecard::after {
+        content: '';
+        position: absolute;
+        left: -1px;
+        right: -1px;
+        bottom: -1px;
+        height: 2px;
+        background: var(--ember);
+        box-shadow: 0 0 12px rgba(255, 122, 26, 0.5);
+      }
+      .ecard-top {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ecard-index {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 24px;
+        letter-spacing: 0.14em;
+        color: var(--blue);
+      }
+      .ecard-name {
+        font-family: 'Audiowide', sans-serif;
+        font-weight: 400;
+        font-size: 52px;
+        line-height: 1.05;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--bone);
+        margin: 0;
+      }
+      .ecard-tag {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 600;
+        font-size: 30px;
+        line-height: 1.35;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--sand);
+        margin: 0;
+      }
+
+      /* ============ scene 5 — the thesis ============ */
+      #thesis-1,
+      #thesis-2,
+      #thesis-3,
+      #thesis-4 {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 600;
+        font-size: 74px;
+        line-height: 1.3;
+        letter-spacing: 0.02em;
+        color: var(--bone);
+        max-width: 1500px;
+        margin: 0;
+        text-shadow: 0 1px 26px rgba(10, 6, 3, 0.95);
+      }
+      #thesis-4 {
+        margin: 0;
+      }
+      .warm-hairline {
+        margin-top: 44px;
+      }
+      #thesis-3 {
+        margin: 44px 0 0 0;
+      }
+      #thesis-2 {
+        margin: 32px 0 0 0;
+      }
+      #thesis-1 {
+        margin: 0;
+      }
+
+      /* ============ scene 6 — the finale ============ */
+      #address {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 30px;
+        line-height: 1.4;
+        letter-spacing: 0.18em;
+        text-indent: 0.18em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin: 46px 0 0 0;
+        text-shadow: 0 1px 22px rgba(10, 6, 3, 0.95);
+      }
+      #fade-black {
+        position: absolute;
+        inset: 0;
+        background: #030201;
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-vq6u" id="root" data-composition-id="axis27-brag" data-start="0" data-width="1920" data-height="1080" data-duration="60">
+      <!-- persistent world -->
+      <div data-hf-id="hf-a1f8" id="world" data-layout-ignore="">
+        <div data-hf-id="hf-f7j0" id="sky"></div>
+        <div data-hf-id="hf-jaer" id="dawn"></div>
+        <div data-hf-id="hf-8rq1" id="glow-l"></div>
+        <div data-hf-id="hf-ecqv" id="glow-r"></div>
+        <svg data-hf-id="hf-m1bm" id="stars" aria-hidden="true" />
+        <div data-hf-id="hf-vdo1" id="meteor"></div>
+        <div data-hf-id="hf-cd9c" id="moon-a"></div>
+        <div data-hf-id="hf-l157" id="moon-b"></div>
+        <div data-hf-id="hf-cx27" id="seam-glow"></div>
+        <div data-hf-id="hf-f66z" id="seam"></div>
+        <div data-hf-id="hf-ax4w" id="seam-flare" data-start="0"></div>
+        <svg data-hf-id="hf-zwvq" id="dunes" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true">
+          <path data-hf-id="hf-jqmv" d="M0,1080 V640 Q250,606 520,628 T1000,616 T1500,632 L1920,624 V1080 Z" fill="#1b130d" />
+          <path data-hf-id="hf-m2nv" d="M0,1080 V706 Q320,680 660,700 T1240,692 T1920,708 L1920,1080 Z" fill="#050403" />
+        </svg>
+      </div>
+
+      <!-- scene 1 : hook -->
+      <section data-hf-id="hf-wn2f" id="s1" class="clip" data-start="0" data-duration="8.7423" data-track-index="1">
+        <div data-hf-id="hf-97sb" class="scene-inner">
+          <p data-hf-id="hf-n75m" id="hook-1">Every edition leaves ash.</p>
+          <p data-hf-id="hf-rfmk" id="hook-2">This one is <span data-hf-id="hf-q0pp" class="warm-word">the flame.</span></p>
+        </div>
+      </section>
+
+      <!-- scene 2 : the wordmark -->
+      <section data-hf-id="hf-7kth" id="s2" class="clip" data-start="8.7423" data-duration="8.7306" data-track-index="2">
+        <div data-hf-id="hf-skgb" class="scene-inner">
+          <div data-hf-id="hf-7dcv" class="title-scrim"></div>
+          <div data-hf-id="hf-piht" id="wm-glow"></div>
+          <h1 data-hf-id="hf-zrv9" id="wordmark" class="grad" aria-label="AXIS'27">
+            <span data-hf-id="hf-6jgk" class="glyph">A</span><span data-hf-id="hf-2ypb" class="glyph">X</span><span data-hf-id="hf-9pws" class="glyph">I</span><span data-hf-id="hf-zdy2" class="glyph">S</span><span data-hf-id="hf-u198" class="glyph">’</span><span data-hf-id="hf-151p" class="glyph">2</span><span data-hf-id="hf-34ku" class="glyph">7</span>
+          </h1>
+          <p data-hf-id="hf-h1wu" id="theme">Ignis Aeternum</p>
+          <p data-hf-id="hf-35jf" id="claim">Central India’s largest technical fest. VNIT Nagpur.</p>
+        </div>
+      </section>
+
+      <!-- scene 3 : the counters -->
+      <section data-hf-id="hf-anxl" id="s3" class="clip" data-start="17.4729" data-duration="8.7306" data-track-index="3">
+        <div data-hf-id="hf-s65a" class="scene-inner">
+          <div data-hf-id="hf-zk0l" id="panel">
+            <div data-hf-id="hf-xa0m" class="stat">
+              <div data-hf-id="hf-47kw" class="statval-row"><span data-hf-id="hf-nl4b" id="v1" class="statval">0</span><span data-hf-id="hf-1qa3" class="plussign">+</span></div>
+              <div data-hf-id="hf-gcrd" class="statlabel">Events</div>
+            </div>
+            <div data-hf-id="hf-tx7e" class="stat">
+              <div data-hf-id="hf-5gew" class="statval-row"><span data-hf-id="hf-b5da" id="v2" class="statval">0</span><span data-hf-id="hf-cgq3" class="plussign">+</span></div>
+              <div data-hf-id="hf-9uxy" class="statlabel">Colleges</div>
+            </div>
+            <div data-hf-id="hf-ubif" class="stat">
+              <div data-hf-id="hf-49ht" class="statval-row"><span data-hf-id="hf-7ktt" id="v3" class="statval">0</span><span data-hf-id="hf-c2f2" class="plussign">+</span></div>
+              <div data-hf-id="hf-pxoi" class="statlabel">Participants</div>
+            </div>
+          </div>
+          <p data-hf-id="hf-kyy1" id="panel-note">Started 2001 as Odyssey.</p>
+        </div>
+      </section>
+
+      <!-- scene 4 : the town -->
+      <section data-hf-id="hf-bwhg" id="s4" class="clip" data-start="26.2035" data-duration="13.1057" data-track-index="4">
+        <div data-hf-id="hf-rru9" class="scene-inner">
+          <p data-hf-id="hf-ajzb" id="domain-line">Management · Software · Robotics · Construction · Devise · Igniting Minds · Esports</p>
+          <div data-hf-id="hf-nia2" id="cards">
+            <div data-hf-id="hf-svst" class="card-row">
+              <div data-hf-id="hf-5cb7" class="ecard">
+                <div data-hf-id="hf-vsid" class="ecard-top">
+                  <span data-hf-id="hf-blx4" class="ecard-index">01</span>
+                  <svg data-hf-id="hf-dahf" width="38" height="38" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path data-hf-id="hf-ymmw" d="M12 2l8 4.6v9.2L12 21l-8-5.2V6.6L12 2z" stroke="#ff7a1a" stroke-width="1.6" fill="none" />
+                    <circle data-hf-id="hf-22ui" cx="12" cy="12" r="3.2" stroke="#ff7a1a" stroke-width="1.6" fill="none" />
+                  </svg>
+                </div>
+                <h2 data-hf-id="hf-8v7l" class="ecard-name">Robowars</h2>
+                <p data-hf-id="hf-52rb" class="ecard-tag">BUILD. FIGHT. SURVIVE.</p>
+              </div>
+              <div data-hf-id="hf-rw8j" class="ecard">
+                <div data-hf-id="hf-fd55" class="ecard-top">
+                  <span data-hf-id="hf-af01" class="ecard-index">02</span>
+                  <svg data-hf-id="hf-vs1f" width="38" height="38" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path data-hf-id="hf-8xxb" d="M9 7L4 12l5 5" stroke="#ff7a1a" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" />
+                    <path data-hf-id="hf-2acw" d="M15 7l5 5-5 5" stroke="#ff7a1a" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" />
+                  </svg>
+                </div>
+                <h2 data-hf-id="hf-1ek2" class="ecard-name">Insomnia</h2>
+                <p data-hf-id="hf-ms8c" class="ecard-tag">CODE. THINK. SURVIVE.</p>
+              </div>
+              <div data-hf-id="hf-rhxi" class="ecard">
+                <div data-hf-id="hf-gk28" class="ecard-top">
+                  <span data-hf-id="hf-atb2" class="ecard-index">03</span>
+                  <svg data-hf-id="hf-vdqe" width="38" height="38" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path data-hf-id="hf-uagg" d="M12 2l8 4.6v9.2L12 21l-8-5.2V6.6L12 2z" stroke="#ff7a1a" stroke-width="1.6" fill="none" />
+                    <circle data-hf-id="hf-knu6" cx="12" cy="12" r="3.2" stroke="#ff7a1a" stroke-width="1.6" fill="none" />
+                  </svg>
+                </div>
+                <h2 data-hf-id="hf-h2mc" class="ecard-name">Mechatryst</h2>
+                <p data-hf-id="hf-008g" class="ecard-tag">ROAR. RACE. WIN.</p>
+              </div>
+            </div>
+            <div data-hf-id="hf-50cx" class="card-row">
+              <div data-hf-id="hf-r3mh" class="ecard">
+                <div data-hf-id="hf-g5r7" class="ecard-top">
+                  <span data-hf-id="hf-9mdz" class="ecard-index">04</span>
+                  <svg data-hf-id="hf-uzfd" width="38" height="38" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path data-hf-id="hf-yhm8" d="M12 4c3.5 1.6 6 2 6 2s-.4 5.4-2.4 6.6c1.8 1 1.4 5-1.6 7-3 2-3.8 1.6-6.4-.6" stroke="#ff7a1a" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round" />
+                    <path data-hf-id="hf-n5lt" d="M12 4v18" stroke="#ff7a1a" stroke-width="1.1" stroke-linecap="round" />
+                  </svg>
+                </div>
+                <h2 data-hf-id="hf-grvm" class="ecard-name">Drone at Work</h2>
+                <p data-hf-id="hf-s2fh" class="ecard-tag">LIFT. GUIDE. LAND.</p>
+              </div>
+              <div data-hf-id="hf-qpbg" class="ecard">
+                <div data-hf-id="hf-e682" class="ecard-top">
+                  <span data-hf-id="hf-a0p0" class="ecard-index">05</span>
+                  <svg data-hf-id="hf-ul4c" width="38" height="38" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path data-hf-id="hf-ag91" d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="#00a8e8" stroke-width="1.6" fill="none" stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <h2 data-hf-id="hf-ay1z" class="ecard-name">Capture The Flag</h2>
+                <p data-hf-id="hf-vjmo" class="ecard-tag">EXPLOIT. ESCALATE. EXFILTRATE.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- scene 5 : the thesis -->
+      <section data-hf-id="hf-j841" id="s5" class="clip" data-start="39.3092" data-duration="8.7306" data-track-index="5">
+        <div data-hf-id="hf-rdj8" class="scene-inner">
+          <p data-hf-id="hf-2p15" id="thesis-1">Every edition leaves ash.</p>
+          <p data-hf-id="hf-26jb" id="thesis-2">This one is <span data-hf-id="hf-wbht" class="warm-word">the flame.</span></p>
+          <p data-hf-id="hf-qlo5" id="thesis-3">The world burns <span data-hf-id="hf-1nf8" class="warm-word">warm.</span></p>
+        </div>
+      </section>
+
+      <!-- scene 6 : the finale -->
+      <section data-hf-id="hf-smig" id="s6" class="clip" data-start="48.0398" data-duration="11.9602" data-track-index="6">
+        <div data-hf-id="hf-qz87" class="scene-inner">
+          <div data-hf-id="hf-0ulb" class="title-scrim"></div>
+          <div data-hf-id="hf-tyg7" id="halo"></div>
+          <p data-hf-id="hf-e5sz" id="thesis-4">The interface stays <span data-hf-id="hf-nlu0" class="cold-word">cold.</span></p>
+          <div data-hf-id="hf-q1sy" class="warm-hairline"></div>
+          <h1 data-hf-id="hf-caty" id="wordmark-final" class="grad" aria-label="AXIS'27">
+            <span data-hf-id="hf-1q2k" class="glyph">A</span><span data-hf-id="hf-zqz3" class="glyph">X</span><span data-hf-id="hf-vax0" class="glyph">I</span><span data-hf-id="hf-ty7y" class="glyph">S</span><span data-hf-id="hf-40k4" class="glyph">’</span><span data-hf-id="hf-nzlt" class="glyph">2</span><span data-hf-id="hf-oa9e" class="glyph">7</span>
+          </h1>
+          <p data-hf-id="hf-bv9l" id="theme-final">Ignis Aeternum</p>
+          <p data-hf-id="hf-t05n" id="address">IGNIS AETERNUM · axis27alt.vercel.app</p>
+        </div>
+        <div data-hf-id="hf-bmrh" id="fade-black"></div>
+      </section>
+
+      <!-- audio -->
+      <audio data-hf-id="hf-iko7" id="music" src="assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3" data-start="0" data-duration="60" data-volume="1" data-track-index="10"></audio>
+
+      <audio data-hf-id="hf-3j85" id="sfx-wm" src="assets/sfx/impactBell_heavy_000.ogg" data-start="9.0" data-duration="0.65" data-volume="0.5" data-track-index="11"></audio>
+      <audio data-hf-id="hf-5xvp" id="sfx-panel" src="assets/sfx/impactSoft_medium_004.ogg" data-start="17.55" data-duration="0.15" data-volume="0.34" data-track-index="12"></audio>
+      <audio data-hf-id="hf-kb37" id="sfx-v1" src="assets/sfx/impactSoft_medium_004.ogg" data-start="19.46" data-duration="0.15" data-volume="0.3" data-track-index="13"></audio>
+      <audio data-hf-id="hf-ttht" id="sfx-v2" src="assets/sfx/impactSoft_medium_004.ogg" data-start="21.65" data-duration="0.15" data-volume="0.3" data-track-index="14"></audio>
+      <audio data-hf-id="hf-13ca" id="sfx-v3" src="assets/sfx/impactSoft_medium_004.ogg" data-start="23.93" data-duration="0.15" data-volume="0.3" data-track-index="15"></audio>
+      <audio data-hf-id="hf-mw4i" id="sfx-c1" src="assets/sfx/card-slide-1.ogg" data-start="28.372" data-duration="0.4" data-volume="0.3" data-track-index="16"></audio>
+      <audio data-hf-id="hf-fb5e" id="sfx-c2" src="assets/sfx/card-slide-1.ogg" data-start="30.557" data-duration="0.4" data-volume="0.3" data-track-index="17"></audio>
+      <audio data-hf-id="hf-0nfk" id="sfx-c3" src="assets/sfx/card-slide-1.ogg" data-start="32.739" data-duration="0.4" data-volume="0.3" data-track-index="18"></audio>
+      <audio data-hf-id="hf-5r16" id="sfx-c4" src="assets/sfx/card-slide-1.ogg" data-start="35.422" data-duration="0.4" data-volume="0.3" data-track-index="19"></audio>
+      <audio data-hf-id="hf-xath" id="sfx-c5" src="assets/sfx/card-slide-1.ogg" data-start="37.592" data-duration="0.4" data-volume="0.3" data-track-index="20"></audio>
+      <audio data-hf-id="hf-glts" id="sfx-cold" src="assets/sfx/click_003.ogg" data-start="48.03" data-duration="0.01" data-volume="0.3" data-track-index="21"></audio>
+      <audio data-hf-id="hf-1v9x" id="sfx-final" src="assets/sfx/impactBell_heavy_003.ogg" data-start="50.172" data-duration="0.65" data-volume="0.55" data-track-index="22"></audio>
+      <audio data-hf-id="hf-x9cn" id="sfx-ignite" src="assets/sfx/impactSoft_medium_004.ogg" data-start="56.76" data-duration="0.15" data-volume="0.3" data-track-index="23"></audio>
+    </div>
+
+    <script>
+      (function () {
+        function mulberry32(a) {
+          return function () {
+            a |= 0;
+            a = (a + 0x6d2b79f5) | 0;
+            var t = Math.imul(a ^ (a >>> 15), 1 | a);
+            t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+          };
+        }
+
+        var rand = mulberry32(27);
+        var ns = 'http://www.w3.org/2000/svg';
+        var stars = document.getElementById('stars');
+        var n = 130;
+        for (var i = 0; i < n; i++) {
+          var c = document.createElementNS(ns, 'circle');
+          var x = rand() * 100;
+          var y = rand() * 52;
+          var r = 0.6 + rand() * 1.7;
+          var a = 0.22 + rand() * 0.6;
+          var warm = rand() < 0.22;
+          c.setAttribute('cx', x + '%');
+          c.setAttribute('cy', y + '%');
+          c.setAttribute('r', r.toFixed(2));
+          c.setAttribute('fill', warm ? '#ffb347' : '#f2e4cc');
+          c.setAttribute('opacity', a.toFixed(2));
+          stars.appendChild(c);
+        }
+
+        /* immediate initial states (frame 0 must render them) */
+        gsap.set('#seam-flare', { opacity: 0 }, 0.002);
+        gsap.set('#meteor', { opacity: 0, x: 0 });
+        gsap.set('#halo', { opacity: 0 });
+        gsap.set('#wm-glow', { opacity: 0 });
+
+        var tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+
+        /* music level carried by the timeline (data-volume is neutral 1) */
+        tl.set('#music', { volume: 0.3 }, 0);
+
+        /* the dawn — the world warms across the whole minute, igniting at the finale */
+        tl.to('#dawn', { opacity: 0.5, duration: 9, ease: 'sine.inOut' }, 8.7423);
+        tl.to('#dawn', { opacity: 0.6, duration: 4, ease: 'sine.inOut' }, 50.0);
+        tl.to('#stars', { opacity: 0.25, duration: 9, ease: 'sine.inOut' }, 8.7423);
+        tl.to('#moon-a', { opacity: 0.55, duration: 12, ease: 'sine.inOut' }, 8.7423);
+        tl.to('#moon-b', { opacity: 0.55, duration: 12, ease: 'sine.inOut' }, 8.7423);
+        tl.to('#seam-glow', { opacity: 0.85, duration: 9, ease: 'sine.inOut' }, 8.7423);
+        tl.to('#stars', { x: -24, duration: 60, ease: 'none' }, 0);
+        /* it is not a footnote: gsap initial state happens above the inline CSS */
+
+        /* scene 1 — hook */
+        tl.from('#hook-1', { y: 30, opacity: 0, duration: 0.8 }, 0.55);
+        tl.fromTo('#meteor', { opacity: 0, x: 0 }, { opacity: 1, x: 2200, duration: 0.7, ease: 'power1.in', immediateRender: false }, 4.42);
+        tl.to('#meteor', { opacity: 0, duration: 0.3 }, 5.13);
+        tl.from('#hook-2', { y: 30, opacity: 0, duration: 0.75 }, 5.46);
+
+        /* scene 2 — the wordmark */
+        tl.fromTo('#seam-flare', { opacity: 0 }, { opacity: 0.95, duration: 0.15, immediateRender: false }, 8.744);
+        tl.fromTo('#seam-flare', { opacity: 0.95 }, { opacity: 0, duration: 0.9, immediateRender: false }, 8.894);
+        tl.from('#wordmark .glyph', { y: 34, opacity: 0, rotate: -4, duration: 0.5, stagger: 0.08, ease: 'back.out(1.2)' }, 9.0);
+        tl.from('#wm-glow', { opacity: 0 }, { opacity: 0.9, duration: 0.8, immediateRender: false }, 9.0);
+        tl.from('#theme', { y: 24, opacity: 0, duration: 0.6 }, 10.91);
+        tl.from('#claim', { y: 20, opacity: 0, duration: 0.6 }, 13.1077);
+
+        /* scene 3 — the counters */
+        tl.fromTo('#seam-flare', { opacity: 0 }, { opacity: 0.8, duration: 0.15, immediateRender: false }, 17.475);
+        tl.fromTo('#seam-flare', { opacity: 0.8 }, { opacity: 0, duration: 0.8, immediateRender: false }, 17.625);
+        tl.from('#panel', { y: 60, opacity: 0, duration: 0.55 }, 17.4729);
+
+        counters(tl, '#v1', 35, 18.56, 0.9);
+        counters(tl, '#v2', 200, 20.75, 0.9);
+        counters(tl, '#v3', 35000, 22.93, 1.0);
+        tl.from('#panel-note', { y: 16, opacity: 0, duration: 0.5 }, 24.9);
+
+        /* scene 4 — the town */
+        tl.fromTo('#seam-flare', { opacity: 0 }, { opacity: 0.8, duration: 0.15, immediateRender: false }, 26.205);
+        tl.fromTo('#seam-flare', { opacity: 0.8 }, { opacity: 0, duration: 0.8, immediateRender: false }, 26.356);
+        tl.from('#domain-line', { y: 22, opacity: 0, duration: 0.6 }, 26.2035);
+        tl.from('#cards .card-row:nth-child(1) .ecard:nth-child(1)', { y: 48, opacity: 0, duration: 0.5, ease: 'back.out(1.15)' }, 28.372);
+        tl.from('#cards .card-row:nth-child(1) .ecard:nth-child(2)', { y: 48, opacity: 0, duration: 0.5, ease: 'back.out(1.1)' }, 30.557);
+        tl.from('#cards .card-row:nth-child(1) .ecard:nth-child(3)', { y: 48, opacity: 0, duration: 0.5, ease: 'back.out(1.05)' }, 32.739);
+        tl.from('#cards .card-row:nth-child(2) .ecard:nth-child(1)', { y: 48, opacity: 0, duration: 0.5, ease: 'back.out(1.15)' }, 34.922);
+        tl.from('#cards .card-row:nth-child(2) .ecard:nth-child(2)', { y: 48, opacity: 0, duration: 0.5, ease: 'back.out(1.05)' }, 37.092);
+
+        /* scene 5 — the thesis */
+        tl.fromTo('#seam-flare', { opacity: 0 }, { opacity: 0.85, duration: 0.15, immediateRender: false }, 39.311);
+        tl.fromTo('#seam-flare', { opacity: 0.85 }, { opacity: 0, duration: 0.8, immediateRender: false }, 39.461);
+        tl.from('#thesis-1', { y: 30, opacity: 0, duration: 0.6 }, 41.46);
+        tl.from('#thesis-2', { y: 30, opacity: 0, duration: 0.6 }, 43.65);
+        tl.from('#thesis-3', { y: 30, opacity: 0, duration: 0.6 }, 45.81);
+
+        /* scene 6 — the finale */
+        tl.fromTo('#seam-flare', { opacity: 0 }, { opacity: 0.9, duration: 0.15, immediateRender: false }, 48.042);
+        tl.fromTo('#seam-flare', { opacity: 0.9 }, { opacity: 0, duration: 0.85, immediateRender: false }, 48.192);
+        tl.from('#thesis-4', { y: 30, opacity: 0, duration: 0.6 }, 48.03);
+        tl.from('.warm-hairline', { scaleX: 0, duration: 0.5, ease: 'power2.out' }, 48.7);
+        tl.from('#halo', { opacity: 0 }, { opacity: 1, duration: 1.2, immediateRender: false }, 48.5);
+        tl.from('#wordmark-final .glyph', { y: 44, opacity: 0, rotate: -5, duration: 0.55, stagger: 0.06, ease: 'back.out(1.2)' }, 50.172);
+        tl.from('#theme-final', { y: 24, opacity: 0, duration: 0.6 }, 52.394);
+        tl.from('#address', { y: 16, opacity: 0, duration: 0.5 }, 54.614);
+        tl.to('#seam-glow', { opacity: 1.15, duration: 0.5, ease: 'power1.in' }, 56.76);
+        tl.to('#seam-glow', { opacity: 0, duration: 2.6, ease: 'power1.in' }, 57.3);
+        tl.fromTo('#seam-flare', { opacity: 0 }, { opacity: 1, duration: 0.15, immediateRender: false }, 56.762);
+        tl.fromTo('#seam-flare', { opacity: 1 }, { opacity: 0, duration: 1.0, immediateRender: false }, 56.912);
+
+        /* outro — music fade + blackout */
+        tl.to('#music', { volume: 0, duration: 1.6, ease: 'power1.in' }, 57.6);
+        tl.to('#fade-black', { opacity: 1, duration: 1.5, ease: 'power1.in' }, 58.5);
+
+        function counters(tl, sel, end, pos, dur) {
+          var el = document.querySelector(sel);
+          var obj = { n: 0 };
+          tl.from(el, { y: 18, opacity: 0, duration: 0.3 }, pos);
+          tl.to(
+            obj,
+            {
+              n: end,
+              duration: dur,
+              ease: 'power2.out',
+              onUpdate: function () {
+                el.textContent = Math.round(obj.n).toLocaleString('en-US');
+              },
+            },
+            pos + 0.02
+          );
+        }
+
+        window.__timelines['axis27-brag'] = tl;
+      })();
+    </script>
+  </body>
+</html>

@@ -9,8 +9,15 @@ export default function TextScramble({ text, className, startDelay = 0, active =
   const timerRef = useRef(null);
   const queueRef = useRef([]);
   const doneRef = useRef(false);
+  // Which text doneRef settled for. doneRef used to latch true for the life of the component,
+  // so a second `text` prop skipped the scramble entirely and left the previous value in
+  // state — the rendered text and the aria-label below then described different strings, and
+  // a screen reader announced something that was not on screen. Keying the latch on the text
+  // means a new text always replays.
+  const doneTextRef = useRef(null);
 
   useEffect(() => {
+    if (doneTextRef.current !== text) doneRef.current = false;
     if (!active || doneRef.current) return;
     const queue = [];
     for (let i = 0; i < text.length; i++) {
@@ -41,11 +48,15 @@ export default function TextScramble({ text, className, startDelay = 0, active =
           output += item.from;
         }
       }
-      setDisplay(output);
       if (complete === queueRef.current.length) {
         doneRef.current = true;
+        doneTextRef.current = text;
+        // Settle on the prop itself rather than on the last frame's output, so the visible
+        // text can never disagree with the aria-label built from the same prop.
+        setDisplay(text);
         return;
       }
+      setDisplay(output);
       frameRef.current++;
       rafRef.current = requestAnimationFrame(update);
     };

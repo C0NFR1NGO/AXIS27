@@ -19,7 +19,7 @@ export default function SponsorsSection() {
       </motion.p>
 
       <motion.div
-        className="glass-card"
+        className="panel"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -35,22 +35,22 @@ export default function SponsorsSection() {
           fontFamily: 'var(--font-heading)',
           fontSize: '1.3rem',
           fontWeight: 700,
-          color: 'var(--gold)',
+          color: 'var(--text)',
           letterSpacing: '0.12em',
           textTransform: 'uppercase',
           marginBottom: '0.4rem',
         }}>
           Sponsorship Tiers
         </div>
+        {/* Was `// PROSPECTUS COMING SOON — PARTNERSHIPS OPEN NOW //`. An empty
+            state is an invitation, so it now says the useful half plainly. */}
         <div style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.65rem',
-          color: 'var(--text-muted)',
-          letterSpacing: '0.1em',
-          opacity: 0.5,
+          fontFamily: 'var(--font-body)',
+          fontSize: 'var(--t-small)',
+          color: 'var(--text-dim)',
           marginBottom: '2.2rem',
         }}>
-          // PROSPECTUS COMING SOON — PARTNERSHIPS OPEN NOW //
+          The prospectus is on its way. Partnerships are open now.
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.8rem' }}>

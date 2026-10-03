@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { contactInfo, socialLinks } from '../data/content';
 import socialIcons from '../components/SocialIcons';
 import ScrambleTitle from '../components/ScrambleTitle';
+import usePageMeta from '../hooks/usePageMeta';
+import { useAuth } from '../contexts/AuthContext';
 
 const hoverColors = {
   instagram: '#E4405F',
@@ -75,13 +77,13 @@ const itemVariants = {
 const inputStyle = {
   width: '100%',
   padding: '0.75rem 1rem',
-  fontFamily: "'Rajdhani', sans-serif",
+  fontFamily: "var(--font-display)",
   fontSize: '0.95rem',
   fontWeight: 500,
   color: 'var(--text-primary)',
   background: 'rgba(255,255,255,0.04)',
-  border: '1px solid rgba(0,229,255,0.15)',
-  borderLeft: '3px solid var(--spice-blue)',
+  border: '1px solid rgba(0, 168, 232, 0.15)',
+  borderLeft: '3px solid var(--blue)',
   borderRadius: '2px',
   outline: 'none',
   transition: 'border-color 0.3s, box-shadow 0.3s',
@@ -102,7 +104,7 @@ const alertStyle = {
 };
 
 const labelStyle = {
-  fontFamily: "'Rajdhani', sans-serif",
+  fontFamily: "var(--font-display)",
   fontSize: '0.75rem',
   fontWeight: 700,
   letterSpacing: '0.12em',
@@ -117,9 +119,10 @@ export default function ContactPage() {
     title: 'Contact',
     description: 'Get in touch with the AXIS\'27 team at VNIT Nagpur — queries, collaborations and partnerships.',
   });
+  const { user, profile } = useAuth();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    name: profile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || '',
+    email: user?.email || '',
     countryCode: '+91',
     phone: '',
     query: '',
@@ -130,6 +133,16 @@ export default function ContactPage() {
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitError, setSubmitError] = useState(false);
   const [web3formsError, setWeb3formsError] = useState(null);
+
+  // The "transmission complete" reset timer is created inside the async submit handler,
+  // not in an effect, so a ref is the only way the unmount cleanup below can reach it.
+  // Without that the timeout fired setSubmitted/setSubmitMessage on an unmounted page
+  // (navigating away within 5s of a successful send).
+  const resetTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => clearTimeout(resetTimerRef.current);
+  }, []);
 
   const WEB3FORMS_URL = 'https://api.web3forms.com/submit';
   const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
@@ -207,7 +220,8 @@ export default function ContactPage() {
         setSubmitted(true);
         setSubmitMessage(data.message || 'Your query has been sent successfully!');
         setFormData({ name: '', email: '', countryCode: '+91', phone: '', query: '' });
-        setTimeout(() => {
+        clearTimeout(resetTimerRef.current);
+        resetTimerRef.current = setTimeout(() => {
           setSubmitted(false);
           setSubmitMessage('');
         }, 5000);
@@ -231,7 +245,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1 }}>
+    <div className="page-dimmer" style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1 }}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -243,22 +257,7 @@ export default function ContactPage() {
           alignItems: 'center',
         }}
       >
-        <Link
-          to="/"
-          style={{
-            fontFamily: "'Rajdhani', sans-serif",
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            letterSpacing: '0.1em',
-            color: 'var(--text-muted)',
-            textDecoration: 'none',
-            transition: 'color 0.3s',
-          }}
-          onMouseEnter={(e) => { e.target.style.color = 'var(--gold)'; }}
-          onMouseLeave={(e) => { e.target.style.color = 'var(--text-muted)'; }}
-        >
-          ← Back to Home
-        </Link>
+        <Link to="/" className="backlink">← Back to Home</Link>
       </motion.div>
 
       <section className="section" style={{ minHeight: 'auto', paddingBottom: '100px' }}>
@@ -280,7 +279,7 @@ export default function ContactPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="glass-card"
+          className="panel"
           style={{
             marginBottom: '2rem',
             padding: '2.5rem',
@@ -291,7 +290,7 @@ export default function ContactPage() {
         >
           <h3
             style={{
-              fontFamily: "'Orbitron', monospace",
+              fontFamily: "var(--font-display)",
               fontSize: '1.1rem',
               fontWeight: 700,
               color: 'var(--violet)',
@@ -303,7 +302,7 @@ export default function ContactPage() {
           </h3>
           <p
             style={{
-              fontFamily: "'Rajdhani', sans-serif",
+              fontFamily: "var(--font-display)",
               fontSize: '0.85rem',
               color: 'var(--text-muted)',
               marginBottom: '1.5rem',
@@ -342,19 +341,19 @@ export default function ContactPage() {
                   onChange={handleChange}
                   style={{
                     ...inputStyle,
-                    borderColor: errors.name ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)',
+                    borderColor: errors.name ? 'var(--glitch-red)' : 'rgba(0, 168, 232, 0.15)',
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--spice-blue)';
-                    e.target.style.boxShadow = '0 0 16px rgba(0,229,255,0.15)';
+                    e.target.style.borderColor = 'var(--blue)';
+                    e.target.style.boxShadow = '0 0 16px rgba(0, 168, 232, 0.15)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = errors.name ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)';
+                    e.target.style.borderColor = errors.name ? 'var(--glitch-red)' : 'rgba(0, 168, 232, 0.15)';
                     e.target.style.boxShadow = 'none';
                   }}
                 />
                 {errors.name && (
-                  <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '0.75rem', color: 'var(--glitch-red)', marginTop: '0.3rem' }}>
+                  <div style={{ fontFamily: "var(--font-display)", fontSize: '0.75rem', color: 'var(--glitch-red)', marginTop: '0.3rem' }}>
                     {errors.name}
                   </div>
                 )}
@@ -375,19 +374,19 @@ export default function ContactPage() {
                   onChange={handleChange}
                   style={{
                     ...inputStyle,
-                    borderColor: errors.email ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)',
+                    borderColor: errors.email ? 'var(--glitch-red)' : 'rgba(0, 168, 232, 0.15)',
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--spice-blue)';
-                    e.target.style.boxShadow = '0 0 16px rgba(0,229,255,0.15)';
+                    e.target.style.borderColor = 'var(--blue)';
+                    e.target.style.boxShadow = '0 0 16px rgba(0, 168, 232, 0.15)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = errors.email ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)';
+                    e.target.style.borderColor = errors.email ? 'var(--glitch-red)' : 'rgba(0, 168, 232, 0.15)';
                     e.target.style.boxShadow = 'none';
                   }}
                 />
                 {errors.email && (
-                  <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '0.75rem', color: 'var(--glitch-red)', marginTop: '0.3rem' }}>
+                  <div style={{ fontFamily: "var(--font-display)", fontSize: '0.75rem', color: 'var(--glitch-red)', marginTop: '0.3rem' }}>
                     {errors.email}
                   </div>
                 )}
@@ -433,20 +432,20 @@ export default function ContactPage() {
                       ...inputStyle,
                       flex: 1,
                       minWidth: '200px',
-                      borderColor: errors.phone ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)',
+                      borderColor: errors.phone ? 'var(--glitch-red)' : 'rgba(0, 168, 232, 0.15)',
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = 'var(--spice-blue)';
-                      e.target.style.boxShadow = '0 0 16px rgba(0,229,255,0.15)';
+                      e.target.style.borderColor = 'var(--blue)';
+                      e.target.style.boxShadow = '0 0 16px rgba(0, 168, 232, 0.15)';
                     }}
                     onBlur={(e) => {
-                      e.target.style.borderColor = errors.phone ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)';
+                      e.target.style.borderColor = errors.phone ? 'var(--glitch-red)' : 'rgba(0, 168, 232, 0.15)';
                       e.target.style.boxShadow = 'none';
                     }}
                   />
                 </div>
                 {errors.phone && (
-                  <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '0.75rem', color: 'var(--glitch-red)', marginTop: '0.3rem' }}>
+                  <div style={{ fontFamily: "var(--font-display)", fontSize: '0.75rem', color: 'var(--glitch-red)', marginTop: '0.3rem' }}>
                     {errors.phone}
                   </div>
                 )}
@@ -469,19 +468,19 @@ export default function ContactPage() {
                     ...inputStyle,
                     resize: 'vertical',
                     minHeight: '120px',
-                    borderColor: errors.query ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)',
+                    borderColor: errors.query ? 'var(--glitch-red)' : 'rgba(0, 168, 232, 0.15)',
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--spice-blue)';
-                    e.target.style.boxShadow = '0 0 16px rgba(0,229,255,0.15)';
+                    e.target.style.borderColor = 'var(--blue)';
+                    e.target.style.boxShadow = '0 0 16px rgba(0, 168, 232, 0.15)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = errors.query ? 'var(--glitch-red)' : 'rgba(0,229,255,0.15)';
+                    e.target.style.borderColor = errors.query ? 'var(--glitch-red)' : 'rgba(0, 168, 232, 0.15)';
                     e.target.style.boxShadow = 'none';
                   }}
                 />
                 {errors.query && (
-                  <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '0.75rem', color: 'var(--glitch-red)', marginTop: '0.3rem' }}>
+                  <div style={{ fontFamily: "var(--font-display)", fontSize: '0.75rem', color: 'var(--glitch-red)', marginTop: '0.3rem' }}>
                     {errors.query}
                   </div>
                 )}
@@ -494,13 +493,13 @@ export default function ContactPage() {
                 disabled={submitting || submitted}
                 className="btn-secondary"
                 style={{
-                  fontFamily: "'Rajdhani', sans-serif",
+                  fontFamily: "var(--font-display)",
                   fontSize: '1rem',
                   fontWeight: 700,
                   letterSpacing: '0.1em',
                   textTransform: 'uppercase',
                   padding: '0.875rem 2rem',
-                  border: '1px solid var(--spice-blue)',
+                  border: '1px solid var(--blue)',
                   borderRadius: '2px',
                   cursor: submitting ? 'not-allowed' : 'pointer',
                   transition: 'all 0.3s',
@@ -512,7 +511,7 @@ export default function ContactPage() {
               >
                 {submitting ? (
                   <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ width: '16px', height: '16px', border: '2px solid var(--spice-blue)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></span>
+                    <span style={{ width: '16px', height: '16px', border: '2px solid var(--blue)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></span>
                     Transmitting...
                   </span>
                 ) : submitted ? (
@@ -525,7 +524,7 @@ export default function ContactPage() {
               {submitMessage && (
                 <span
                   style={{
-                    fontFamily: "'Rajdhani', sans-serif",
+                    fontFamily: "var(--font-display)",
                     fontSize: '0.85rem',
                     color: submitError ? 'var(--glitch-red)' : 'var(--cyan)',
                     letterSpacing: '0.05em',
@@ -554,26 +553,26 @@ export default function ContactPage() {
           }}
         >
           {/* Contact Info Card */}
-          <motion.div variants={itemVariants} className="glass-card" style={{ padding: '2rem', minHeight: '320px' }}>
+          <motion.div variants={itemVariants} className="panel" style={{ padding: '2rem', minHeight: '320px', textAlign: 'center' }}>
             <h3
               style={{
-                fontFamily: "'Orbitron', monospace",
+                fontFamily: "var(--font-display)",
                 fontSize: '1.1rem',
                 fontWeight: 700,
                 color: 'var(--violet)',
                 marginBottom: '1.5rem',
                 letterSpacing: '0.08em',
-                textShadow: '0 0 12px rgba(0,229,255,0.2)',
+                textShadow: '0 0 12px rgba(0, 168, 232, 0.2)',
               }}
             >
               Get in Touch
             </h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', alignItems: 'center' }}>
               <div>
                 <div
                   style={{
-                    fontFamily: "'Rajdhani', sans-serif",
+                    fontFamily: "var(--font-display)",
                     fontSize: '0.7rem',
                     fontWeight: 700,
                     letterSpacing: '0.15em',
@@ -586,7 +585,7 @@ export default function ContactPage() {
                 </div>
                 <div
                   style={{
-                    fontFamily: "'Rajdhani', sans-serif",
+                    fontFamily: "var(--font-display)",
                     fontSize: '0.95rem',
                     color: 'var(--text-secondary)',
                     lineHeight: 1.7,
@@ -599,7 +598,7 @@ export default function ContactPage() {
               <div>
                 <div
                   style={{
-                    fontFamily: "'Rajdhani', sans-serif",
+                    fontFamily: "var(--font-display)",
                     fontSize: '0.7rem',
                     fontWeight: 700,
                     letterSpacing: '0.15em',
@@ -613,13 +612,13 @@ export default function ContactPage() {
                 <a
                   href={`mailto:${contactInfo.email}`}
                   style={{
-                    fontFamily: "'Rajdhani', sans-serif",
+                    fontFamily: "var(--font-body)",
                     fontSize: '0.95rem',
                     color: 'var(--text-secondary)',
                     textDecoration: 'none',
                     transition: 'color 0.3s',
                   }}
-                  onMouseEnter={(e) => { e.target.style.color = 'var(--gold)'; }}
+                  onMouseEnter={(e) => { e.target.style.color = 'var(--blue)'; }}
                   onMouseLeave={(e) => { e.target.style.color = 'var(--text-secondary)'; }}
                 >
                   {contactInfo.email}
@@ -629,7 +628,7 @@ export default function ContactPage() {
               <div>
                 <div
                   style={{
-                    fontFamily: "'Rajdhani', sans-serif",
+                    fontFamily: "var(--font-display)",
                     fontSize: '0.7rem',
                     fontWeight: 700,
                     letterSpacing: '0.15em',
@@ -640,7 +639,7 @@ export default function ContactPage() {
                 >
                   Social
                 </div>
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', justifyContent: 'center' }}>
                   {Object.entries(socialLinks).map(([platform, url]) => (
                     <a
                       key={platform}
@@ -655,7 +654,7 @@ export default function ContactPage() {
                         height: '44px',
                         borderRadius: '50%',
                         background: 'rgba(255,255,255,0.05)',
-                        border: '1px solid rgba(0,229,255,0.1)',
+                        border: '1px solid rgba(0, 168, 232, 0.1)',
                         color: 'var(--text-secondary)',
                         transition: 'all 0.3s',
                       }}
@@ -667,7 +666,7 @@ export default function ContactPage() {
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                        e.currentTarget.style.borderColor = 'rgba(0,229,255,0.1)';
+                        e.currentTarget.style.borderColor = 'rgba(0, 168, 232, 0.1)';
                         e.currentTarget.style.color = 'var(--text-secondary)';
                         e.currentTarget.style.boxShadow = 'none';
                       }}
@@ -681,21 +680,21 @@ export default function ContactPage() {
           </motion.div>
 
           {/* Map/Location Card */}
-          <motion.div variants={itemVariants} className="glass-card" style={{ padding: '2rem', minHeight: '320px', display: 'flex', flexDirection: 'column' }}>
+          <motion.div variants={itemVariants} className="panel" style={{ padding: '2rem', minHeight: '320px', display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
             <h3
               style={{
-                fontFamily: "'Orbitron', monospace",
+                fontFamily: "var(--font-display)",
                 fontSize: '1.1rem',
                 fontWeight: 700,
                 color: 'var(--violet)',
                 marginBottom: '1.5rem',
                 letterSpacing: '0.08em',
-                textShadow: '0 0 12px rgba(0,229,255,0.2)',
+                textShadow: '0 0 12px rgba(0, 168, 232, 0.2)',
               }}
             >
               Our Location
             </h3>
-            <div style={{ flex: 1, borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(0,229,255,0.1)' }}>
+            <div style={{ flex: 1, borderRadius: '2px', overflow: 'hidden', border: '1px solid rgba(0, 168, 232, 0.1)' }}>
               <iframe
                 src="https://www.google.com/maps?q=Visvesvaraya+National+Institute+of+Technology,+South+Ambazari+Road,+Nagpur,+Maharashtra+440010&z=15&output=embed"
                 width="100%"

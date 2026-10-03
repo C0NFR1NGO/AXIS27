@@ -2,20 +2,23 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { navLinks } from '../data/content';
+import { useAuth } from '../contexts/AuthContext';
 
 function LoginButton({ isMobile = false, onMobileClick }) {
+  const { user } = useAuth();
+  const isLoggedIn = !!user;
   const baseStyle = {
     fontFamily: "var(--font-mono)",
     fontSize: isMobile ? '0.95rem' : '0.68rem',
     fontWeight: 700,
     letterSpacing: isMobile ? '0.1em' : '0.12em',
     textTransform: 'uppercase',
-    color: 'var(--spice-blue)',
+    color: 'var(--blue)',
     textDecoration: 'none',
     borderRadius: '2px',
-    border: '1px solid rgba(0,229,255,0.5)',
-    background: 'rgba(0,229,255,0.14)',
-    boxShadow: '0 0 12px rgba(0,229,255,0.12)',
+    border: '1px solid rgba(0, 168, 232, 0.5)',
+    background: 'rgba(0, 168, 232, 0.14)',
+    boxShadow: '0 0 12px rgba(0, 168, 232, 0.12)',
     transition: 'all 0.3s var(--ease-cyber)',
     whiteSpace: 'nowrap',
     display: 'inline-flex',
@@ -32,31 +35,31 @@ function LoginButton({ isMobile = false, onMobileClick }) {
     fontSize: '0.95rem',
     fontWeight: 700,
     letterSpacing: '0.1em',
-    border: '1px solid rgba(0,229,255,0.55)',
-    background: 'rgba(0,229,255,0.14)',
-    boxShadow: '0 0 18px rgba(0,229,255,0.15)',
+    border: '1px solid rgba(0, 168, 232, 0.55)',
+    background: 'rgba(0, 168, 232, 0.14)',
+    boxShadow: '0 0 18px rgba(0, 168, 232, 0.15)',
     width: '100%',
   };
 
   const desktopStyle = {
     ...baseStyle,
     padding: '0.5rem 1rem',
-    border: '1px solid rgba(0,229,255,0.5)',
-    background: 'rgba(0,229,255,0.14)',
+    border: '1px solid rgba(0, 168, 232, 0.5)',
+    background: 'rgba(0, 168, 232, 0.14)',
     marginLeft: '1rem',
   };
 
   const hoverStyle = isMobile
-    ? { background: 'rgba(0,229,255,0.25)', boxShadow: '0 0 24px rgba(0,229,255,0.25)' }
-    : { background: 'rgba(0,229,255,0.25)', boxShadow: '0 0 16px rgba(0,229,255,0.25)' };
+    ? { background: 'rgba(0, 168, 232, 0.25)', boxShadow: '0 0 24px rgba(0, 168, 232, 0.25)' }
+    : { background: 'rgba(0, 168, 232, 0.25)', boxShadow: '0 0 16px rgba(0, 168, 232, 0.25)' };
 
   const leaveStyle = isMobile
-    ? { background: 'rgba(0,229,255,0.14)', boxShadow: '0 0 18px rgba(0,229,255,0.15)' }
-    : { background: 'rgba(0,229,255,0.14)', boxShadow: '0 0 12px rgba(0,229,255,0.12)' };
+    ? { background: 'rgba(0, 168, 232, 0.14)', boxShadow: '0 0 18px rgba(0, 168, 232, 0.15)' }
+    : { background: 'rgba(0, 168, 232, 0.14)', boxShadow: '0 0 12px rgba(0, 168, 232, 0.12)' };
 
   return (
     <Link
-      to="/login"
+      to={isLoggedIn ? '/dashboard' : '/login'}
       onClick={onMobileClick}
       style={isMobile ? mobileStyle : desktopStyle}
       onMouseEnter={(e) => { e.currentTarget.style.background = hoverStyle.background; e.currentTarget.style.boxShadow = hoverStyle.boxShadow; }}
@@ -66,10 +69,10 @@ function LoginButton({ isMobile = false, onMobileClick }) {
         fontFamily: 'var(--font-mono)',
         fontSize: isMobile ? '0.72rem' : '0.6rem',
         opacity: 0.9,
-        color: 'var(--spice-blue)',
-        textShadow: '0 0 8px rgba(0,229,255,0.6)',
+        color: 'var(--blue)',
+        textShadow: '0 0 8px rgba(0, 168, 232, 0.6)',
       }}>
-        [SIGNUP/LOGIN]
+        {isLoggedIn ? '[DASHBOARD]' : '[SIGNUP/LOGIN]'}
       </span>
     </Link>
   );
@@ -78,8 +81,13 @@ function LoginButton({ isMobile = false, onMobileClick }) {
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [instability, setInstability] = useState(94);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' && window.innerWidth <= 768
+  );
   const location = useLocation();
+
+  const isHome = location.pathname === '/';
+  const visible = !isHome || scrolled || isMobile;
 
   useEffect(() => {
     setMenuOpen(false);
@@ -92,10 +100,9 @@ export default function Navigation() {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setInstability(88 + Math.floor(Math.random() * 13));
-    }, 3200);
-    return () => clearInterval(interval);
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
   }, []);
 
   useEffect(() => {
@@ -105,50 +112,45 @@ export default function Navigation() {
 
   return (
     <>
-      <motion.nav className="main-nav"
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      <nav
+        className={`main-nav ${isHome && !isMobile ? '' : 'main-nav--animate'}`}
         style={{
           position: 'fixed',
-          top: '1rem',
-          left: '1rem',
-          right: '1rem',
+          top: 0,
+          left: 0,
+          right: 0,
           zIndex: 1000,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '1rem 1.5rem',
-          borderRadius: '2px',
-          background: scrolled
-            ? 'linear-gradient(135deg, rgba(229,169,60,0.04) 0%, rgba(13,10,8,0.92) 50%, rgba(0,229,255,0.03) 100%)'
-            : 'linear-gradient(135deg, rgba(229,169,60,0.06) 0%, rgba(13,10,8,0.65) 50%, rgba(0,229,255,0.03) 100%)',
-          border: scrolled
-            ? '1px solid rgba(0,229,255,0.18)'
-            : '1px solid rgba(229,169,60,0.14)',
-          boxShadow: scrolled
-            ? '0 8px 32px rgba(0,0,0,0.6), 0 0 18px rgba(0,229,255,0.08)'
-            : '0 4px 20px rgba(0,0,0,0.35)',
-          backdropFilter: 'blur(6px)',
-          WebkitBackdropFilter: 'blur(14px)',
-          transition: 'background 0.4s, box-shadow 0.4s, border-color 0.4s',
+          padding: '1rem 2rem',
+          background: visible
+            ? 'rgba(7,5,3,0.95)'
+            : 'transparent',
+          boxShadow: visible
+            ? '0 4px 24px rgba(0,0,0,0.5)'
+            : 'none',
+          backdropFilter: visible ? 'blur(8px)' : 'none',
+          WebkitBackdropFilter: visible ? 'blur(8px)' : 'none',
+          opacity: 1,
+          transition: 'opacity 0.4s, background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s',
         }}
       >
-        {/* Top-edge cyan LED strip */}
-        <motion.div
-          animate={{ opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        {/* Bottom-edge cyan LED strip */}
+        <div
+          className="nav-led-strip"
           style={{
             position: 'absolute',
-            top: 0,
+            bottom: 0,
             left: 0,
             right: 0,
             height: '1px',
-            background: 'linear-gradient(90deg, transparent, var(--spice-blue), transparent)',
+            background: 'linear-gradient(90deg, transparent, var(--blue), transparent)',
             pointerEvents: 'none',
           }}
         />
-        {/* Logo + DBH temple LED */}
+
+        {/* Logo */}
         <Link
           to="/"
           className="nav-logo-link"
@@ -166,15 +168,15 @@ export default function Navigation() {
               src="/images/logo-icon.webp"
               alt="AXIS'27"
               className="nav-logo"
-              style={{ filter: 'brightness(1.7) drop-shadow(0 0 6px rgba(0,229,255,0.25))' }}
+              style={{ filter: 'brightness(1.7) drop-shadow(0 0 6px rgba(0, 168, 232, 0.25))' }}
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           </picture>
         </Link>
 
-        {/* Desktop Nav — DBH monospace indices */}
+        {/* Desktop Nav */}
         <div className="nav-desktop-links" style={{ display: 'flex', gap: '0.2rem', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
-          {navLinks.map((link, i) => {
+          {navLinks.map((link) => {
             const isActive = location.pathname === link.href;
             return (
               <Link
@@ -186,25 +188,22 @@ export default function Navigation() {
                   fontWeight: isActive ? 700 : 500,
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
-                  color: isActive ? 'var(--gold)' : '#fff',
+                  color: isActive ? 'var(--blue)' : '#fff',
                   textDecoration: 'none',
                   padding: '0.4rem 0.9rem',
                   borderRadius: '2px',
-                  background: isActive ? 'rgba(210,156,56,0.1)' : 'transparent',
+                  background: isActive ? 'rgba(0,168,232,0.1)' : 'transparent',
                   border: isActive
-                    ? '1px solid rgba(210,156,56,0.22)'
+                    ? '1px solid rgba(0,168,232,0.22)'
                     : '1px solid transparent',
                   transition: 'all 0.3s var(--ease-cyber)',
                   whiteSpace: 'nowrap',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.color = 'var(--gold)';
-                    e.currentTarget.style.background = 'rgba(210,156,56,0.06)';
-                    e.currentTarget.style.borderColor = 'rgba(210,156,56,0.12)';
+                    e.currentTarget.style.color = 'var(--blue)';
+                    e.currentTarget.style.background = 'rgba(0,168,232,0.06)';
+                    e.currentTarget.style.borderColor = 'rgba(0,168,232,0.12)';
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -215,38 +214,13 @@ export default function Navigation() {
                   }
                 }}
               >
-                <span style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.68rem',
-                  opacity: 0.5,
-                  color: 'var(--spice-blue)',
-                  textShadow: '0 0 6px rgba(0,229,255,0.3)',
-                }}>
-                  [{String(i + 1).padStart(2, '0')}]
-                </span>
                 {link.label}
               </Link>
             );
           })}
-
-          {/* DBH instability indicator */}
-          <motion.span
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.66rem',
-              color: 'var(--cyber-red)',
-              marginLeft: '0.8rem',
-              opacity: 0.65,
-              whiteSpace: 'nowrap',
-            }}
-            animate={{ opacity: [0.4, 0.75, 0.4] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            ▲ {instability}%
-          </motion.span>
         </div>
 
-        {/* Desktop Login Button - Right aligned */}
+        {/* Desktop Login Button */}
         <div className="nav-desktop-login">
           <LoginButton isMobile={false} />
         </div>
@@ -308,7 +282,7 @@ export default function Navigation() {
             }}
           />
         </button>
-      </motion.nav>
+      </nav>
 
       {/* Mobile Drawer */}
       <AnimatePresence>
@@ -325,7 +299,7 @@ export default function Navigation() {
               zIndex: 3000,
               background: 'rgba(7,5,3,0.97)',
               backdropFilter: 'blur(4px)',
-              WebkitBackdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(4px)',
               display: 'flex',
               alignItems: 'flex-start',
               justifyContent: 'center',
@@ -341,9 +315,9 @@ export default function Navigation() {
               style={{
                 width: 'min(100%, 420px)',
                 borderRadius: '2px',
-                border: '1px solid rgba(229,169,60,0.18)',
+                border: '1px solid rgba(0,168,232,0.12)',
                 background: 'linear-gradient(180deg, rgba(13,10,8,0.97), rgba(7,5,3,0.99))',
-                boxShadow: '0 12px 40px rgba(0,0,0,0.7), 0 0 28px rgba(229,169,60,0.04)',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.7), 0 0 28px rgba(0,168,232,0.04)',
                 padding: '1.2rem',
                 overflow: 'hidden',
                 position: 'relative',
@@ -356,10 +330,10 @@ export default function Navigation() {
                 left: '10%',
                 right: '10%',
                 height: '1px',
-                background: 'linear-gradient(90deg, transparent, var(--spice-blue), transparent)',
+                background: 'linear-gradient(90deg, transparent, var(--blue), transparent)',
               }} />
 
-              {/* DBH header */}
+              {/* Header */}
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -373,22 +347,13 @@ export default function Navigation() {
                   fontSize: '0.78rem',
                   letterSpacing: '0.2em',
                   textTransform: 'uppercase',
-                  color: 'var(--gold)',
+                  color: 'var(--text)',
                 }}>
-                  // SYSTEM MENU
-                </div>
-                <div style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.7rem',
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
-                  color: 'var(--cyber-red)',
-                }}>
-                  INSTABILITY: ▲ {instability}%
+                  Menu
                 </div>
               </div>
 
-              {/* Login Button at very top of drawer */}
+              {/* Login Button */}
               <LoginButton isMobile={true} onMobileClick={() => setMenuOpen(false)} />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginTop: '0.5rem' }}>
@@ -411,22 +376,20 @@ export default function Navigation() {
                           fontWeight: isActive ? 700 : 500,
                           letterSpacing: '0.1em',
                           textTransform: 'uppercase',
-                          color: isActive ? 'var(--spice-blue)' : '#fff',
+                          color: isActive ? 'var(--blue)' : '#fff',
                           textDecoration: 'none',
                           padding: '0.85rem 1rem',
                           borderRadius: '2px',
                           border: isActive
-                            ? '1px solid rgba(0,229,255,0.3)'
+                            ? '1px solid rgba(0, 168, 232, 0.3)'
                             : '1px solid rgba(255,255,255,0.04)',
                           background: isActive
-                            ? 'rgba(0,229,255,0.08)'
+                            ? 'rgba(0, 168, 232, 0.08)'
                             : 'rgba(255,255,255,0.02)',
                           boxShadow: isActive
-                            ? '0 0 18px rgba(0,229,255,0.08)'
+                            ? '0 0 18px rgba(0, 168, 232, 0.08)'
                             : 'none',
                           transition: 'all 0.3s var(--ease-cyber)',
-                          alignItems: 'center',
-                          gap: '0.6rem',
                         }}
                         onMouseEnter={(e) => {
                           if (!isActive) {
@@ -441,37 +404,11 @@ export default function Navigation() {
                           }
                         }}
                       >
-                        <span style={{
-                          fontFamily: 'var(--font-mono)',
-                          fontSize: '0.72rem',
-                          opacity: 0.45,
-                          color: 'var(--spice-blue)',
-                          textShadow: '0 0 6px rgba(0,229,255,0.3)',
-                        }}>
-                          [{String(i + 1).padStart(2, '0')}]
-                        </span>
                         {link.label}
                       </Link>
                     </motion.div>
                   );
                 })}
-              </div>
-
-              {/* DBH footer telemetry in drawer */}
-              <div style={{
-                marginTop: '1.2rem',
-                paddingTop: '0.8rem',
-                borderTop: '1px solid rgba(255,255,255,0.04)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.65rem',
-                color: '#ccc',
-                letterSpacing: '0.1em',
-                lineHeight: 1.6,
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}>
-                <div>CYBERLIFE: ACTIVE</div>
-                <div style={{ color: 'var(--cyber-red)' }}>▲ {instability}%</div>
               </div>
             </motion.div>
           </motion.div>

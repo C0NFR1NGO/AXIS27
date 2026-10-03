@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
 
 const ease = [0.22, 1, 0.36, 1];
@@ -41,12 +41,12 @@ function CornerTicks() {
 export default function NotFoundPage() {
   usePageMeta({ title: 'Page Not Found' });
   const reduce = useReducedMotion();
+  const location = useLocation();
 
   return (
-    <main className="nf-page">
+    <main className="nf-page page-dimmer">
       <div className="nf-grid" aria-hidden="true">
         <span className="nf-grid-label nf-grid-label--tl">GRID-27</span>
-        <span className="nf-grid-label nf-grid-label--br">x:0 y:0</span>
       </div>
       <CornerTicks />
 
@@ -56,7 +56,7 @@ export default function NotFoundPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1, ease }}
       >
-        error :: no route for <span>node-0x4</span>
+        error :: no route for <span>{location.pathname}</span>
       </motion.p>
 
       <motion.div

@@ -25,4 +25,5 @@ node_modules
 *.sw?
 
 .vercel
-.vercel
+.env*
+"EVENT BROCHURE.pdf" 

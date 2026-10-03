@@ -13,6 +13,12 @@
       "skillPath": "skills/engineering/ask-matt/SKILL.md",
       "computedHash": "3368e87b41b52c50c9e46d12988981488f01594b5e70a4b763b97d18b85eb61b"
     },
+    "brag": {
+      "source": "latent-spaces/brag",
+      "sourceType": "github",
+      "skillPath": "skills/brag/SKILL.md",
+      "computedHash": "fbab8e80d994e7d1852fafcb916a1a45ce4becda84aa92cab3666f02012caf41"
+    },
     "claude-handoff": {
       "source": "mattpocock/skills",
       "sourceType": "github",

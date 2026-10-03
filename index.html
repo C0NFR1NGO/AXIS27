@@ -16,7 +16,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="AXIS'27 - Ignis Aeternum | VNIT Nagpur" />
     <meta property="og:description" content="Central India's largest technical festival. 35+ events, 200+ colleges, 35,000+ participants. VNIT Nagpur." />
-    <meta property="og:image" content="https://axis27alt.vercel.app/images/logo-icon.png" />
+    <meta property="og:image" content="https://axis27alt.vercel.app/images/og-image.png" />
     <meta property="og:url" content="https://axis27alt.vercel.app" />
     <meta property="og:site_name" content="AXIS'27" />
 
@@ -24,12 +24,29 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="AXIS'27 - Ignis Aeternum | VNIT Nagpur" />
     <meta name="twitter:description" content="Central India's largest technical festival. 35+ events, 200+ colleges, 35,000+ participants. VNIT Nagpur." />
-    <meta name="twitter:image" content="https://axis27alt.vercel.app/images/logo-icon.png" />
+    <meta name="twitter:image" content="https://axis27alt.vercel.app/images/og-image.png" />
 
-    <!-- Fonts (single request for all 4 families) -->
+    <!-- Fonts. One request for all three variable families.
+
+         These used to be requested twice: this line asked for Audiowide, Share
+         Tech Mono, Orbitron and Rajdhani, while HeroSectionV2 injected a second
+         stylesheet at runtime for Archivo, Martian Mono and Inter Tight. That
+         had two consequences worth remembering. The site shipped two full font
+         payloads, and because the injection only ran when the hero mounted, a
+         direct hit to any URL other than / fell back to system-ui for the whole
+         page. Both fixed by moving the request here and deleting the other one.
+
+         Variable axes are requested in full rather than pinned to one instance:
+         Archivo's width axis carries the display type's compression and Martian
+         Mono's lets dense labels tighten without a second family.
+
+         Audiowide is back for section headings only. It is a single-weight
+         static face, so it adds one small file rather than an axis range, and it
+         is scoped to `--font-heading` — Archivo still handles buttons, labels
+         and card titles, which Audiowide's wide geometry is wrong for. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Share+Tech+Mono&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Audiowide&family=Martian+Mono:wdth,wght@75..112.5,100..800&family=Inter+Tight:wght@300..700&display=swap" rel="stylesheet">
 
     <!-- Preload Ethnocentric font -->
     <link rel="preload" href="/fonts/Ethnocentric.woff2" as="font" type="font/woff2" crossorigin>

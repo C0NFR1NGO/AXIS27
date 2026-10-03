@@ -10,7 +10,7 @@ export default function WorkshopsPage() {
     description: 'Hands-on workshops at AXIS\'27 — from AI and embedded systems to drones. VNIT Nagpur.',
   });
   return (
-    <div style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1 }}>
+    <div className="page-dimmer" style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1 }}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -22,22 +22,7 @@ export default function WorkshopsPage() {
           alignItems: 'center',
         }}
       >
-        <Link
-          to="/"
-          style={{
-            fontFamily: "'Rajdhani', sans-serif",
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            letterSpacing: '0.1em',
-            color: 'var(--text-muted)',
-            textDecoration: 'none',
-            transition: 'color 0.3s',
-          }}
-          onMouseEnter={(e) => { e.target.style.color = 'var(--gold)'; }}
-          onMouseLeave={(e) => { e.target.style.color = 'var(--text-muted)'; }}
-        >
-          ← Back to Home
-        </Link>
+        <Link to="/" className="backlink">← Back to Home</Link>
       </motion.div>
       <ZoomReveal><WorkshopsSection /></ZoomReveal>
     </div>

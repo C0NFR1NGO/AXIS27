@@ -28,8 +28,12 @@ const windows = [
 function TimelineSection() {
   const timelineRef = useRef(null);
   const LAST = milestones.length - 1;
-  const accent = (i) => (i === LAST ? 'var(--gold)' : 'var(--spice-blue)');
-  const accentRgba = (i) => (i === LAST ? 'rgba(229,169,60,' : 'rgba(0,229,255,');
+  /* The newest milestone is warm and the rest are cold, and that is the one
+     place ember is allowed onto a page: it marks the edition that is happening
+     rather than one that happened. Everything behind it is history, drawn in the
+     interface colour. Ember stays off every control on this page. */
+  const accent = (i) => (i === LAST ? 'var(--ember)' : 'var(--blue)');
+  const accentRgba = (i) => (i === LAST ? 'rgba(255,158,0,' : 'rgba(0,168,232,');
 
   const scroll = (dir) => {
     const el = timelineRef.current;
@@ -50,10 +54,11 @@ function TimelineSection() {
   const arrowBtn = {
     position: 'absolute', top: '50%', transform: 'translateY(-50%)', zIndex: 2,
     width: '40px', height: '40px', borderRadius: '50%',
-    border: '1px solid rgba(0,229,255,0.2)',
+    border: '1px solid rgba(0, 168, 232, 0.2)',
     background: 'rgba(13,10,8,0.8)',
     backdropFilter: 'blur(8px)',
-    color: 'var(--spice-blue)',
+    WebkitBackdropFilter: 'blur(8px)',
+    color: 'var(--blue)',
     fontSize: '1.2rem', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     transition: 'all 0.3s',
@@ -62,8 +67,8 @@ function TimelineSection() {
   return (
     <div style={{ position: 'relative', width: '100%', maxWidth: '900px', margin: '0 auto', padding: '1rem 0 2rem' }}>
       <button onClick={() => scroll(-1)} style={{ ...arrowBtn, left: '-3.5rem' }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0,229,255,0.15)'; e.currentTarget.style.borderColor = 'var(--spice-blue)'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(13,10,8,0.8)'; e.currentTarget.style.borderColor = 'rgba(0,229,255,0.2)'; }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0, 168, 232, 0.15)'; e.currentTarget.style.borderColor = 'var(--blue)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(13,10,8,0.8)'; e.currentTarget.style.borderColor = 'rgba(0, 168, 232, 0.2)'; }}
       >
         ‹
       </button>
@@ -80,7 +85,7 @@ function TimelineSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-80px' }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="glass-card" style={{
+              className="panel" style={{
                 width: '260px', flex: '0 0 auto',
                 padding: '1rem 1.15rem', position: 'relative',
                 display: 'flex', flexDirection: 'column',
@@ -97,7 +102,7 @@ function TimelineSection() {
                 background: `linear-gradient(90deg, ${ac}, ${accentRgba(i)}0.2))`,
               }} />
 
-              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '0.6rem', textAlign: 'center' }}>
                 <span style={{
                   fontFamily: 'var(--font-mono)', fontSize: '0.55rem', letterSpacing: '0.14em',
                   color: 'var(--text-muted)', opacity: 0.65,
@@ -105,9 +110,9 @@ function TimelineSection() {
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <span style={{
-                  fontFamily: "'Orbitron', monospace", fontSize: '1.2rem', fontWeight: 800,
+                  fontFamily: "var(--font-display)", fontSize: '1.2rem', fontWeight: 800,
                   letterSpacing: '0.03em', color: ac,
-                  textShadow: isLast ? '0 0 18px rgba(229,169,60,0.5)' : '0 0 14px rgba(0,229,255,0.3)',
+                  textShadow: isLast ? '0 0 18px rgba(255,158,0,0.5)' : '0 0 14px rgba(0, 168, 232, 0.3)',
                 }}>
                   {p.year}
                 </span>
@@ -116,8 +121,8 @@ function TimelineSection() {
               <div style={{ width: '100%', height: '1px', margin: '0.55rem 0', background: `${accentRgba(i)}0.18)` }} />
 
               <div style={{
-                fontFamily: "'Rajdhani', sans-serif", fontSize: '0.85rem', lineHeight: 1.5,
-                color: 'var(--text-secondary)', opacity: 0.95, flex: 1,
+                fontFamily: "var(--font-display)", fontSize: '0.85rem', lineHeight: 1.5,
+                color: 'var(--text-secondary)', opacity: 0.95, flex: 1, textAlign: 'center',
               }}>
                 {p.event}
               </div>
@@ -127,8 +132,8 @@ function TimelineSection() {
       </div>
 
       <button onClick={() => scroll(1)} style={{ ...arrowBtn, right: '-3.5rem' }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0,229,255,0.15)'; e.currentTarget.style.borderColor = 'var(--spice-blue)'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(13,10,8,0.8)'; e.currentTarget.style.borderColor = 'rgba(0,229,255,0.2)'; }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0, 168, 232, 0.15)'; e.currentTarget.style.borderColor = 'var(--blue)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(13,10,8,0.8)'; e.currentTarget.style.borderColor = 'rgba(0, 168, 232, 0.2)'; }}
       >
         ›
       </button>
@@ -144,19 +149,14 @@ export default function AboutPage() {
   const [activeWindow, setActiveWindow] = useState('about');
 
   return (
-    <div style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="page-dimmer" style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
         style={{ padding: '2rem 5% 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
       >
-        <Link to="/" style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.1em', color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}
-          onMouseEnter={(e) => { e.target.style.color = 'var(--gold)'; }}
-          onMouseLeave={(e) => { e.target.style.color = 'var(--text-muted)'; }}
-        >
-          ← Back to Home
-        </Link>
+        <Link to="/" className="backlink">← Back to Home</Link>
       </motion.div>
 
       <div style={{ flex: 1, padding: '2rem 5% 4rem' }}>
@@ -183,10 +183,10 @@ export default function AboutPage() {
                   fontFamily: 'var(--font-body)', fontSize: '0.95rem',
                   fontWeight: isActive ? 700 : 500, letterSpacing: '0.08em',
                   textTransform: 'uppercase',
-                  color: isActive ? 'var(--spice-blue)' : 'var(--text-muted)',
+                  color: isActive ? 'var(--blue)' : 'var(--text-muted)',
                   padding: '0.5rem 0.2rem',
                   transition: 'color 0.25s var(--ease-cyber)',
-                  textShadow: isActive ? '0 0 12px rgba(0,229,255,0.2)' : 'none',
+                  textShadow: isActive ? '0 0 12px rgba(0, 168, 232, 0.2)' : 'none',
                 }}
                   onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)'; }}
                   onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = 'var(--text-muted)'; }}
@@ -207,19 +207,19 @@ export default function AboutPage() {
               <motion.div key="about" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.7rem 1rem', border: '1px solid rgba(0,229,255,0.1)', borderBottom: 'none', background: 'rgba(8,6,4,0.7)', fontFamily: 'var(--font-mono)', fontSize: '0.68rem', letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                  <span style={{ color: 'var(--spice-blue)' }}>●</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.7rem 1rem', border: '1px solid rgba(0, 168, 232, 0.1)', borderBottom: 'none', background: 'rgba(8,6,4,0.7)', fontFamily: 'var(--font-mono)', fontSize: '0.68rem', letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  <span style={{ color: 'var(--blue)' }}>●</span>
                   WINDOW // ABOUT
                   <span style={{ flex: 1 }} />
                   <span style={{ opacity: 0.4 }}>ID: A01</span>
                 </div>
-                <div style={{ border: '1px solid rgba(0,229,255,0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
+                <div style={{ border: '1px solid rgba(0, 168, 232, 0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
                   <section>
                     <ScrambleTitle text="About AXIS" style={{ marginTop: 0 }} />
                     <p className="section-subtitle">The story of Central India's largest technical festival</p>
 
-                    <div className="glass-card" style={{ maxWidth: '800px', width: '100%', padding: '2.5rem', margin: '0 auto 3rem', borderTop: '1px solid rgba(0,229,255,0.08)' }}>
-                      <p style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: '1.1rem', color: 'var(--text-primary)', letterSpacing: '0.03em', lineHeight: 1.9, textAlign: 'center', minHeight: '7em' }}>
+                    <div className="panel" style={{ maxWidth: '800px', width: '100%', padding: '2.5rem', margin: '0 auto 3rem', borderTop: '1px solid rgba(0, 168, 232, 0.08)' }}>
+                      <p style={{ fontFamily: "var(--font-display)", fontSize: '1.1rem', color: 'var(--text-primary)', letterSpacing: '0.03em', lineHeight: 1.9, textAlign: 'center', minHeight: '7em' }}>
                         <TypewriterText text={aboutText} speed={36} />
                       </p>
                     </div>
@@ -230,15 +230,13 @@ export default function AboutPage() {
                         { title: 'Organizers', value: '200+', desc: 'Student-run fest' },
                         { title: 'Reach', value: '35K+', desc: 'Annual footfall' },
                       ].map((item) => (
-                        <div key={item.title} className="glass-card" style={{ textAlign: 'center', padding: '2rem 1rem', transition: 'border-color 0.3s var(--ease-cyber), transform 0.3s var(--ease-cyber), box-shadow 0.3s var(--ease-cyber)' }}
-                          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--spice-blue)'; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 0 24px rgba(0, 229, 255, 0.12)'; }}
-                          onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(229,169,60,0.15)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+                        <div key={item.title} className="panel" style={{ textAlign: 'center', padding: '2rem 1rem', transition: 'border-color 0.3s var(--ease-cyber), transform 0.3s var(--ease-cyber), box-shadow 0.3s var(--ease-cyber)' }}
                         >
-                          <div style={{ fontFamily: "var(--font-heading)", fontSize: '1.6rem', fontWeight: 800, background: 'linear-gradient(135deg, var(--gold), var(--gold-light))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '0.5rem' }}>
-                            <span style={{ color: 'var(--spice-blue)', marginRight: '0.35rem', fontSize: '1rem', verticalAlign: 'middle' }}>▲</span>
+                          <div style={{ fontFamily: "var(--font-heading)", fontSize: '1.6rem', fontWeight: 800, background: 'linear-gradient(135deg, var(--ember), var(--sand))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '0.5rem' }}>
+                            <span style={{ color: 'var(--blue)', marginRight: '0.35rem', fontSize: '1rem', verticalAlign: 'middle' }}>▲</span>
                             {item.value}
                           </div>
-                          <div style={{ fontFamily: "var(--font-body)", fontSize: '1.1rem', fontWeight: 700, color: 'var(--spice-blue)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{item.title}</div>
+                          <div style={{ fontFamily: "var(--font-body)", fontSize: '1.1rem', fontWeight: 700, color: 'var(--blue)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{item.title}</div>
                           <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>{item.desc}</div>
                         </div>
                       ))}
@@ -252,13 +250,13 @@ export default function AboutPage() {
               <motion.div key="history" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.7rem 1rem', border: '1px solid rgba(0,229,255,0.1)', borderBottom: 'none', background: 'rgba(8,6,4,0.7)', fontFamily: 'var(--font-mono)', fontSize: '0.68rem', letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                  <span style={{ color: 'var(--spice-blue)' }}>●</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.7rem 1rem', border: '1px solid rgba(0, 168, 232, 0.1)', borderBottom: 'none', background: 'rgba(8,6,4,0.7)', fontFamily: 'var(--font-mono)', fontSize: '0.68rem', letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  <span style={{ color: 'var(--blue)' }}>●</span>
                   WINDOW // HISTORY
                   <span style={{ flex: 1 }} />
                   <span style={{ opacity: 0.4 }}>ID: A02</span>
                 </div>
-                <div style={{ border: '1px solid rgba(0,229,255,0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
+                <div style={{ border: '1px solid rgba(0, 168, 232, 0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
                   <section>
                     <ScrambleTitle text="Our Journey" style={{ marginTop: 0 }} />
                     <p className="section-subtitle">The AXIS timeline — from Odyssey to Ignis Aeternum</p>
@@ -267,13 +265,13 @@ export default function AboutPage() {
                       <TimelineSection />
                     </div>
 
-                    <h3 style={{ fontFamily: "'Orbitron', monospace", fontSize: '1.2rem', fontWeight: 700, color: 'var(--gold)', marginBottom: '2rem', letterSpacing: '0.1em', textTransform: 'uppercase', textAlign: 'center' }}>
+                    <h3 style={{ fontFamily: "var(--font-display)", fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)', marginBottom: '2rem', letterSpacing: '0.1em', textTransform: 'uppercase', textAlign: 'center' }}>
                       Notable Guests
                     </h3>
 
                     <NotableGuests />
 
-                    <h3 style={{ fontFamily: "'Orbitron', monospace", fontSize: '1.2rem', fontWeight: 700, color: 'var(--gold)', margin: '4rem 0 2rem', letterSpacing: '0.1em', textTransform: 'uppercase', textAlign: 'center' }}>
+                    <h3 style={{ fontFamily: "var(--font-display)", fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)', margin: '4rem 0 2rem', letterSpacing: '0.1em', textTransform: 'uppercase', textAlign: 'center' }}>
                       Notable Performers
                     </h3>
 
@@ -287,15 +285,15 @@ export default function AboutPage() {
               <motion.div key="gallery" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.7rem 1rem', border: '1px solid rgba(0,229,255,0.1)', borderBottom: 'none', background: 'rgba(8,6,4,0.7)', fontFamily: 'var(--font-mono)', fontSize: '0.68rem', letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                  <span style={{ color: 'var(--spice-blue)' }}>●</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.7rem 1rem', border: '1px solid rgba(0, 168, 232, 0.1)', borderBottom: 'none', background: 'rgba(8,6,4,0.7)', fontFamily: 'var(--font-mono)', fontSize: '0.68rem', letterSpacing: '0.12em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  <span style={{ color: 'var(--blue)' }}>●</span>
                   WINDOW // GALLERY
                   <span style={{ flex: 1 }} />
                   <span style={{ opacity: 0.4 }}>ID: A03</span>
                 </div>
-                <div style={{ border: '1px solid rgba(0,229,255,0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
+                <div style={{ border: '1px solid rgba(0, 168, 232, 0.1)', background: 'rgba(8,6,4,0.5)', padding: '2.5rem', textAlign: 'center' }}>
                   <ScrambleTitle text="Gallery" style={{ marginTop: 0 }} />
-                  <p className="section-subtitle">Frames from the AXIS'27 desert floor</p>
+                  <p className="section-subtitle">Frames from AXIS'26</p>
                   <GallerySection />
                 </div>
               </motion.div>

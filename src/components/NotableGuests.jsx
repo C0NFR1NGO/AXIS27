@@ -38,10 +38,24 @@ export default function NotableGuests({ people = notableGuests, verb = 'VISITED'
   const reduce = useReducedMotion();
 
   return (
-    <div className="ng-grid" style={{ width: '100%', maxWidth: '1060px', margin: '0 auto' }}>
-      {people.map((person, i) => (
-        <PersonCard key={person.id} person={person} index={i} reduce={reduce} verb={verb} />
-      ))}
+    <div style={{ width: '100%' }}>
+      <div style={{
+        fontFamily: 'var(--font-mono)',
+        fontVariationSettings: "'wdth' 75",
+        fontSize: 'var(--t-label)',
+        letterSpacing: '0.12em',
+        textTransform: 'uppercase',
+        color: 'var(--text-dim)',
+        marginBottom: '1.5rem',
+        textAlign: 'center',
+      }}>
+        &gt; ARCHIVE // PRECEDENT REGISTRY — CYCLES 2001 – PRESENT // STATUS: DEOBFUSCATED
+      </div>
+      <div className="ng-grid" style={{ maxWidth: '1060px', margin: '0 auto' }}>
+        {people.map((person, i) => (
+          <PersonCard key={person.id} person={person} index={i} reduce={reduce} verb={verb} />
+        ))}
+      </div>
     </div>
   );
 }

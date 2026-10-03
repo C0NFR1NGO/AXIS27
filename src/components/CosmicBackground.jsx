@@ -1,23 +1,15 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
 const isMobile = typeof window !== 'undefined' && 'ontouchstart' in window;
 
+// Module-scope pointer state, but the listeners that fill it are installed by the
+// component below. They used to be attached here at module scope, and because this module
+// is only reached through a lazy() import they attached on the first visit to an event page
+// and then stayed on document for the rest of the session, firing on every mouse move
+// even when no cosmic background was mounted.
 const mouse = { x: 0, y: 0, prevX: 0, prevY: 0, active: false };
-
-if (typeof document !== 'undefined' && !isMobile) {
-  document.addEventListener('mousemove', (e) => {
-    mouse.prevX = mouse.x;
-    mouse.prevY = mouse.y;
-    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    mouse.active = true;
-  });
-  document.addEventListener('mouseleave', () => {
-    mouse.active = false;
-  });
-}
 
 let _randSeed = 2027;
 function rand() {
@@ -38,7 +30,6 @@ const DEPTH_FRONT = isMobile ? 2 : 3;
 const DEPTH_BACK = isMobile ? -14 : -15;
 
 function ConstellationField() {
-  resetRand();
   const pointsRef = useRef();
   const dustRef = useRef();
   const spiceRef = useRef();
@@ -50,43 +41,53 @@ function ConstellationField() {
     height: viewport.height * 2.8,
   }), [viewport.width, viewport.height]);
 
-  const colorDistribution = useMemo(() => {
-    const r = rand();
-    if (r < 0.35) return { goldRatio: 0.7, cyanRatio: 0.8 };
-    if (r < 0.7) return { goldRatio: 0.35, cyanRatio: 0.8 };
-    return { goldRatio: 0.55, cyanRatio: 0.8 };
-  }, []);
+  // The whole field is drawn from the seeded rand(), so resetRand() and the draws that
+  // consume it have to be atomic. resetRand() used to run in the render body with the
+  // consumers split across useMemos that had different dependency arrays: React 19 may
+  // discard or replay a render and StrictMode double-invokes it, so any re-render that
+  // recomputed only some of those memos drew from a mid-sequence seed — that is why the
+  // layout came out different from the intended one. One memo means one reset per dependency
+  // change. The order of the rand() draws below is load-bearing: moving one shifts every
+  // draw after it and changes the layout.
+  const {
+    sizeScales, nodes, nodeColors, dustData, dustColors, spiceData, spiceColors,
+  } = useMemo(() => {
+    resetRand();
 
-  const sizeScales = useMemo(() => {
+    const dist = rand();
+    /* Colour slots recoloured to the cold palette (--blue / --white family):
+       the cosmic field is the interface's world, and the world/interface rule
+       says the interface stays cold. The old gold/cyan/magenta read as legacy
+       spice here. The ratio values are proportions of slots, not colours —
+       unchanged, and the rand() draw order above and below is load-bearing. */
+    let colorDistribution = { primaryRatio: 0.55, secondaryRatio: 0.8 };
+    if (dist < 0.35) colorDistribution = { primaryRatio: 0.7, secondaryRatio: 0.8 };
+    else if (dist < 0.7) colorDistribution = { primaryRatio: 0.35, secondaryRatio: 0.8 };
+
     const scale = 0.85 + rand() * 0.4;
-    return {
+    const sizeScales = {
       dustSize: (isMobile ? 0.08 : 0.13) * scale,
       nodeSize: (isMobile ? 0.15 : 0.25) * scale,
       lineWidth: (isMobile ? 0.95 : 1.2) * scale,
     };
-  }, []);
 
-  const clusterSeeds = useMemo(() => {
-    const seeds = [];
-    const count = isMobile ? 10 : 30;
-    for (let c = 0; c < count; c++) {
-      seeds.push({
+    const clusterSeeds = [];
+    const seedCount = isMobile ? 10 : 30;
+    for (let c = 0; c < seedCount; c++) {
+      clusterSeeds.push({
         cx: (rand() - 0.5) * bounds.width * 0.85,
         cy: (rand() - 0.5) * bounds.height * 0.85,
-        z: DEPTH_BACK + (DEPTH_FRONT - DEPTH_BACK) * ((c + rand()) / count),
+        z: DEPTH_BACK + (DEPTH_FRONT - DEPTH_BACK) * ((c + rand()) / seedCount),
         count: isMobile ? 5 : 8,
         radius: isMobile ? 2.4 : 3.6,
         rangeMin: isMobile ? 2.0 : 2.2,
         rangeMax: isMobile ? 3.4 : 3.8,
       });
     }
-    return seeds;
-  }, [bounds]);
 
-  const nodes = useMemo(() => {
-    const arr = [];
+    const nodes = [];
     const pushNode = (x, y, range, cluster, z) => {
-      arr.push({
+      nodes.push({
         x, y,
         z: z !== undefined ? z : (rand() - 0.5) * (isMobile ? 12 : 22) - (isMobile ? 3 : 6),
         vx: (rand() - 0.5) * (isMobile ? 0.012 : 0.018),
@@ -112,7 +113,7 @@ function ConstellationField() {
         );
       }
     });
-    while (arr.length < NODE_COUNT) {
+    while (nodes.length < NODE_COUNT) {
       pushNode(
         (rand() - 0.5) * bounds.width,
         (rand() - 0.5) * bounds.height,
@@ -120,31 +121,24 @@ function ConstellationField() {
         -1
       );
     }
-    return arr;
-  }, [bounds, clusterSeeds]);
 
-  const nodePositions = useMemo(() => new Float32Array(NODE_COUNT * 3), []);
-  const nodeColors = useMemo(() => {
-    const c = new Float32Array(NODE_COUNT * 3);
+    const nodeColors = new Float32Array(NODE_COUNT * 3);
     for (let i = 0; i < NODE_COUNT; i++) {
       const r = rand();
-      if (r < colorDistribution.goldRatio) {
-        c[i * 3] = 0.82; c[i * 3 + 1] = 0.61; c[i * 3 + 2] = 0.22;
-      } else if (r < colorDistribution.cyanRatio) {
-        c[i * 3] = 0.0; c[i * 3 + 1] = 0.9; c[i * 3 + 2] = 1.0;
+      if (r < colorDistribution.primaryRatio) {
+        nodeColors[i * 3] = 0.0; nodeColors[i * 3 + 1] = 0.66; nodeColors[i * 3 + 2] = 0.91;
+      } else if (r < colorDistribution.secondaryRatio) {
+        nodeColors[i * 3] = 0.92; nodeColors[i * 3 + 1] = 0.95; nodeColors[i * 3 + 2] = 0.98;
       } else {
-        c[i * 3] = 1.0; c[i * 3 + 1] = 0.2; c[i * 3 + 2] = 0.33;
+        nodeColors[i * 3] = 0.5; nodeColors[i * 3 + 1] = 0.78; nodeColors[i * 3 + 2] = 1.0;
       }
     }
-    return c;
-  }, [colorDistribution]);
 
-  const dustData = useMemo(() => {
-    const arr = [];
+    const dustData = [];
     for (let i = 0; i < DUST_COUNT; i++) {
       const hx = (rand() - 0.5) * bounds.width * 1.25;
       const hy = (rand() - 0.5) * bounds.height * 1.25;
-      arr.push({
+      dustData.push({
         x: hx, y: hy,
         z: (rand() - 0.5) * 36 - 10,
         vx: (rand() - 0.5) * 0.0032,
@@ -155,33 +149,22 @@ function ConstellationField() {
         flicker: 0.3 + rand() * 0.7,
       });
     }
-    return arr;
-  }, [bounds]);
 
-  const dustPositions = useMemo(() => new Float32Array(DUST_COUNT * 3), []);
-  const dustColors = useMemo(() => {
-    const c = new Float32Array(DUST_COUNT * 3);
+    const dustColors = new Float32Array(DUST_COUNT * 3);
     for (let i = 0; i < DUST_COUNT; i++) {
       const r = rand();
-      if (r < colorDistribution.goldRatio) {
-        c[i * 3] = 0.78; c[i * 3 + 1] = 0.53; c[i * 3 + 2] = 0.18;
-      } else if (r < colorDistribution.cyanRatio) {
-        c[i * 3] = 0.0; c[i * 3 + 1] = 0.78; c[i * 3 + 2] = 0.88;
+      if (r < colorDistribution.primaryRatio) {
+        dustColors[i * 3] = 0.0; dustColors[i * 3 + 1] = 0.55; dustColors[i * 3 + 2] = 0.78;
+      } else if (r < colorDistribution.secondaryRatio) {
+        dustColors[i * 3] = 0.85; dustColors[i * 3 + 1] = 0.9; dustColors[i * 3 + 2] = 0.92;
       } else {
-        c[i * 3] = 0.82; c[i * 3 + 1] = 0.18; c[i * 3 + 2] = 0.28;
+        dustColors[i * 3] = 0.4; dustColors[i * 3 + 1] = 0.65; dustColors[i * 3 + 2] = 0.85;
       }
     }
-    return c;
-  }, [colorDistribution]);
 
-  const linePositions = useMemo(() => new Float32Array(MAX_CONNECTIONS * 2 * 3), []);
-  const lineColors = useMemo(() => new Float32Array(MAX_CONNECTIONS * 2 * 3), []);
-  const dustOpacities = useMemo(() => new Float32Array(DUST_COUNT), []);
-
-  const spiceData = useMemo(() => {
-    const arr = [];
+    const spiceData = [];
     for (let i = 0; i < SPICE_COUNT; i++) {
-      arr.push({
+      spiceData.push({
         x: (rand() - 0.5) * bounds.width * 1.25,
         y: (rand() - 0.5) * bounds.height * 1.25,
         z: (rand() - 0.5) * 36 - 10,
@@ -191,18 +174,54 @@ function ConstellationField() {
         flicker: 0.3 + rand() * 0.5,
       });
     }
-    return arr;
+
+    const spiceColors = new Float32Array(SPICE_COUNT * 3);
+    for (let i = 0; i < SPICE_COUNT; i++) {
+      spiceColors[i * 3] = 0.62 + rand() * 0.15;
+      spiceColors[i * 3 + 1] = 0.78 + rand() * 0.1;
+      spiceColors[i * 3 + 2] = 0.92 + rand() * 0.06;
+    }
+
+    return { sizeScales, nodes, nodeColors, dustData, dustColors, spiceData, spiceColors };
   }, [bounds]);
 
+  // Scratch buffers only — no rand() draws, so they stay out of the field memo and keep the
+  // same identity for the life of the component, which is what the bufferAttributes expect.
+  const nodePositions = useMemo(() => new Float32Array(NODE_COUNT * 3), []);
+  const dustPositions = useMemo(() => new Float32Array(DUST_COUNT * 3), []);
+  const dustOpacities = useMemo(() => new Float32Array(DUST_COUNT), []);
   const spicePositions = useMemo(() => new Float32Array(SPICE_COUNT * 3), []);
-  const spiceColors = useMemo(() => {
-    const c = new Float32Array(SPICE_COUNT * 3);
-    for (let i = 0; i < SPICE_COUNT; i++) {
-      c[i * 3] = 0.78 + rand() * 0.08;
-      c[i * 3 + 1] = 0.5 + rand() * 0.1;
-      c[i * 3 + 2] = 0.12 + rand() * 0.08;
-    }
-    return c;
+  const linePositions = useMemo(() => new Float32Array(MAX_CONNECTIONS * 2 * 3), []);
+  const lineColors = useMemo(() => new Float32Array(MAX_CONNECTIONS * 2 * 3), []);
+
+  // The pointer listeners belong to the component that reads `mouse` in useFrame, so their
+  // lifetime matches the field. As module-scope side effects they attached on the first lazy()
+  // import of this file and then handled every mouse move for the rest of the session.
+  // Effects only run in the browser, so the old typeof document guard is not needed here.
+  useEffect(() => {
+    if (isMobile) return;
+
+    const onMouseMove = (e) => {
+      mouse.prevX = mouse.x;
+      mouse.prevY = mouse.y;
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      mouse.active = true;
+    };
+    const onMouseLeave = () => {
+      mouse.active = false;
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseleave', onMouseLeave);
+
+    return () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseleave', onMouseLeave);
+      // `mouse` is module state and outlives the component, so clear the flag: otherwise a
+      // later mount would repel nodes toward a cursor position that is no longer current.
+      mouse.active = false;
+    };
   }, []);
 
   useFrame((state) => {
@@ -288,8 +307,8 @@ function ConstellationField() {
           linePositions[idx] = n1.x; linePositions[idx + 1] = n1.y; linePositions[idx + 2] = n1.z;
           linePositions[idx + 3] = mx; linePositions[idx + 4] = my; linePositions[idx + 5] = 0;
           const alpha = (1.0 - dMouse / 5.0) * 0.9;
-          lineColors[idx] = 0.0; lineColors[idx + 1] = 0.9 * alpha; lineColors[idx + 2] = 1.0 * alpha;
-          lineColors[idx + 3] = 0.0; lineColors[idx + 4] = 0.3 * alpha; lineColors[idx + 5] = 0.9 * alpha;
+          lineColors[idx] = 0.0; lineColors[idx + 1] = 0.66 * alpha; lineColors[idx + 2] = 0.91 * alpha;
+          lineColors[idx + 3] = 0.3 * alpha; lineColors[idx + 4] = 0.55 * alpha; lineColors[idx + 5] = 0.85 * alpha;
           lineCount++;
         }
       }

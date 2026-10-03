@@ -9,7 +9,7 @@ export default function AboutSection() {
       <ScrambleTitle text="About AXIS" />
 
       <motion.div
-        className="glass-card"
+        className="panel"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-100px' }}
@@ -22,7 +22,7 @@ export default function AboutSection() {
         }}
       >
         <p style={{
-          fontFamily: "'Rajdhani', sans-serif",
+          fontFamily: "var(--font-display)",
           fontSize: '1.1rem',
           color: 'var(--text-primary)',
           letterSpacing: '0.03em',
@@ -55,21 +55,11 @@ export default function AboutSection() {
         ].map((item) => (
           <div
             key={item.title}
-            className="glass-card"
+            className="panel"
             style={{
               textAlign: 'center',
               padding: '2rem 1rem',
               transition: 'border-color 0.3s var(--ease-cyber), transform 0.3s var(--ease-cyber), box-shadow 0.3s var(--ease-cyber)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'var(--spice-blue)';
-              e.currentTarget.style.transform = 'translateY(-3px)';
-              e.currentTarget.style.boxShadow = '0 0 24px rgba(0, 229, 255, 0.12)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(229,169,60,0.15)';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'none';
             }}
           >
             <motion.div
@@ -77,20 +67,20 @@ export default function AboutSection() {
                 fontFamily: "var(--font-heading)",
                 fontSize: '1.6rem',
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, var(--gold), var(--gold-light))',
+                background: 'linear-gradient(135deg, var(--ember), var(--sand))',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 marginBottom: '0.5rem',
               }}
             >
-              <span style={{ color: 'var(--spice-blue)', marginRight: '0.35rem', fontSize: '1rem', verticalAlign: 'middle' }}>▲</span>
+              <span style={{ color: 'var(--blue)', marginRight: '0.35rem', fontSize: '1rem', verticalAlign: 'middle' }}>▲</span>
               {item.value}
             </motion.div>
             <div style={{
               fontFamily: "var(--font-body)",
               fontSize: '1.1rem',
               fontWeight: 700,
-              color: 'var(--spice-blue)',
+              color: 'var(--blue)',
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
             }}>

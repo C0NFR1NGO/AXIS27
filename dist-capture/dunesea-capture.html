@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AXIS'27 world capture</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #070503;
+      }
+      #spacer {
+        height: 600vh;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/dunesea-DzBZLaYx.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-QTnfLwEv.js">
+    <link rel="modulepreload" crossorigin href="/assets/three-DHvIkmXY.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-DmNtYYp2.js">
+  </head>
+  <body>
+    <div id="capture-root"></div>
+    <div id="spacer"></div>
+    <script>
+      (function () {
+        var MAX = 1;
+        function measure() {
+          MAX = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+        }
+        measure();
+        window.addEventListener('resize', measure);
+
+        var tl = gsap.timeline({ paused: true });
+        tl.to({}, { duration: 45, ease: 'none' }, 0);
+        tl.eventCallback('onUpdate', function () {
+          var t = tl.time();
+          var p = t < 4 ? 0 : t > 41 ? 1 : (t - 4) / 37;
+          var e = p * p * (3 - 2 * p);
+          window.scrollTo(0, e * MAX);
+        });
+        window.__timelines['world-capture'] = tl;
+      })();
+    </script>
+  </body>
+</html>

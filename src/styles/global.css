@@ -6,57 +6,151 @@
   box-sizing: border-box;
 }
 
+/* ==========================================================================
+   TOKENS
+
+   One governing rule, and everything below follows from it: THE WORLD BURNS
+   WARM, THE INTERFACE STAYS COLD. Ember, sand and bone are light falling on a
+   landscape. Blue is a machine talking to you. The reason the rest of this site
+   never matched its hero was that gold was doing interface work — warm world
+   material sitting on cold instrument chrome — so gold is being removed from
+   the public site rather than re-tuned. That also settles the three-golds
+   problem: #c9911a, rgba(229,169,60,·) and Navigation's rgba(210,156,56,·) were
+   all in play at once, and swapping one token would only have moved the first.
+
+   Contrast is measured, not judged by eye. Against the --surface panel fill:
+   bone 15.84:1, sand 12.45:1, white 18.40:1, blue 7.35:1, alert 5.54:1, and
+   --text-dim 6.36:1. Every one of those clears 4.5:1 for small text, so no
+   value here needs the large-text exemption to be defensible.
+   ========================================================================== */
+
 :root {
-  /* —— DUNE: Arrakis Sand & Spice Melange —— */
-  --gold: #c9911a;
-  --gold-light: #dca22a;
-  --gold-glow: rgba(201, 145, 26, 0.5);
-  --spice-ember: rgba(184, 134, 11, 0.45);
+  /* —— Ground. Near-black and deliberately warm-shifted, so the ember seam
+        reads as light in the same room rather than a sticker on top. —— */
+  --ground: #070503;
+  --surface: #0c0906;
+  --panel: #12100c;
 
-  /* —— DETROIT: CyberLife LED Blue —— */
-  --spice-blue: #00e5ff;
-  --spice-blue-glow: rgba(0, 229, 255, 0.35);
-  --cyber-blue: #0088ff;
-  --cyber-blue-glow: rgba(0, 136, 255, 0.25);
+  /* —— World light. Warm. Never used on a control. —— */
+  --bone: #f2e4cc;
+  --sand: #e8c89a;
+  --ember: #ff9e00;  /* Amber Plasma — official Ignis Aeternum world light */
 
-  /* —— DETROIT: Software Instability Red —— */
-  --cyber-red: #ff3355;
+  /* —— Heading-only warm stops. More saturated than the world palette above —
+        the title gradients were asked to burn hotter, and these exist so that
+        request does not drag the hero render or the seam with it. Both are the
+        official ramp values. Measured against --ground: #ff6a00 is 6.9:1 and
+        #ffa500 is 10.2:1, both clear of the 3:1 a heading needs. —— */
+  --ember-hot: #ff6a00;
+  --amber-hot: #ffa500;
 
-  /* —— DUNE: Obsidian desert depths —— */
-  --bg-deep: #050302;
-  --bg-mid: #0b0907;
-  --bg-surface: #161210;
+  /* —— Cyan Lattice, per the brand blueprint: 1px gridlines, crosshairs and
+        measurement metrics only. The interface workhorse stays --blue; this is
+        the drafting ink, not the pen. —— */
+  --cyan-lattice: #00f0ff;
 
-  /* —— Legacy aliases —— */
-  --violet: var(--gold);
-  --violet-light: var(--gold-light);
-  --violet-glow: var(--gold-glow);
-  --cyan: var(--spice-blue);
-  --cyan-glow: var(--spice-blue-glow);
-  --blue: var(--cyber-blue);
-  --glitch-red: var(--cyber-red);
+  /* —— Interface. Cold. Never used on sand. —— */
+  --blue: #00a8e8;
+  --white: #f2f7fa;
 
-  /* —— Typography —— */
-  --text-primary: #f0ece3;
-  --text-secondary: #e0dbd0;
-  --text-muted: #a8a098;
-  --font-display: 'Audiowide', sans-serif;
-  --font-heading: 'Orbitron', sans-serif;
-  --font-body: 'Rajdhani', sans-serif;
-  --font-mono: 'Share Tech Mono', monospace;
+  /* —— Failure only: errors and destructive confirmations. Not an accent,
+        and not a third colour to reach for when two feel too few. —— */
+  --alert: #ff3355;
+
+  /* —— Text. --text-dim is #9c9081 rather than a neutral grey because a
+        neutral grey next to bone reads as a different temperature of light,
+        which is exactly the inconsistency the governing rule exists to stop. —— */
+  --text: var(--bone);
+  --text-2: #ded2bd;
+  --text-dim: #9c9081;
+
+  /* —— Lines. Cold by default; the seam supplies the one warm edge. —— */
+  --line: rgba(0, 168, 232, 0.22);
+  --line-quiet: rgba(242, 228, 204, 0.1);
+  --seam: var(--ember);
+
+  /* Where the horizon sits in the hero. The ember seam is anchored here on
+     every page, which is what carries the hero's light through the site. */
+  --seam-y: 57vh;
+
+  /* —— Type. Archivo carries display, Inter Tight carries reading, Martian
+        Mono carries anything the machine is reporting rather than saying. —— */
+  --font-display: 'Archivo', system-ui, sans-serif;
+  --font-body: 'Inter Tight', system-ui, sans-serif;
+  --font-mono: 'Martian Mono', ui-monospace, monospace;
   --font-accent: 'Ethnocentric', sans-serif;
+  /* Section headings only. Audiowide is the face this site already had and the
+     one it is recognised by, so it is back — but scoped to headings rather than
+     to all of `--font-display`, because its wide geometry is wrong on a button
+     or a 12px label. Archivo keeps those. */
+  --font-heading: 'Audiowide', var(--font-display);
+
+  /* Fluid, so nothing needs a font-size media query. The hero step is not here:
+     the wordmark is solved against the render behind it and lives in the hero. */
+  --t-h1: clamp(1.9rem, 3.6vw, 3rem);
+  --t-h2: clamp(1.35rem, 2.2vw, 1.85rem);
+  --t-h3: clamp(1.05rem, 1.4vw, 1.25rem);
+  --t-body: clamp(0.95rem, 1.05vw, 1.0625rem);
+  --t-small: 0.8125rem;
+  --t-label: 0.6875rem;
+
+  /* —— Layout. Content sits in a centred column of at most --grid-max.
+        Centred throughout, on the brief's instruction — the earlier direction
+        here was an asymmetric instrument-panel grid with content in columns
+        1–7 of twelve and the hero as the site's one symmetrical composition.
+        That is no longer the case and the note is kept only so nobody
+        reintroduces the asymmetry thinking it was lost by accident. —— */
+  --grid-max: 1240px;
+  --gutter: clamp(1.25rem, 5vw, 4rem);
   --nav-height: 72px;
 
-  /* —— Easing —— */
+  /* —— Easing. Names kept: they are referenced widely and the curves are
+        fine. --ease-cyber and --ease-spice are the same curve under two
+        names, which is why new code should reach for --ease-out. —— */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-cyber: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spice: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* —— Borders & Glows —— */
-  --border-glow: rgba(0, 229, 255, 0.08);
-  --border-gold: rgba(201, 145, 26, 0.15);
+  /* ---------------------------------------------------------------------- */
+  /* CARRIED NAMES. Old token names still referenced across the public site,
+     repointed at the system above so nothing is left resolving to a colour
+     that no longer belongs. These are not for new code — use the names above.
+     When the last public reference to one of these is gone, delete it. */
+  --text-primary: var(--text);
+  --text-secondary: var(--text-2);
+  --text-muted: var(--text-dim);
+  --bg-deep: var(--ground);
+  --bg-mid: var(--surface);
+  --bg-surface: var(--surface);
+  --cyber-red: var(--alert);
+  --glitch-red: var(--alert);
+  --cyan: var(--blue);
+  --cyan-glow: rgba(0, 168, 232, 0.3);
+  --cyber-blue: var(--blue);
+  --cyber-blue-glow: rgba(0, 168, 232, 0.22);
+  --violet: var(--blue);
+  --violet-light: var(--white);
+  --violet-glow: rgba(0, 168, 232, 0.3);
+  --border-glow: var(--line);
+  --border-gold: var(--line-quiet);
+  --spice-ember: rgba(255, 158, 0, 0.35);
+
+  /* ---------------------------------------------------------------------- */
+  /* LEGACY — ADMIN ONLY. Do not use in src/components, src/pages or src/App.
+     The admin area is deliberately outside this retheme, and it references
+     --gold 19 times and --spice-blue 14 times, so these two families have to
+     keep their old values or admin's borders and labels lose their colour.
+     Everything else admin uses — --font-mono, --font-heading, --text-muted,
+     --text-secondary — is redefined above and will shift with the site. That
+     was the accepted trade: leave admin alone means do not hand-edit it, not
+     that it will not move. */
+  --gold: #c9911a;
+  --gold-light: #dca22a;
+  --gold-glow: rgba(201, 145, 26, 0.5);
+  --spice-blue: #00e5ff;
+  --spice-blue-glow: rgba(0, 229, 255, 0.35);
 }
 
 @font-face {
@@ -74,67 +168,176 @@ html {
 }
 
 body {
-  background: linear-gradient(160deg, #040201 0%, #0b0907 40%, #100d0a 70%, #0a0806 100%);
-  background-attachment: fixed;
-  color: var(--text-primary);
+  background: var(--ground);
+  color: var(--text);
   font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.65;
   overflow-x: hidden;
   position: relative;
 }
 
-/* —— DETROIT: HUD Scanline + DUNE: Sand Vignette + LED Column —— */
-body::after {
-  content: '';
+/* ==========================================================================
+   THE EMBER SEAM — the signature
+
+   One warm light, fixed at the height the hero's horizon sits at, on every
+   page. It is the whole reason the rest of the site reads as the same place as
+   the hero: the light source does not change when you navigate, only what is
+   standing in front of it.
+
+   Three things about this are load-bearing and easy to undo by accident.
+
+   It is rendered in App.jsx OUTSIDE the framer-motion route wrappers. Those
+   animate transform and filter, and any transformed ancestor silently redefines
+   what `position: fixed` is fixed to — the same trap that once sized the world
+   layer to the whole document. Staying outside them also means this element
+   never unmounts, so its animation never restarts: the flame is eternal by
+   construction, with no JavaScript keeping it alive.
+
+   It sits BEHIND content at z-index 0. Panels are opaque, so the seam shows
+   only in the gaps between them, which is what light at a horizon actually
+   does. Anything that must not be crossed by it needs its own stacking context.
+
+   It is one pixel tall. The glow is a separate blurred layer, so the line stays
+   sharp at any device pixel ratio instead of turning into a soft band.
+   ========================================================================== */
+.ember-seam {
   position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(3, 2, 1, 0.7) 70%, rgba(3, 2, 1, 0.92) 100%),
-    repeating-linear-gradient(0deg,
-      transparent,
-      transparent 3px,
-      rgba(0, 0, 0, 0.03) 3px,
-      rgba(0, 0, 0, 0.03) 4px),
-    linear-gradient(90deg,
-      rgba(201, 145, 26, 0.008),
-      transparent 20%,
-      rgba(0, 229, 255, 0.004),
-      transparent 80%,
-      rgba(0, 136, 255, 0.006));
-  z-index: 9999;
+  left: 0;
+  right: 0;
+  top: var(--seam-y);
+  height: 1px;
+  z-index: 0;
   pointer-events: none;
-  opacity: 0.5;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 122, 26, 0.28) 26%,
+    rgba(255, 198, 128, 0.85) 50%,
+    rgba(255, 122, 26, 0.28) 74%,
+    transparent
+  );
 }
 
-/* —— DETROIT: HUD border frame with corner brackets (desktop only) —— */
-@media (min-width: 768px) {
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 10px;
-    border: 1px solid rgba(0, 229, 255, 0.05);
-    z-index: 9998;
-    pointer-events: none;
-    opacity: 0.6;
-    background:
-      linear-gradient(to right, rgba(0, 229, 255, 0.12) 0px, transparent 40px) top left / 100% 1px no-repeat,
-      linear-gradient(to right, transparent calc(100% - 40px), rgba(0, 229, 255, 0.12)) bottom left / 100% 1px no-repeat,
-      linear-gradient(to bottom, rgba(0, 229, 255, 0.12) 0px, transparent 40px) top left / 1px 100% no-repeat,
-      linear-gradient(to bottom, transparent calc(100% - 40px), rgba(0, 229, 255, 0.12)) top right / 1px 100% no-repeat,
-      linear-gradient(to right, rgba(201, 145, 26, 0.08) 0px, transparent 30px) top left / 100% 1px no-repeat,
-      linear-gradient(to right, transparent calc(100% - 30px), rgba(201, 145, 26, 0.08)) bottom left / 100% 1px no-repeat,
-      linear-gradient(to bottom, rgba(201, 145, 26, 0.08) 0px, transparent 30px) top left / 1px 100% no-repeat,
-      linear-gradient(to bottom, transparent calc(100% - 30px), rgba(201, 145, 26, 0.08)) top right / 1px 100% no-repeat;
+.ember-seam::after {
+  content: '';
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: -34px;
+  height: 68px;
+  background: radial-gradient(
+    52% 50% at 50% 50%,
+    rgba(255, 122, 26, 0.16),
+    transparent 72%
+  );
+  filter: blur(6px);
+}
+
+/* The breathing is 14 seconds and moves opacity by a tenth. Slower and wider
+   than that reads as a fade bug; faster reads as a notification. */
+@media (prefers-reduced-motion: no-preference) {
+  .ember-seam {
+    animation: seam-breathe 14s var(--ease-in-out) infinite;
   }
 }
 
+@keyframes seam-breathe {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Route content sits above the seam. Without this the seam would draw a line
+   across body copy rather than through the gaps between panels. */
+.route-shell {
+  position: relative;
+  z-index: 1;
+}
+
+/* Floating back-to-top. Cold by rule: panel background, quiet border, blue
+   focus ring, and no hue competing with the seam. z-index above .route-shell
+   so page content never covers it; below the splash (9999). */
+.back-to-top {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 90;
+  padding: 0.6rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line-quiet);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition:
+    opacity 0.3s var(--ease-out),
+    transform 0.3s var(--ease-out),
+    border-color 0.2s var(--ease-out),
+    color 0.2s var(--ease-out);
+}
+
+.back-to-top--show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.back-to-top:hover {
+  border-color: var(--line);
+  color: var(--white);
+}
+
+.back-to-top:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Reduced motion keeps the visibility switch but drops the slide. */
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transform: none;
+    transition: opacity 0.15s linear;
+  }
+}
+
+/* Two full-viewport overlays used to live here and have been deleted, which is
+   worth recording so they don't get rebuilt.
+
+   `body::after` was a vignette plus 3px scanlines plus a three-colour gradient
+   column, all at z-index 9999 over everything. `body::before` was a 1px cyan
+   HUD frame inset 10px with eight gradient corner brackets. Between them they
+   put a dark wash and a colour cast over every pixel on the site, which is why
+   the sand never looked like the value it was authored at, and the vignette
+   fought the hero's own horizon glow. Neither encoded anything true — they were
+   the frame of an interface that isn't there.
+
+   The ember seam above replaces both. One light, in the one place the world's
+   light actually comes from.
+
+   Note that `HeroSectionV2.jsx` suppressed both of these for the home page via
+   `body.axis27-newhero::after`. That rule is now dead and has been removed with
+   them. */
+
 a {
-  color: var(--spice-blue);
+  color: var(--blue);
   text-decoration: none;
-  transition: color 0.3s;
+  transition: color 0.2s var(--ease-out);
 }
 
 a:hover {
-  color: var(--gold);
+  color: var(--white);
 }
 
 img {
@@ -143,13 +346,17 @@ img {
 }
 
 ::selection {
-  background: var(--gold-glow);
-  color: var(--text-primary);
+  background: rgba(0, 168, 232, 0.3);
+  color: var(--white);
 }
 
-/* —— ACCESSIBILITY —— */
+/* —— ACCESSIBILITY ——
+   The focus ring is --blue and not --ember on purpose: focus is interface, and
+   the interface is cold. It also used to resolve through --gold, which meant
+   the day --gold left :root the outline colour would become invalid and the
+   ring would silently disappear on every page including admin. */
 :focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
 
@@ -159,15 +366,15 @@ img {
   left: 1rem;
   z-index: 300;
   padding: 0.6rem 1.1rem;
-  background: var(--bg-surface);
-  border: 1px solid var(--gold);
-  color: var(--gold-light);
+  background: var(--panel);
+  border: 1px solid var(--blue);
+  color: var(--white);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: var(--t-label);
+  font-stretch: 75%;
+  letter-spacing: 0.1em;
   text-decoration: none;
-  transition: top 0.2s var(--ease-cyber);
+  transition: top 0.2s var(--ease-out);
 }
 
 .skip-link:focus {
@@ -178,28 +385,71 @@ img {
   display: none;
 }
 
-/* —— SECTION LAYOUT —— */
+/* —— SECTION LAYOUT ——
+   A centred column on a measured width. Centring is the house style here and it
+   is what the rest of the site expects, so the text axis runs down the middle
+   and every child inherits it unless it has a reason not to (form fields, which
+   are below, because a centred value inside an input is unreadable).
+
+   What did NOT come back is `min-height: 60vh` with a centring flex stack. That
+   was a separate problem wearing the same clothes: it padded every section out
+   to fill a screen it had no content for, which is what produced the large empty
+   bands between them, and the flex centring fought the scroll pacing the sunrise
+   depends on. Sections are now as tall as what is in them, and centred. */
 .section {
-  min-height: 60vh;
-  padding: 80px 5%;
+  padding: clamp(64px, 9vh, 112px) var(--gutter);
+  max-width: var(--grid-max);
+  margin-inline: auto;
   position: relative;
+  text-align: center;
+  /* The flex column is doing real work here, not just repeating `text-align`.
+     `text-align` only centres inline content INSIDE a block; it cannot move the
+     block. Several sections hand their own children an explicit width —
+     TeamSection's category blocks are `width: 100%; max-width: 1100px` — and a
+     block with a max-width and no auto margin sits against its container's left
+     edge no matter what `text-align` says. That was the visible left-shift.
+     `align-items: center` centres the boxes themselves, which is what was asked
+     for and what the sheet used to do. */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
-/* —— DETROIT: CyberLife horizontal rule w/ Dune spice glow —— */
+/* The cost of `align-items: center` is that it shrink-wraps every child to its
+   content width, which is right for a heading and wrong for anything that is
+   supposed to span the column — a card grid collapses to one narrow column,
+   a panel stops filling its row. So: nothing may exceed the content box, and
+   the things whose whole job is to span are told to span.
+
+   Declared as a child selector on `.section` rather than on `.grid-cards`
+   itself so a component can still put a deliberately narrow grid somewhere else
+   without fighting a global rule. */
+.section > * {
+  max-width: 100%;
+}
+
+.section > .grid-cards,
+.section > .panel,
+.section > .empty {
+  width: 100%;
+}
+
+/* One hairline, no glow, no colour. The section divider's job is to say "new
+   thing here" quietly — the ember seam is the only light on the page. */
 .section::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 8%;
-  right: 8%;
+  left: var(--gutter);
+  right: var(--gutter);
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--spice-blue) 50%, var(--gold) 80%, transparent);
-  opacity: 0.25;
-  box-shadow: 0 0 16px var(--spice-blue-glow), 0 0 32px var(--gold-glow);
+  background: var(--line-quiet);
+}
+
+/* The first section on a page has the nav above it, not another section, so it
+   does not need a divider. */
+.section:first-of-type::before {
+  display: none;
 }
 
 /* —— KEYFRAMES —— */
@@ -209,276 +459,1931 @@ img {
   50% { background-position: 100% center; }
 }
 
-@keyframes led-pulse {
-  0%, 100% {
-    opacity: 0.25;
-    box-shadow: 0 0 6px var(--spice-blue);
-  }
-  50% {
-    opacity: 1;
-    box-shadow: 0 0 14px var(--spice-blue), 0 0 28px var(--spice-blue-glow);
-  }
-}
+/* Four keyframe blocks were deleted here: `led-pulse` and `led-ring-pulse` (only
+   ever used by `.led-dot`, which no JSX file referenced), `instability` (a
+   clip-path glitch nothing referenced — the six `instability` hits in the JSX are
+   all a state variable of the same name), and `hud-glow-cyan` / `hud-glow-gold`
+   (referenced nowhere at all). Five blinking-light animations for zero blinking
+   lights. `shimmer` is kept because it only moves background-position — no
+   layout, no paint of anything but the gradient — and `.section-title` uses it,
+   behind a reduced-motion query. */
 
-@keyframes led-ring-pulse {
-  0% {
-    box-shadow: 0 0 6px var(--spice-blue), 0 0 0 0 rgba(0, 229, 255, 0.3);
-  }
-  70% {
-    box-shadow: 0 0 10px var(--spice-blue), 0 0 0 10px rgba(0, 229, 255, 0);
-  }
-  100% {
-    box-shadow: 0 0 6px var(--spice-blue), 0 0 0 0 rgba(0, 229, 255, 0);
-  }
-}
+/* @keyframes coming-soon-pulse was deleted here along with its only consumer:
+   the old event-detail "Coming Soon" pulsing pill, replaced by the disabled
+   register button in the event-pages rebuild. Dead keyframes and dead files
+   are the design equivalent of an unplugged appliance. */
 
-@keyframes instability {
-  0%, 100% { clip-path: inset(0 0 0 0); }
-  5% { clip-path: inset(30% 0 0 0); }
-  10% { clip-path: inset(0 0 20% 0); }
-  15% { clip-path: inset(0 0 0 0); }
-}
+/* ==========================================================================
+   TYPE ROLES
 
-@keyframes coming-soon-pulse {
-  0%, 100% {
-    border-color: var(--spice-blue);
-    box-shadow: 0 0 0 1px rgba(0,229,255,0.1), 0 0 22px rgba(0, 229, 255, 0.12), inset 0 0 22px rgba(0, 229, 255, 0.02);
-  }
-  50% {
-    border-color: rgba(0, 229, 255, 0.5);
-    box-shadow: 0 0 0 1px rgba(0,229,255,0.2), 0 0 32px rgba(0, 229, 255, 0.18), inset 0 0 28px rgba(0, 229, 255, 0.04);
-  }
-}
+   Three faces, three jobs, and the rule for which to reach for is about who is
+   speaking rather than how big the text is. Archivo is the festival announcing
+   itself. Inter Tight is a person explaining something. Martian Mono is the
+   machine reporting a fact it measured — so a label or a count gets mono, and a
+   sentence never does.
+   ========================================================================== */
 
-/* —— HERO HUD GLOW: cheap text-shadow pulse (no JS animation) —— */
-@keyframes hud-glow-cyan {
-  0%, 100% { text-shadow: 0 0 4px rgba(0,229,255,0.2); }
-  50% { text-shadow: 0 0 8px rgba(0,229,255,0.4); }
-}
+/* —— SECTION HEADINGS ——
+   This is the site's original heading treatment brought back: Audiowide, wide
+   tracking, a gradient clipped to the text, a shimmer, and the 120px rule
+   underneath. The only thing changed is the colour.
 
-@keyframes hud-glow-gold {
-  0%, 100% { text-shadow: 0 0 4px rgba(229,169,60,0.2); }
-  50% { text-shadow: 0 0 8px rgba(229,169,60,0.4); }
-}
+   The old ramp ran gold #c9911a -> gold-light #dca22a -> spice-blue #00e5ff ->
+   gold. The two warm stops are now ember and sand, and the cool stop is the
+   site's `--blue`, so the heading is made of colours that exist elsewhere on the
+   page instead of two that no longer do.
 
-/* —— SECTION TITLES —— */
+   That swap also fixed the contrast problem the old ramp had, which is worth
+   recording so nobody "improves" it back: measured against `--ground`, old gold
+   #c9911a was 4.60:1 and old spice-blue #00e5ff was 12.9:1 — a 2.8x swing
+   between the ends of one word, so the dark end of every heading was the weak
+   point.
+
+   The warm stops then got pushed hotter at the client's request — the brand
+   blueprint's own ramp values #ff6a00 and #ffa500 instead of sand — via the
+   heading-only tokens --ember-hot / --amber-hot. Measured ramp against
+   --ground: 6.9 / 10.2 / 7.53.
+   ========================================================================== */
 .section-title {
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: clamp(1.8rem, 4.5vw, 3.2rem);
   font-weight: 700;
-  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 25%, var(--spice-blue) 65%, var(--gold) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--ember-hot) 0%,
+    var(--amber-hot) 25%,
+    var(--blue) 65%,
+    var(--ember-hot) 100%
+  );
   background-size: 200% 200%;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  margin-bottom: 0.8rem;
+  line-height: 1.15;
+  margin: 0 auto 0.8rem;
   text-align: center;
   position: relative;
-  animation: shimmer 6s ease-in-out infinite;
 }
+
+/* The shimmer is the original 6s ease-in-out loop, moved behind the motion
+   query. It is the one thing about this heading that was not a colour decision:
+   an animation running on every heading on the page at once is exactly the
+   case `prefers-reduced-motion` exists for, and gating it costs the people who
+   want it nothing. */
+@media (prefers-reduced-motion: no-preference) {
+  .section-title {
+    animation: shimmer 6s ease-in-out infinite;
+  }
+}
+
+/* Audiowide has no bold, so `font-weight: 700` above is synthesised by the
+   browser. That is deliberate — it is what this heading has always looked like,
+   and swapping it for 400 would have quietly changed the weight of every
+   heading on the site while claiming to be a revert. */
 
 .section-title::after {
   content: '';
   display: block;
   width: 120px;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), var(--spice-blue), var(--gold), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--amber-hot),
+    var(--blue),
+    var(--amber-hot),
+    transparent
+  );
   margin: 0.8rem auto 0;
   border-radius: 2px;
-  box-shadow: 0 0 16px var(--spice-blue-glow), 0 0 32px var(--gold-glow);
+  /* The glow is dialled back from the original's 16px + 32px double halo. The
+     ember seam is the site's one light source and a 32px bloom under every
+     heading competed with it; 10px reads as a lit edge rather than a lamp. */
+  box-shadow: 0 0 10px rgba(0, 168, 232, 0.35);
+}
+
+/* Gravitational lensing — the blueprint's poster device: a warped ring around
+   the title, as if the words were bending the space they sit in. An ellipse
+   (scaleY) that slowly rocks and flexes reads as orbital motion around the
+   text; the box-shadow spread is the second, fainter ring of the doublet.
+   Lattice ink at drafting opacity, behind the text, never intercepting
+   clicks. Em-based, so the ring tracks the fluid heading size. */
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5.4em;
+  height: 5.4em;
+  margin: -2.7em 0 0 -2.7em;
+  border: 1.5px solid rgba(0, 240, 255, 0.28);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 0.32em rgba(0, 240, 255, 0.08),
+    0 0 20px rgba(0, 240, 255, 0.06);
+  transform: rotate(-6deg) scaleY(0.4);
+  pointer-events: none;
+  z-index: -1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .section-title::before {
+    animation: lens-warp 26s ease-in-out infinite;
+  }
+}
+
+@keyframes lens-warp {
+  0%,
+  100% {
+    transform: rotate(-6deg) scaleY(0.4);
+  }
+  50% {
+    transform: rotate(6deg) scaleY(0.46);
+  }
 }
 
 .section-subtitle {
   font-family: var(--font-body);
-  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
-  color: var(--text-secondary);
-  text-align: center;
-  max-width: 680px;
+  font-size: var(--t-body);
+  color: var(--text-dim);
+  max-width: 62ch;
   margin: 0 auto 2.5rem;
-  letter-spacing: 0.06em;
-  line-height: 1.7;
+  line-height: 1.65;
+  text-align: center;
 }
 
-/* —— GLASS CARD: Detroit holographic panel —— */
+/* —— Mono primitives. Martian Mono is about 30% wider than the Share Tech Mono
+      it replaces, so every one of these sets `font-stretch: 75%` rather than
+      shrinking the size. That keeps labels at a legible size and stops the 80-odd
+      existing mono call sites from overflowing their containers. —— */
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  font-stretch: 75%;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  display: inline-block;
+}
+
+.label--blue {
+  color: var(--blue);
+}
+
+/* A readout is a value the site actually knows: a count, an index, a date. If
+   the number is decorative or randomised it is not a readout and should not be
+   dressed as one. */
+.readout {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  font-stretch: 75%;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--white);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  font-stretch: 75%;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blue);
+  display: block;
+  margin-bottom: 0.85rem;
+}
+
+/* ==========================================================================
+   PANEL
+
+   `.panel` is the name to use. `.glass-card` is the same rule under its old name
+   because eight files still say it, and repointing the name is safer than a
+   rename that could miss one and leave an unstyled box on a live page.
+
+   The backdrop-filter is deliberately gone. It cost a full-panel blur on every
+   card on every scroll frame — expensive on exactly the phones the hero was just
+   turned back on for — and now that the body is a flat near-black there is
+   nothing behind a panel worth blurring.
+
+   The ember edge along the bottom is the one warm thing in the interface, and it
+   is doing real work: it says the panel is an object standing on lit ground
+   rather than a rectangle floating in space. It is on the bottom edge only,
+   because that is where the light is.
+   ========================================================================== */
+.panel,
 .glass-card {
-  background: rgba(8, 6, 4, 0.92);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(201, 145, 26, 0.1);
+  background: var(--panel);
+  border: 1px solid var(--line-quiet);
   border-radius: 2px;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.35s var(--ease-cyber), transform 0.35s var(--ease-cyber), box-shadow 0.35s var(--ease-cyber);
+  transition: border-color 0.3s var(--ease-out);
 }
 
+.panel::before,
 .glass-card::before {
   content: '';
   position: absolute;
-  top: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.15), transparent);
-  opacity: 0;
-  transition: opacity 0.35s var(--ease-cyber);
+  background: linear-gradient(90deg, transparent, rgba(255, 158, 0, 0.45), transparent);
+  opacity: 0.5;
+  transition: opacity 0.3s var(--ease-out);
+  pointer-events: none;
 }
 
+/* Corner crosshairs — the blueprint's "Recursive Grids & Diagnostics" rule
+   (1px cyan gridlines, crosshairs, corner markers, monospace metadata). One
+   10px "+" at each corner in lattice ink, kept at 28% opacity so it reads as
+   drafting furniture rather than as part of the card. */
+.panel::after,
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M5 0V10M0 5H10' stroke='%2300f0ff' stroke-opacity='0.55' stroke-width='1'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M5 0V10M0 5H10' stroke='%2300f0ff' stroke-opacity='0.55' stroke-width='1'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M5 0V10M0 5H10' stroke='%2300f0ff' stroke-opacity='0.55' stroke-width='1'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M5 0V10M0 5H10' stroke='%2300f0ff' stroke-opacity='0.55' stroke-width='1'/%3E%3C/svg%3E");
+  background-position: top left, top right, bottom left, bottom right;
+  background-repeat: no-repeat;
+  opacity: 0.32;
+}
+
+/* Hover moves the border and the ember edge, and nothing else. The old rule
+   also ran `transform: translateY(-1px)` and a triple box-shadow, so a grid of
+   cards twitched and glowed under a moving cursor; and `:active { scale(0.97) }`
+   shrank whole panels that were never buttons. */
+.panel:hover,
 .glass-card:hover {
-  border-color: rgba(0, 229, 255, 0.3);
-  box-shadow:
-    0 0 24px rgba(0, 229, 255, 0.08),
-    0 0 48px rgba(201, 145, 26, 0.03),
-    inset 0 1px 0 rgba(0, 229, 255, 0.06);
-  transform: translateY(-1px);
+  border-color: var(--line);
 }
 
+.panel:hover::before,
 .glass-card:hover::before {
   opacity: 1;
 }
 
-.glass-card:active {
-  transform: scale(0.97);
+/* Social icon buttons in the footer — controls, so cold. Hover lifts to
+   --blue border and --white icon, matching the governing rule. */
+.footer-social:hover {
+  border-color: var(--blue);
+  color: var(--white);
 }
 
-/* —— BUTTONS —— */
+/* ==========================================================================
+   BUTTONS
+
+   Primary is bone-on-ground: no hue at all. That is the choice worth explaining.
+   The obvious move is an ember button, and it is wrong twice over — it breaks the
+   rule that ember is world light and never interface, and it makes every button
+   on the page compete with the seam. Bone is the highest-contrast thing available
+   (15.8:1 on panel), so the primary action wins on value instead of colour, and
+   the one warm light stays unique.
+   ========================================================================== */
 .btn-primary {
-  font-family: var(--font-heading);
-  font-size: 0.85rem;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 0.85rem 2.8rem;
-  border: 1px solid var(--gold);
-  color: var(--gold);
-  background: transparent;
+  font-stretch: 88%;
+  letter-spacing: 0.01em;
+  padding: 0.8rem 1.9rem;
+  border: 1px solid var(--bone);
+  background: var(--bone);
+  color: var(--ground);
   cursor: pointer;
-  transition: all 0.3s var(--ease-cyber);
+  border-radius: 2px;
   text-decoration: none;
   display: inline-block;
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 0 14px rgba(201, 145, 26, 0.06), inset 0 0 14px rgba(201, 145, 26, 0.02);
-}
-
-.btn-primary::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(201, 145, 26, 0.1), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.5s var(--ease-spice);
+  transition: background 0.2s var(--ease-out), border-color 0.2s var(--ease-out),
+    color 0.2s var(--ease-out);
 }
 
 .btn-primary:hover {
-  background: var(--gold);
-  color: var(--bg-deep);
-  border-color: var(--gold-light);
-  box-shadow: 0 0 36px rgba(201, 145, 26, 0.5), 0 0 56px var(--spice-ember);
-  transform: translateY(-1px);
-}
-
-.btn-primary:hover::after {
-  transform: translateX(100%);
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--ground);
 }
 
 .btn-primary:active {
-  transform: scale(0.96);
+  transform: translateY(1px);
 }
 
 .btn-secondary {
-  font-family: var(--font-heading);
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 0.85rem 2.8rem;
-  border: 1px solid var(--spice-blue);
-  color: var(--spice-blue);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-stretch: 88%;
+  letter-spacing: 0.01em;
+  padding: 0.8rem 1.9rem;
+  border: 1px solid var(--line);
   background: transparent;
+  color: var(--white);
   cursor: pointer;
-  transition: all 0.3s var(--ease-cyber);
+  border-radius: 2px;
   text-decoration: none;
   display: inline-block;
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 0 14px rgba(0, 229, 255, 0.06), inset 0 0 14px rgba(0, 229, 255, 0.02);
-}
-
-.btn-secondary::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.1), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.5s var(--ease-spice);
+  transition: background 0.2s var(--ease-out), border-color 0.2s var(--ease-out),
+    color 0.2s var(--ease-out);
 }
 
 .btn-secondary:hover {
-  background: var(--spice-blue);
-  color: var(--bg-deep);
-  border-color: #fff;
-  box-shadow: 0 0 36px rgba(0, 229, 255, 0.45), 0 0 56px rgba(0, 229, 255, 0.12);
-  transform: translateY(-1px);
-}
-
-.btn-secondary:hover::after {
-  transform: translateX(100%);
+  border-color: var(--blue);
+  background: rgba(0, 168, 232, 0.08);
+  color: var(--white);
 }
 
 .btn-secondary:active {
-  transform: scale(0.96);
+  transform: translateY(1px);
 }
 
-/* —— SOCIAL ICONS —— */
-.social-icon {
-  width: 44px;
-  height: 44px;
+/* Both buttons dropped a `::after` sheen that swept across on hover. Two
+   different shimmer directions on two adjacent buttons is the kind of scattered
+   micro-effect that reads as generated rather than designed. */
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.intro-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  isolation: isolate;
+  font-family: var(--font-body);
+  background: var(--ground);
+  overflow: hidden;
+}
+
+.intro-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.intro-canvas canvas {
+  display: block;
+}
+
+/* Radial scrim over the scene; the UI reads on top of it. */
+.intro-film {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(135% 105% at 50% 42%, transparent 34%, rgba(4, 4, 7, 0.55) 100%);
+}
+
+.intro-mark {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--line-quiet);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.intro-mark--tl { top: 12px; left: 12px; border-right: 0; border-bottom: 0; }
+.intro-mark--tr { top: 12px; right: 12px; border-left: 0; border-bottom: 0; }
+.intro-mark--bl { bottom: 12px; left: 12px; border-right: 0; border-top: 0; }
+.intro-mark--br { bottom: 12px; right: 12px; border-left: 0; border-top: 0; }
+
+.intro-ui {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(16px, 3.2vw, 34px);
+  pointer-events: none;
+}
+
+.intro-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: clamp(9px, 1vw, 10.5px);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  line-height: 2;
+}
+
+.intro-bar b {
+  font-weight: 400;
+  color: var(--blue);
+}
+
+.intro-bar--foot {
+  align-items: flex-end;
+}
+
+.intro-amber {
+  color: var(--ember);
+}
+
+.intro-center {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(0, 229, 255, 0.14);
+  gap: clamp(16px, 2.6vh, 30px);
+  text-align: center;
+}
+
+.intro-lens {
+  position: relative;
+  padding: clamp(18px, 4.5vw, 44px) clamp(24px, 7vw, 76px);
+}
+
+.intro-lens__r1,
+.intro-lens__r2 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
   border-radius: 50%;
-  color: var(--spice-blue);
-  background: rgba(0, 229, 255, 0.02);
-  box-shadow: 0 0 8px rgba(0, 229, 255, 0.02);
-  transition: all 0.3s var(--ease-cyber);
+  display: block;
+  pointer-events: none;
+}
+
+.intro-lens__r1 {
+  width: min(80vw, 560px);
+  aspect-ratio: 1 / 0.40;
+  border: 1px solid rgba(0, 168, 232, 0.26);
+  box-shadow: inset 0 0 40px rgba(0, 168, 232, 0.07);
+}
+
+.intro-lens__r2 {
+  width: min(96vw, 700px);
+  aspect-ratio: 1 / 0.28;
+  border-top: 1px solid rgba(255, 158, 0, 0.30);
+  border-bottom: 1px solid rgba(255, 158, 0, 0.10);
+  border-left: 0;
+  border-right: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .intro-lens__r1 { animation: intro-spin 30s linear infinite; }
+  .intro-lens__r2 { animation: intro-spin 46s linear infinite reverse; }
+}
+
+@keyframes intro-spin {
+  to { rotate: 360deg; }
+}
+
+.intro-title {
+  margin: 0;
+  font-family: 'Ethnocentric', var(--font-heading);
+  font-size: clamp(2.2rem, 8.5vw, 6.5rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+  background: linear-gradient(97deg, var(--ember) 2%, #ffb347 24%, var(--bone) 54%, var(--blue) 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 30px rgba(255, 158, 0, 0.28));
+}
+
+.intro-sub {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: clamp(8.5px, 1.4vw, 12px);
+  font-weight: 300;
+  letter-spacing: 0.56em;
+  text-indent: 0.56em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.intro-boot {
+  width: min(90vw, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.intro-log {
+  height: 1.4em;
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: clamp(9px, 1.2vw, 11px);
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  color: var(--blue);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.intro-log__prompt {
+  margin-right: 8px;
+  color: var(--text-dim);
+}
+
+.intro-track {
+  height: 1px;
+  background: var(--line-quiet);
   position: relative;
 }
 
-.social-icon:hover {
-  background: var(--spice-blue);
-  color: #050403;
-  border-color: var(--spice-blue);
-  box-shadow: 0 0 24px var(--spice-blue), 0 0 48px rgba(0, 229, 255, 0.15);
-  transform: translateY(-2px);
+.intro-track__fill {
+  position: absolute;
+  left: 0;
+  top: -1px;
+  height: 3px;
+  width: calc(var(--fill, 0) / 2 * 100%);
+  background: linear-gradient(90deg, rgba(255, 158, 0, 0), var(--ember) 60%, #ffb347);
+  box-shadow: 0 0 12px rgba(255, 158, 0, 0.6);
+  transition: width 0.38s var(--ease-in-out);
 }
 
-.social-icon:active {
-  transform: scale(0.93);
+.intro-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: clamp(8px, 1vw, 10px);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
 }
 
-/* —— LED DOT UTILITY —— */
-.led-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--spice-blue);
-  box-shadow: 0 0 8px var(--spice-blue), 0 0 16px var(--spice-blue-glow);
-  animation: led-pulse 2.5s ease-in-out infinite;
+.intro-stats {
+  display: flex;
+  gap: clamp(14px, 4vw, 44px);
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: clamp(8px, 1vw, 10.5px);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.intro-stats b {
+  font-weight: 400;
+  color: var(--ember);
+}
+
+.intro-rise {
+  opacity: 0;
+  animation: intro-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes intro-rise {
+  to { opacity: 1; translate: 0 0; }
+}
+
+.intro-rise--d1 { translate: 0 8px; animation-delay: 0.15s; }
+.intro-rise--d2 { translate: 0 10px; animation-delay: 0.3s; }
+.intro-rise--d3 { translate: 0 10px; animation-delay: 0.5s; }
+.intro-rise--d4 { translate: 0 8px; animation-delay: 0.7s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-rise {
+    animation-duration: 0.01ms;
+  }
+}
+
+.intro-dismiss {
+  appearance: none;
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: clamp(9.5px, 1.25vw, 11.5px);
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  text-transform: uppercase;
+  padding: 15px 34px;
+  cursor: pointer;
+  color: var(--ground);
+  border: 0;
+  background: var(--bone);
+  clip-path: polygon(0 0, 100% 0, 100% 58%, calc(100% - 15px) 100%, 0 100%);
+  transition: filter 0.25s, box-shadow 0.25s;
+}
+
+.intro-dismiss:hover,
+.intro-dismiss:focus-visible {
+  filter: brightness(1.1);
+  box-shadow: 0 0 34px rgba(255, 158, 0, 0.45);
+}
+
+.intro-dismiss:focus-visible {
+  outline: 1px solid var(--blue);
+  outline-offset: 5px;
+}
+
+@media (max-width: 600px) {
+  .intro-drop { display: none; }
+  .intro-lens__r2 { display: none; }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .intro-ui { padding: 10px 20px; }
+  .intro-lens { padding: 10px 24px; }
+  .intro-title { font-size: clamp(2rem, 11vw, 12vh); }
+  .intro-boot { gap: 6px; }
+  .intro-center { gap: 10px; }
+}
+
+/* ==========================================================================
+   MEMBER PROFILE CARDS
+
+   The tile is a real button (a clickable div has no role, no tab stop, no
+   Enter/Space), carrying a portrait placeholder that a photograph takes over
+   once one exists (photoSrc). Opening a tile morphs it into the expanded card
+   through a shared layoutId — gated off under reduced motion, which gets a
+   plain fade. The expanded card's share row exposes the member's URL,
+   /team/firstname-lastname, which is a real route: a direct hit or a refresh
+   lands on the card already open.
+   ========================================================================== */
+.member-tile {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  min-width: 180px;
+  flex: 1 1 180px;
+  max-width: 260px;
+  height: 240px;
+  padding: 0;
+  background: var(--panel);
+  border: 1px solid var(--line-quiet);
+  border-radius: 2px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  transition: border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+
+.member-tile:hover {
+  border-color: rgba(0, 168, 232, 0.35);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+.member-portrait {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background:
+    linear-gradient(160deg, rgba(0, 168, 232, 0.10), rgba(255, 158, 0, 0.06)),
+    var(--surface);
+  overflow: hidden;
+}
+
+.member-portrait--tall {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: 100%;
+}
+
+.member-portrait__glow {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 140%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: radial-gradient(circle, rgba(0, 168, 232, 0.10), transparent 62%);
+  pointer-events: none;
+}
+
+.member-portrait__initials {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 22px rgba(0, 168, 232, 0.18);
+}
+
+.member-portrait__label {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  opacity: 0.7;
+}
+
+.member-tile__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(7, 5, 3, 0.88) 0%, rgba(7, 5, 3, 0.35) 38%, transparent 65%);
+  pointer-events: none;
+}
+
+.member-tile__meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 1rem 1.2rem;
+  pointer-events: none;
+}
+
+.member-tile__name {
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--bone);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+}
+
+.member-tile__role {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: 0.72rem;
+  color: var(--blue);
+  letter-spacing: 0.08em;
+}
+
+.member-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(3, 2, 1, 0.85);
+  /* Both prefixes must carry the same radius. They used to disagree (4px vs
+     12px), so Safari/iOS rendered a visibly heavier blur than Chrome; 12px is
+     the design intent. */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow: auto;
+}
+
+.member-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 880px;
+  max-height: 84vh;
+  background: var(--panel);
+  border: 1px solid var(--line-quiet);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.member-card__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 5;
+  background: rgba(7, 5, 3, 0.6);
+  border: 1px solid var(--line-quiet);
+  border-radius: 2px;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1;
+  padding: 0.45rem 0.6rem;
+  cursor: pointer;
+  transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+}
+
+.member-card__close:hover {
+  color: var(--white);
+  border-color: var(--blue);
+}
+
+.member-card__visual {
+  position: relative;
+  height: 240px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.member-card__details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding: 1.6rem 1.6rem 1.4rem;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.member-card__role {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: 0.68rem;
+  color: var(--blue);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.member-card__name {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--bone);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 1.2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line-quiet);
+}
+
+.member-card__facts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.member-card__fact {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 168, 232, 0.03);
+  border: 1px solid rgba(0, 168, 232, 0.08);
+  border-radius: 2px;
+}
+
+.member-card__factlabel {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: 0.6rem;
+  color: var(--blue);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   flex-shrink: 0;
 }
 
-.led-dot--ring {
-  animation: led-ring-pulse 2s ease-out infinite;
+.member-card__factvalue {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--text-2);
+  letter-spacing: 0.03em;
+  word-break: break-all;
 }
 
-.led-dot--gold {
-  background: var(--gold);
-  box-shadow: 0 0 8px var(--gold), 0 0 16px var(--gold-glow);
+.member-card__fact--bio {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.member-card__socials {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+}
+
+.member-card__social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 2px;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--line-quiet);
+  transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+}
+
+.member-card__social:hover {
+  color: var(--blue);
+  border-color: var(--blue);
+}
+
+.member-card__social--empty {
+  opacity: 0.35;
+}
+
+.member-card__social--empty:hover {
+  color: var(--text-dim);
+  border-color: var(--line-quiet);
+}
+
+.member-card__share {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.4rem;
+}
+
+.member-card__path {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  word-break: break-all;
+}
+
+.member-card__copy {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--line-quiet);
+  border-radius: 2px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+}
+
+.member-card__copy:hover {
+  color: var(--white);
+  border-color: var(--blue);
+}
+
+@media (min-width: 720px) {
+  .member-card {
+    flex-direction: row;
+  }
+
+  .member-card__visual {
+    width: 46%;
+    height: auto;
+  }
+
+  .member-card__details {
+    padding: 2.2rem 2rem 1.8rem;
+  }
+}
+
+@media (max-width: 719px) {
+  .member-overlay {
+    padding: 1rem;
+  }
+}
+
+/* ==========================================================================
+   NAVIGATION BACK LINK
+
+   One rule, because the same back link is hand-rolled in ten files with ten
+   slightly different paddings and three different arrow glyphs. The arrow is
+   supplied here so the markup only carries the destination, and it moves on
+   hover — the single micro-interaction on the site, on the one control whose
+   meaning is direction.
+   ========================================================================== */
+.backlink {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  font-stretch: 75%;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0;
+  transition: color 0.2s var(--ease-out);
+}
+
+.backlink::before {
+  content: '←';
+  font-size: 1.05em;
+  transition: transform 0.2s var(--ease-out);
+}
+
+.backlink:hover {
+  color: var(--white);
+}
+
+.backlink:hover::before {
+  transform: translateX(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backlink::before {
+    transition: none;
+  }
+  .backlink:hover::before {
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   PAGE HEADER
+
+   Every inner page opens the same way: back link, then a mono eyebrow naming
+   where you are, then the title. The eyebrow earns its place because it answers
+   a real question on a site with nine sections — it is orientation, not
+   ornament. Note there is no `01 / 02 / 03` numbering anywhere in this file: the
+   pages are not a sequence and numbering them would be a decoration pretending
+   to be information.
+   ========================================================================== */
+.page-dimmer {
+  min-height: 100vh;
+  background:
+    linear-gradient(to bottom,
+      rgba(7,5,3,0) 0,
+      rgba(7,5,3,0.34) 7vh,
+      rgba(7,5,3,0.48) 20vh,
+      rgba(7,5,3,0.55) 100%);
+}
+
+.page {
+  max-width: var(--grid-max);
+  margin-inline: auto;
+  padding: calc(var(--nav-height) + 2.5rem) var(--gutter) 5rem;
+  text-align: center;
+  /* Same reasoning as `.section` — centre the boxes, not only the text. */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page > * {
+  max-width: 100%;
+}
+
+.page > .grid-cards,
+.page > .panel,
+.page > .empty {
+  width: 100%;
+}
+
+.page-head {
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Full width on purpose. Without it the flex parent shrink-wraps this box to
+     the width of the title, and the back link's `align-self: flex-start` below
+     would then align to the TITLE's left edge — tucked under the first letter
+     instead of out at the page gutter. */
+  width: 100%;
+}
+
+.page-head .section-title {
+  margin-top: 0.5rem;
+}
+
+/* The back link is the one thing in a page head that does not centre. It is
+   navigation rather than content — it points at where you came from, which is
+   behind and to the left — and a centred back arrow floating above a centred
+   title reads as a decoration rather than a control. `align-self` rather than a
+   float, so it takes its own row instead of having the title wrap around it. */
+.page-head .backlink {
+  align-self: flex-start;
+}
+
+/* ==========================================================================
+   FORM CONTROLS
+
+   Cold, square, and identical across input, textarea and select. The old sheet
+   had a `select:hover` and `select:focus` pair carrying `!important` gold, which
+   overrode the inline styles ContactPage sets on its own selects and made two
+   controls on one form disagree about what focus looks like. Nothing here is
+   `!important`, so a component can still override it.
+   ========================================================================== */
+.field {
+  display: block;
+  margin-bottom: 1.25rem;
+  /* Fields do not centre, and this is not a leftover from the left-aligned
+     pass — it is what a form control needs. A centred value inside a text input
+     jumps sideways as you type, and a centred label sitting over a full-width
+     input has nothing to align with. The label, the value and the error message
+     all hang off the input's left edge so the eye tracks one line down. */
+  text-align: left;
+}
+
+.field > .label {
+  margin-bottom: 0.45rem;
+}
+
+.control {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line-quiet);
+  border-radius: 2px;
+  padding: 0.7rem 0.85rem;
+  transition: border-color 0.2s var(--ease-out);
+}
+
+.control::placeholder {
+  color: var(--text-dim);
+}
+
+.control:hover {
+  border-color: rgba(242, 228, 204, 0.2);
+}
+
+.control:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+
+.control[aria-invalid='true'] {
+  border-color: var(--alert);
+}
+
+.field-error {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  font-stretch: 75%;
+  color: var(--alert);
+  margin-top: 0.4rem;
+  display: block;
+}
+
+/* ==========================================================================
+   EMPTY STATE
+
+   Used wherever content is not published yet. An empty section is an invitation,
+   so the copy names what will appear and what to do meanwhile — never "no data"
+   or "coming soon" on its own.
+   ========================================================================== */
+.empty {
+  border: 1px dashed var(--line-quiet);
+  border-radius: 2px;
+  padding: 2.5rem var(--gutter);
+  color: var(--text-dim);
+  max-width: 52ch;
+  margin-inline: auto;
+}
+
+.empty strong {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-stretch: 88%;
+  font-size: var(--t-h3);
+  color: var(--text-2);
+  margin-bottom: 0.4rem;
+}
+
+/* A responsive card grid, so the twelve or so hand-written
+   `repeat(auto-fill, minmax(...))` declarations across the pages can converge on
+   one gutter and one minimum. */
+.grid-cards {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  background: var(--line-quiet);
+  border: 1px solid var(--line-quiet);
+}
+
+/* ==========================================================================
+   DOMAIN CARDS
+
+   The seven event domains. Two layout systems were tried before this one, and
+   both failed for a reason worth recording.
+
+   The first was a wrapping flex row at `flex: 1 1 320px; max-width: 380px`.
+   Flex-grow divided the leftover space among however many cards landed on each
+   line, so a row of three and a row of two came out at different widths, and
+   `align-items: flex-start` let every card stop at the height of its own
+   paragraph — and those paragraphs run from 32 to 138 characters.
+
+   The second was a grid at `repeat(auto-fit, minmax(min(100%, 300px), 1fr))`.
+   Equal `1fr` tracks fixed the widths — the track count is a property of the
+   container rather than of how many items happen to be on the line — and the
+   default stretch fixed the heights. But a grid cannot centre a short final
+   row: each row's leftover items sit at the start of their column tracks, so
+   with seven cards the lone seventh sat hard against the left edge of the
+   block while the block itself was centred. That is the case this page has,
+   every time, at every width.
+
+   So the container is a centred-wrap flex row and the cards each hold a basis.
+   `flex: 0 1 clamp(300px, 31%, 350px)` — grow 0, so a short final row never
+   re-expands into leftover space, and every card on every row is the same
+   width. The basis is sized for three per row: a fixed 380px looked right in
+   theory, but the section's real content width is 1240 minus the gutters
+   (~1112px), so three 380px cards plus gaps never fit and the grid fell to
+   two per row. 31% of the container tracks the shrinking width, capped at
+   350px so three never overflow at the widest, and floored at 300px so the
+   cards stop shedding size before they get cramped — below ~950px the layout
+   drops to two per row instead of squeezing in a third tiny card. The row as
+   a whole centres through `justify-content: center`. Stretch alignment keeps
+   the cards in a row the height of the tallest, and the toggle's
+   `margin-top: auto` still pins it to the bottom of the stretched card.
+   ========================================================================== */
+.domain-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+.domain-card {
+  /* Grow 0 and a container-relative basis: the card never stretches to
+     swallow a short row's leftover width, every card on every row is the same
+     size, and three of them fit per row at the section's widest — see the
+     basis arithmetic in the block above. */
+  flex: 0 1 clamp(300px, 31%, 350px);
+  min-width: min(100%, 280px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.75rem 1.35rem;
+  /* The whole card is the click target — see the stretched ::before on the
+     toggle below. `position: relative` is what that pseudo anchors to. */
+  position: relative;
+  cursor: pointer;
+}
+
+/* Hover lifts the border from quiet to live — one cold step, no new glow.
+   The card must stay quieter than the seam; it is furniture, not a lamp. */
+.domain-card:hover {
+  border-color: var(--line);
+}
+
+.domain-card__title {
+  font-family: var(--font-heading);
+  font-size: var(--t-h3);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  /* Bone, not ember. A card is interface and the warm colours are world light;
+     the panel's own bottom edge is the one warm thing on it. */
+  color: var(--text);
+  margin: 0 0 0.55rem;
+}
+
+/* Four lines held open whatever the copy does. Equal-height rows already make
+   the cards match, but they match at the height of the longest paragraph in
+   that row — so a row containing "Where machines aren't just built—they're
+   unleashed!" pushed its own toggle button up level with the middle of the card
+   beside it. Reserving four lines (`1.6em` line-height x 4) lines the toggles up
+   across every card on the page, and it is expressed in the element's own `em`
+   so it follows the fluid body size instead of pinning a pixel height. */
+.domain-card__desc {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  color: var(--text-2);
+  line-height: 1.6;
+  min-height: 6.4em;
+  margin: 0;
+}
+
+/* Pushed to the bottom of the card by the auto margin, which is why the toggles
+   sit on one line across a row.
+
+   The ::before stretches this button across the entire card, so a click
+   anywhere on it toggles the panel while the button itself stays the single
+   tab stop and the single accessible name ("Show 8 events"). The card keeps
+   one real control instead of growing a second, fake one — which is what the
+   old clickable-div version had, and why it was removed. */
+.domain-card__toggle {
+  margin-top: auto;
+  padding-top: 1.1rem;
+  background: none;
+  border: 0;
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  font-stretch: 75%;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s var(--ease-out);
+}
+
+.domain-card__toggle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.domain-card__toggle:hover {
+  color: var(--white);
+}
+
+.domain-card__toggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.domain-card__chevron {
+  display: inline-block;
+  font-size: 0.8em;
+  transition: transform 0.3s var(--ease-out);
+}
+
+.domain-card__toggle[aria-expanded='true'] .domain-card__chevron {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .domain-card__chevron {
+    transition: none;
+  }
+}
+
+.domain-card__events {
+  width: 100%;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line-quiet);
+  /* Above the toggle's stretched ::before, so a click on an event row follows
+     the link rather than collapsing the panel out from under it. */
+  position: relative;
+  z-index: 1;
+}
+
+.domain-event {
+  display: block;
+  text-decoration: none;
+  text-align: center;
+  padding: 0.7rem 0.5rem;
+  border-radius: 2px;
+  border-bottom: 1px solid var(--line-quiet);
+  transition: background 0.2s var(--ease-out);
+}
+
+.domain-event:last-child {
+  border-bottom: 0;
+}
+
+/* A tint, not a slide. The old rows moved 5px to the right on hover, which
+   reads as progress on a left-aligned list and as a wobble on a centred one. */
+.domain-event:hover {
+  background: rgba(0, 168, 232, 0.05);
+}
+
+.domain-event:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+}
+
+/* The domain's emblem, quiet above the subtitle label — content marking, not
+   a control, so it stays dim rather than taking the blue. */
+.domain-card__crest {
+  display: flex;
+  justify-content: center;
+  color: var(--text-dim);
+  opacity: 0.85;
+  margin-bottom: 0.6rem;
+}
+
+.domain-event__motif {
+  display: inline-flex;
+  vertical-align: -2px;
+  margin-right: 0.45rem;
+  color: var(--text-dim);
+  opacity: 0.9;
+}
+
+.domain-event__name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  font-stretch: 88%;
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+.domain-event__desc {
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  margin-top: 0.15rem;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   EVENT DETAIL PAGE — THEMING
+
+   EventDetailsPage.jsx sets --event-accent, --event-accent-glow,
+   --event-accent-dim and --event-grid on its root wrapper via inline style
+   (resolved by src/lib/eventTheme.js from the category palette). These two
+   classes are the only new styled elements on the page; the rest of the hero
+   keeps its inline styles, swapped to the vars.
+
+   The watermark is the page's one per-event flourish: a giant, faint echo of
+   the event name behind the real title. It is text, so it takes the accent —
+   but it is a world element (decoration), which is exactly the role accent is
+   allowed on. It must stay behind the title and out of the tab order.
+   ========================================================================== */
+.event-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-accent);
+  font-size: clamp(5rem, 18vw, 12rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--event-accent, #00a8e8);
+  opacity: 0.035;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  user-select: none;
+}
+
+.event-tagline {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: var(--t-label);
+  letter-spacing: 0.2em;
+  text-indent: 0.2em; /* recentres tracked uppercase */
+  text-transform: uppercase;
+  color: var(--event-accent, #00a8e8);
+  opacity: 0.65;
+  margin-bottom: 1.2rem;
+}
+
+/* ==========================================================================
+   EVENT DETAIL PAGE — LAYOUTS & FURNITURE
+
+   The world behind an event page is App's fixed living backdrop — the dune sea
+   for warm-category events (management, construction, devise), the cosmic field
+   for cool ones — and every event page carries the `.page-dimmer` scrim so the
+   text stays legible over it. This block only lays the page in one of three
+   variants:
+     blueprint — engineering spec sheet: centred facts strip + wide panels
+     dossier   — briefing doc: facts stick in a left rail beside the panels
+     stage     — broadcast: run-of-show rounds + a wider prize ranking
+   Every value labelled "coming soon" is honest data, not decoration — nothing
+   on this page invents a date, a fee or a rule. The register button is the
+   page's one true control and stays cold: bone button, --blue ring.
+   ========================================================================== */
+
+.event-page__nav {
+  padding: calc(var(--nav-height) + 2rem) 5% 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Event pages stand directly on the fixed living world, so the blanket
+   `.page-dimmer` grey — 0.80 by 20vh — pushed the cosmic field on cool events
+   to a muddy smear. This event-grade gradient is near-transparent through the
+   hero, where the world should read, and only ramps to the old depth in the
+   zone where the dense content sits (below ~60vh). The hero still holds text
+   over the field: the title glows, the chip carries its own pill background,
+   and the description floats in the deep sky between the brightest nodes. */
+.event-page.page-dimmer {
+  background: linear-gradient(to bottom,
+    rgba(7, 5, 3, 0) 0,
+    rgba(7, 5, 3, 0.22) 14vh,
+    rgba(7, 5, 3, 0.35) 34vh,
+    rgba(7, 5, 3, 0.55) 60vh,
+    rgba(7, 5, 3, 0.82) 100%);
+}
+
+/* The breadcrumb row: the backlink plus where you are. Flex, not inline
+   stacking, so the separator and the category sit on one line and wrap
+   together on a narrow screen. */
+.event-page__crumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.event-page__crumb-sep {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  color: var(--text-dim);
+}
+
+.event-page__crumb-here {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.event-hero {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(2rem, 5vh, 4rem) 5% clamp(2.5rem, 7vh, 5rem);
+  min-height: clamp(460px, 66vh, 680px);
+}
+
+.event-hero__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid var(--event-accent-dim, rgba(0, 168, 232, 0.2));
+  border-radius: 2px;
+  background: var(--event-accent-dim, rgba(0, 168, 232, 0.05));
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  color: var(--event-accent, var(--blue));
+  text-transform: uppercase;
+  margin-bottom: 1.6rem;
+}
+
+/* The one glyph that names the event, small in the hero. Accent is its
+   world-marker here, the same licence the chip and tagline carry. */
+.event-hero__crest {
+  color: var(--event-accent, var(--blue));
+  opacity: 0.9;
+  margin-bottom: 1.1rem;
+}
+
+.event-hero__title {
+  font-family: var(--font-accent);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--event-accent, var(--ember));
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  text-shadow:
+    0 0 24px var(--event-accent-glow, rgba(255, 158, 0, 0.3)),
+    0 0 48px var(--event-accent-dim, rgba(0, 168, 232, 0.1));
+  position: relative;
+  z-index: 1;
+}
+
+.event-hero__desc {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text-2);
+  line-height: 1.8;
+  max-width: 620px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Blueprint and stage run one wide centred column below the hero; dossier
+   splits main into a sticky facts rail and the content column. */
+.event-main {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 5% 6rem;
+  flex: 1;
+  text-align: center;
+}
+
+.event-layout--dossier .event-main {
+  display: grid;
+  grid-template-columns: minmax(210px, 250px) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+  max-width: 1060px;
+}
+
+.event-facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  margin-bottom: 2.5rem;
+}
+
+.event-fact {
+  flex: 1 1 160px;
+  max-width: 210px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  background: var(--event-accent-dim, rgba(0, 168, 232, 0.05));
+  border: 1px solid var(--event-accent-dim, rgba(0, 168, 232, 0.05));
+}
+
+.event-fact__value {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: var(--t-small);
+  color: var(--text-2);
+  letter-spacing: 0.02em;
+}
+
+/* Dossier: the facts become a sticky rail on the left edge. */
+.event-layout--dossier .event-facts {
+  position: sticky;
+  top: calc(var(--nav-height) + 1.5rem);
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 0;
+}
+
+.event-layout--dossier .event-fact {
+  flex: 1 1 auto;
+  max-width: none;
+  width: 100%;
+}
+
+.event-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.event-layout--stage .event-content {
+  gap: 2rem;
+}
+
+.event-section {
+  width: 100%;
+  padding: 2rem clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.event-section__eyebrow {
+  color: var(--event-accent, var(--blue));
+  margin-bottom: 0.6rem;
+}
+
+.event-section__title {
+  font-family: var(--font-heading);
+  font-size: var(--t-h3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0 0 1.3rem;
+}
+
+.event-section__body {
+  max-width: 62ch;
+  margin: 0 auto;
+  color: var(--text-2);
+  line-height: 1.75;
+}
+
+.event-rules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  gap: 0.9rem;
+  width: 100%;
+}
+
+.event-rule {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1rem;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--line-quiet);
+}
+
+.event-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.event-schedule__row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 0.9rem 1.1rem;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--line-quiet);
+}
+
+.event-prizes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: 0.9rem;
+  width: 100%;
+}
+
+.event-prize {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.5rem 1rem;
+  background: var(--event-accent-dim, rgba(0, 168, 232, 0.05));
+  border: 1px solid var(--event-accent-dim, rgba(0, 168, 232, 0.05));
+}
+
+.event-prize__place {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: var(--t-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--event-accent, var(--blue));
+}
+
+/* Stage: prizes read as a ranking. The leader chair gets the one line.
+   (The :first-child is the only element-order dependency in this section.) */
+.event-layout--stage .event-prizes {
+  gap: 1.25rem;
+}
+
+.event-layout--stage .event-prize {
+  padding: 2rem 1rem;
+}
+
+.event-layout--stage .event-prize:first-child {
+  border-color: var(--line);
+}
+
+.event-contact {
+  width: 100%;
+}
+
+.event-contact__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem 1.1rem;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--line-quiet);
+}
+
+.event-cta {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+  margin-top: 3.5rem;
+  padding: 2.5rem 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--line-quiet);
+  border-radius: 2px;
+}
+
+.event-cta__notify {
+  width: 100%;
+  max-width: 560px;
+}
+
+@media (max-width: 900px) {
+  /* Dossier collapses back into the single column below 900px; the facts
+     rail stops sticking and returns to a wrap strip above the content. */
+  .event-layout--dossier .event-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .event-layout--dossier .event-facts {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .event-layout--dossier .event-fact {
+    max-width: 210px;
+  }
+}
+
+/* ==========================================================================
+   ROUTE LOADER
+
+   Shown while a lazy page chunk is in flight — it replaces the page body AND
+   the footer is withheld for the same window, so a slow fetch never presents
+   last page's footer under next page's heading as if they belonged together.
+
+   The look is the machine half of the brief speaking in its own register:
+   a mono label and one cold scanning line. No spinner, no percentage — an
+   indeterminate wait is stated as indeterminate.
+   ========================================================================== */
+.route-loader {
+  min-height: calc(100vh - var(--nav-height));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+}
+
+.route-loader__label {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: var(--t-label);
+  letter-spacing: 0.34em;
+  text-indent: 0.34em; /* recentres tracked uppercase */
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* The scan line is a track with a runner. Transform, not background-position,
+   so it stays on the compositor. */
+.route-loader__scan {
+  position: relative;
+  width: 220px;
+  height: 2px;
+  overflow: hidden;
+  background: var(--line-quiet);
+  border-radius: 2px;
+}
+
+.route-loader__scan::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 34%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .route-loader__scan::after {
+    animation: route-scan 1.15s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+}
+
+@keyframes route-scan {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(400%); }
+}
+
+/* —— NAV —— */
+@keyframes nav-slide-in {
+  from { transform: translateY(-80px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+@keyframes nav-led-breathe {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 0.7; }
+}
+
+/* The nav's entrance slide and its LED pulse are both chill-able: under
+   reduced motion the bar appears at its resting state, un-animated. */
+@media (prefers-reduced-motion: no-preference) {
+  .main-nav--animate {
+    animation: nav-slide-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .nav-led-strip {
+    animation: nav-led-breathe 3s ease-in-out infinite;
+  }
 }
 
 /* —— RESPONSIVE —— */
@@ -508,7 +2413,7 @@ img {
   }
 
   .main-nav {
-    padding: 1.5rem 1.5rem !important;
+    padding: 1rem 1rem !important;
   }
 
   .nav-logo-link {
@@ -606,6 +2511,32 @@ img {
     align-items: center;
     justify-content: center;
   }
+  /* Taking this button out of flow is the other half of the `.main` fix above,
+     and without it that fix gives back width this button immediately eats.
+
+     `styles.mobileMenuToggle` in AdminLayout.jsx sets no `position`, and the
+     layout it sits in is a flex row, so `display: flex !important` turned the
+     button into a full-height flex ITEM sitting between the sidebar and the
+     content. It also inherited `flex-direction: row`, which laid the three
+     hamburger bars out side by side instead of stacked — 22px wide, 2px tall,
+     in a row, reading as a dash rather than a menu.
+
+     `position` and `flex-direction` are plain declarations because the inline
+     style object names neither, so the stylesheet wins outright. `z-index`
+     needs `!important` to beat the inline `zIndex: 101`, which sat UNDER the
+     off-canvas sidebar's 200 — so the button was behind the drawer it opens. */
+  .mobileMenuToggle {
+    position: fixed;
+    flex-direction: column;
+    top: 0.85rem;
+    left: 0.85rem;
+    z-index: 260 !important;
+    width: 44px;
+    height: 44px;
+    border-radius: 2px;
+    background: rgba(12, 9, 6, 0.86) !important;
+    border: 1px solid var(--line) !important;
+  }
 }
 
 @media (max-width: 640px) {
@@ -627,9 +2558,15 @@ img {
   }
 }
 
-/* Consolidated: Admin select hover/focus (was in AdminUsersPage.jsx) */
-select:hover { border-color: rgba(229,169,60,0.4) !important; }
-select:focus { border-color: var(--gold) !important; }
+/* Consolidated: Admin select hover/focus (was in AdminUsersPage.jsx).
+   Scoped to `.main`, which is the admin <main> and appears nowhere else in the
+   app. As bare `select:hover` / `select:focus` these two lines also matched the
+   one <select> on ContactPage, and because they carry !important they beat the
+   inline styles that component sets on itself -- so the public contact form had
+   an admin-gold focus border that none of its neighbouring inputs shared. The
+   colours stay legacy on purpose: admin is outside this retheme. */
+.main select:hover { border-color: rgba(229,169,60,0.4) !important; }
+.main select:focus { border-color: var(--gold) !important; }
 
 /* ————————————————————————————————
    NOTABLE GUESTS — HISTORY PORTRAIT WALL
@@ -672,7 +2609,7 @@ select:focus { border-color: var(--gold) !important; }
   transition: transform 0.6s var(--ease-spice), filter 0.4s var(--ease-spice);
 }
 .ng-card:hover {
-  border-color: var(--gold);
+  border-color: var(--line);
   transform: translateY(-3px);
 }
 .ng-card:hover .ng-media img {
@@ -685,7 +2622,7 @@ select:focus { border-color: var(--gold) !important; }
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px dashed rgba(201, 145, 26, 0.35);
+  border: 1px dashed var(--line-quiet);
   border-radius: 2px;
 }
 .ng-fallback span {
@@ -698,7 +2635,7 @@ select:focus { border-color: var(--gold) !important; }
 .ng-caption {
   padding: 0.8rem 0.9rem 0.9rem;
   border-top: 1px solid var(--border-gold);
-  text-align: left;
+  text-align: center;
 }
 .ng-name {
   font-family: var(--font-heading);
@@ -719,7 +2656,7 @@ select:focus { border-color: var(--gold) !important; }
   font-family: var(--font-mono);
   font-size: 0.6rem;
   letter-spacing: 0.16em;
-  color: var(--gold);
+  color: var(--blue);
   text-transform: uppercase;
 }
 
@@ -771,7 +2708,7 @@ select:focus { border-color: var(--gold) !important; }
   width: 100%;
   height: 100%;
   padding: 0;
-  border: 1px solid rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 168, 232, 0.12);
   background: var(--bg-surface);
   overflow: hidden;
   cursor: pointer;
@@ -802,7 +2739,7 @@ select:focus { border-color: var(--gold) !important; }
   letter-spacing: 0.16em;
   color: var(--text-primary);
   background: rgba(5, 3, 2, 0.72);
-  border: 1px solid rgba(0, 229, 255, 0.18);
+  border: 1px solid rgba(0, 168, 232, 0.18);
   padding: 0.35rem 0.55rem;
   text-transform: uppercase;
   opacity: 0.92;
@@ -825,7 +2762,7 @@ select:focus { border-color: var(--gold) !important; }
 }
 
 .gallery-item:focus-visible {
-  outline: 2px solid var(--spice-blue);
+  outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
 
@@ -853,7 +2790,7 @@ select:focus { border-color: var(--gold) !important; }
   max-width: 100%;
   max-height: 76vh;
   object-fit: contain;
-  border: 1px solid rgba(0, 229, 255, 0.16);
+  border: 1px solid rgba(0, 168, 232, 0.16);
   background: var(--bg-surface);
 }
 .gallery-lightbox__caption {
@@ -868,7 +2805,7 @@ select:focus { border-color: var(--gold) !important; }
   font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.18em;
-  color: var(--spice-blue);
+  color: var(--blue);
   text-transform: uppercase;
 }
 .gallery-lightbox__index {
@@ -890,7 +2827,7 @@ select:focus { border-color: var(--gold) !important; }
   justify-content: center;
   color: var(--text-primary);
   background: rgba(22, 18, 16, 0.7);
-  border: 1px solid rgba(0, 229, 255, 0.2);
+  border: 1px solid rgba(0, 168, 232, 0.2);
   cursor: pointer;
   transition: background-color 0.3s var(--ease-spice), color 0.3s var(--ease-spice), transform 0.3s var(--ease-spice);
 }
@@ -914,19 +2851,19 @@ select:focus { border-color: var(--gold) !important; }
   justify-content: center;
   color: var(--text-secondary);
   background: rgba(22, 18, 16, 0.7);
-  border: 1px solid rgba(0, 229, 255, 0.16);
+  border: 1px solid rgba(0, 168, 232, 0.16);
   cursor: pointer;
   transition: background-color 0.3s var(--ease-spice), color 0.3s var(--ease-spice);
 }
 .gallery-lightbox__nav:hover {
-  background: var(--spice-blue);
+  background: var(--blue);
   color: var(--bg-deep);
 }
 .gallery-lightbox__nav--prev { left: 1.25rem; }
 .gallery-lightbox__nav--next { right: 1.25rem; }
 .gallery-lightbox__close:focus-visible,
 .gallery-lightbox__nav:focus-visible {
-  outline: 2px solid var(--spice-blue);
+  outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
 
@@ -964,6 +2901,187 @@ select:focus { border-color: var(--gold) !important; }
   .gallery-item img {
     transition: none;
   }
+}
+
+/* ==========================================================================
+   WORKSHOPS — the workshop cards and the details modal.
+
+   Each workshop is a bounded card (flex: 0 1 … — hard three across on the
+   flagship width, same discipline as .domain-grid) inside a centered-wrap
+   flex row, so one card sits compact and centred and any number of future
+   cards wrap into a clean grid. Nothing about the card itself is clickable:
+   a clickable container holding a link and a button was the nested-interaction
+   bug the event cards used to have, so the two actions are real controls —
+   Register (shared .btn-primary, straight to the form) and Details (opens the
+   modal). Cards are height-stretched so actions align; the teaser's min-height
+   keeps the actions row at the same height across cards. The modal is portal'd
+   to document.body (any transformed ancestor silently becomes the containing
+   block for position:fixed), Escape closes it, focus moves into the frame on
+   open and back to the trigger on close. Body scroll is not locked, and the
+   frame itself scrolls when its content is tall.
+   ========================================================================== */
+.workshop-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem;
+}
+.workshop-card {
+  flex: 0 1 clamp(280px, 30%, 340px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1.7rem 1.4rem;
+  text-align: center;
+}
+.workshop-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.45;
+  color: var(--text);
+}
+.workshop-tagline {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: var(--t-label);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+.workshop-card__teaser {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-2);
+  min-height: 4.4em;
+}
+.workshop-card__facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.workshop-card__fact {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: var(--t-label);
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+.workshop-card__fact + .workshop-card__fact {
+  margin-left: 0.9rem;
+}
+.workshop-card__fact + .workshop-card__fact::before {
+  content: '•';
+  margin-right: 0.9rem;
+  color: var(--text-dim);
+}
+.workshop-card__actions {
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: auto;
+}
+.workshop-card__actions .btn-primary {
+  flex: 1 1 auto;
+}
+.workshop-card__actions .btn-secondary {
+  flex: 0 0 auto;
+}
+
+.workshop-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 6000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(5, 3, 2, 0.94);
+  outline: none;
+}
+.workshop-modal__frame {
+  position: relative;
+  width: min(92vw, 620px);
+  max-height: 84vh;
+  overflow-y: auto;
+  padding: 2.6rem 2.4rem;
+  background: var(--panel);
+  border: 1px solid var(--line-quiet);
+  border-radius: 2px;
+  text-align: center;
+}
+.workshop-modal__title {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--text);
+}
+.workshop-modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.25s var(--ease-out), border-color 0.25s var(--ease-out);
+}
+.workshop-modal__close:hover {
+  color: var(--white);
+  border-color: var(--line-quiet);
+}
+.workshop-modal__close:focus-visible {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+.workshop-modal__facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem 1.8rem;
+  margin: 1.4rem 0;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--line-quiet);
+  border-bottom: 1px solid var(--line-quiet);
+}
+.workshop-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.workshop-fact__label {
+  font-family: var(--font-mono);
+  font-stretch: 75%;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.workshop-fact__value {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+.workshop-modal__desc {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--text-2);
+  margin: 0 0 1.2rem;
 }
 
 /* ————————————————————————————————

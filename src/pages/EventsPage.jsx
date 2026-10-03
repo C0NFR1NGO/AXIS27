@@ -8,7 +8,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'EventSeries',
   name: "AXIS'27 — Ignis Aeternum",
-  description: "Central India's largest technical festival at VNIT Nagpur. 35+ events across management, software, robotics, construction, and innovation.",
+  description: "Central India's largest technical festival at VNIT Nagpur. 35+ events across management, software, robotics, construction, design, and gaming.",
   url: 'https://axis27alt.vercel.app/events',
   organizer: {
     '@type': 'Organization',
@@ -45,36 +45,26 @@ export default function EventsPage() {
   });
 
   return (
-    <div style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1 }}>
+    <div className="page-dimmer" style={{ paddingTop: 'var(--nav-height)', position: 'relative', zIndex: 1 }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {/* One of nine hand-rolled back links on the site, now the shared
+          `.backlink` primitive. The version here set 'Rajdhani' (a family the
+          page no longer loads, so it was rendering as system-ui), coloured its
+          hover with `--gold`, and did it through two `onMouseEnter`/`onMouseLeave`
+          handlers writing to `e.target.style` — which meant the colour change was
+          lost the moment the element re-rendered, and never fired at all for a
+          keyboard user. The arrow is a `::before` on the class now, so the label
+          is just the label. */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        style={{
-          padding: '2rem 5% 0',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
+        style={{ padding: '2rem var(--gutter) 0' }}
       >
-        <Link
-          to="/"
-          style={{
-            fontFamily: "'Rajdhani', sans-serif",
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            letterSpacing: '0.1em',
-            color: 'var(--text-muted)',
-            textDecoration: 'none',
-            transition: 'color 0.3s',
-          }}
-          onMouseEnter={(e) => { e.target.style.color = 'var(--gold)'; }}
-          onMouseLeave={(e) => { e.target.style.color = 'var(--text-muted)'; }}
-        >
-          ← Back to Home
+        <Link to="/" className="backlink">
+          Back to home
         </Link>
       </motion.div>
       <EventsSection />

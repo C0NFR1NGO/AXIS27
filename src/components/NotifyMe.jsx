@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
 
 const STORAGE_KEY = 'axis27-notify-list';
 const WEB3FORMS_URL = 'https://api.web3forms.com/submit';
@@ -31,39 +32,51 @@ export function addNotifyEmail(email, interest = 'general') {
 }
 
 export default function NotifyMe({ interest = 'general', _compact = false, title, hint }) {
-  const [email, setEmail] = useState('');
+  const { user } = useAuth();
+  const reduceMotion = useReducedMotion();
+  const [email, setEmail] = useState(user?.email || '');
   const [status, setStatus] = useState('idle'); // idle | submitting | done | error
   const [existing, setExisting] = useState(false);
   const [errorKind, setErrorKind] = useState('validation'); // validation | send
 
+  // The local-dev "done" timer is created inside the async submit handler, not in an effect,
+  // so a ref is the only way the unmount cleanup below can reach it. Without that the
+  // timeout fired setStatus on an unmounted card (every Coming Soon card mounts and
+  // unmounts with its section).
+  const doneTimerRef = useRef(null);
+
   useEffect(() => {
-    const list = getNotifyList();
-    if (list.length > 0) {
-      // Mark as already opted-in if the same device already registered
-      setExisting(list.length > 0);
-    }
+    return () => clearTimeout(doneTimerRef.current);
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email.trim()) {
+    const submitEmail = email.trim() || user?.email || '';
+    if (!submitEmail) {
       setErrorKind('validation');
       setStatus('error');
       return;
     }
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!re.test(email.trim())) {
+    if (!re.test(submitEmail)) {
       setErrorKind('validation');
       setStatus('error');
       return;
     }
     setStatus('submitting');
     const list = getNotifyList();
-    const trimmed = email.trim();    const isDuplicate = list.some(entry => entry.email.toLowerCase() === trimmed.toLowerCase());
+    const trimmed = submitEmail;    const isDuplicate = list.some(entry => entry.email.toLowerCase() === trimmed.toLowerCase());
+
+    // `existing` used to be set on mount from `list.length > 0`, inside an `if (list.length > 0)`
+    // — a guard whose body could only ever run when the condition was already true, so the flag
+    // meant "this device has signed up for something" and the card claimed ALREADY ON THE LIST
+    // for a brand new address. Deleted in favour of the real check that was already here:
+    // isDuplicate compares the submitted address against the stored ledger.
+    setExisting(isDuplicate);
 
     // No key configured (local dev): keep the localStorage ledger flow.
     if (!isWeb3FormsConfigured) {
-      setTimeout(() => {
+      doneTimerRef.current = setTimeout(() => {
         if (!isDuplicate) addNotifyEmail(trimmed, interest);
         setStatus('done');
       }, 350);
@@ -101,36 +114,44 @@ export default function NotifyMe({ interest = 'general', _compact = false, title
     }
   };
 
-  if (status === 'done') {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+  /* The form and the success state crossfade rather than swapping abruptly —
+     mode="wait" means the outgoing view clears before the incoming one draws. */
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      {status === 'done' ? (
+        <motion.div
+          key="done"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           gap: '0.8rem',
           padding: '0.9rem 1.4rem',
-          border: '1px solid rgba(229,169,60,0.25)',
+          border: '1px solid var(--line)',
           borderRadius: '2px',
-          background: 'rgba(201,145,26,0.06)',
+          background: 'rgba(0,168,232,0.06)',
           fontFamily: 'var(--font-mono)',
           fontSize: '0.78rem',
-          color: 'var(--gold-light)',
+          color: 'var(--blue)',
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
         }}
       >
-        <span style={{ color: 'var(--spice-blue)' }}>■</span>
+        <span style={{ color: 'var(--blue)' }}>■</span>
         {existing ? 'ALREADY ON THE LIST — WE\'LL NOTIFY YOU' : 'REGISTERED — WE\'LL NOTIFY YOU WHEN THIS GOES LIVE'}
       </motion.div>
-    );
-  }
-
-  return (
-    <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '520px', margin: '0 auto' }}>
+      ) : (
+      <motion.form
+        key="form"
+        onSubmit={handleSubmit}
+        exit={{ opacity: 0 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+        style={{ width: '100%', maxWidth: '520px', margin: '0 auto' }}
+      >
       <div style={{
         fontFamily: 'var(--font-body)',
         fontSize: '0.88rem',
@@ -152,8 +173,8 @@ export default function NotifyMe({ interest = 'general', _compact = false, title
             flex: '1 1 240px',
             padding: '0.75rem 1rem',
             background: 'rgba(0,0,0,0.35)',
-            border: `1px solid ${status === 'error' ? 'var(--cyber-red)' : 'rgba(0,229,255,0.18)'}`,
-            borderLeft: '3px solid var(--spice-blue)',
+            border: `1px solid ${status === 'error' ? 'var(--cyber-red)' : 'rgba(0, 168, 232, 0.18)'}`,
+            borderLeft: '3px solid var(--blue)',
             borderRadius: '2px',
             fontFamily: 'var(--font-mono)',
             fontSize: '0.8rem',
@@ -163,11 +184,11 @@ export default function NotifyMe({ interest = 'general', _compact = false, title
             transition: 'border-color 0.25s var(--ease-cyber), box-shadow 0.25s var(--ease-cyber)',
           }}
           onFocus={(e) => {
-            e.currentTarget.style.borderColor = status === 'error' ? 'var(--cyber-red)' : 'var(--spice-blue)';
-            e.currentTarget.style.boxShadow = '0 0 14px rgba(0,229,255,0.12)';
+            e.currentTarget.style.borderColor = status === 'error' ? 'var(--cyber-red)' : 'var(--blue)';
+            e.currentTarget.style.boxShadow = '0 0 14px rgba(0, 168, 232, 0.12)';
           }}
           onBlur={(e) => {
-            e.currentTarget.style.borderColor = status === 'error' ? 'var(--cyber-red)' : 'rgba(0,229,255,0.18)';
+            e.currentTarget.style.borderColor = status === 'error' ? 'var(--cyber-red)' : 'rgba(0, 168, 232, 0.18)';
             e.currentTarget.style.boxShadow = 'none';
           }}
         />
@@ -213,6 +234,8 @@ export default function NotifyMe({ interest = 'general', _compact = false, title
           {hint}
         </div>
       )}
-    </form>
+      </motion.form>
+      )}
+    </AnimatePresence>
   );
 }

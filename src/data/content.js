@@ -1,3 +1,9 @@
+/* Event catalogue from the AXIS'27 official brochure. Two events are kept
+   beyond the brochure because they have run for years and removing them was
+   decided against: Capture The Flag (Software & Electronics) and Manual
+   Robotics (Automation & Robotics). "Crepido" keeps its historical spelling
+   even though the brochure writes "Crepito". */
+
 export const eventCategories = [
   {
     id: 'management',
@@ -5,12 +11,13 @@ export const eventCategories = [
     subtitle: 'Strategize. Analyze. Dominate.',
     description: 'Whether you\'re a market guru, a financial expert, or a data wizard, showcase your skills and master the art of business intelligence.',
     events: [
-      { name: '221B Baker Street', desc: 'A Sherlock Holmes-style mystery-solving competition.' },
-      { name: 'Laser Litt', desc: 'Test your precision and agility in a laser maze challenge.' },
-      { name: 'Freak-O-Matix', desc: 'A quirky blend of logic, mathematics, and fun puzzles.' },
-      { name: 'Who\'s the Boss', desc: 'Showcase leadership and management skills.' },
-      { name: 'Wallstreet', desc: 'Simulate stock trading and financial decision-making.' },
-      { name: 'MUN', desc: 'Debate global issues and develop diplomatic strategies.' },
+      { name: 'Model United Nations', desc: 'Delegates from various countries engage in structured debates to tackle global challenges and find collaborative solutions.', tagline: 'DEBATE. DIPLOMACY. RESOLVE.', theme: { grid: 'none' } },
+      { name: 'Wallstreet', desc: 'A stock exchange event that tests analytical skills and deepens your understanding of the stock market.', tagline: 'TRADE. ANALYZE. DOMINATE.', theme: { grid: 'dots' } },
+      { name: 'Analytico', desc: 'Find innovative marketing strategies to extend the reach of technology.', tagline: 'POSITION. PITCH. WIN.', theme: { grid: 'default' } },
+      { name: 'Who\'s The Boss', desc: 'Prove your analytical and management skills — calculating powers and smart prediction included.', tagline: 'LEAD. DECIDE. COMMAND.', theme: { grid: 'default' } },
+      { name: 'Laser Litt', desc: 'Guide a laser through multiple surfaces to reach the final target in a reflection puzzle.', tagline: 'AIM. STEER. STRIKE.', theme: { grid: 'diagonal' } },
+      { name: 'Freak-O-Matrix', desc: 'A puzzle event that pushes participants to use their fullest thinking.', tagline: 'THINK. SOLVE. ESCAPE.', theme: { grid: 'dots' } },
+      { name: '221B Baker Street', desc: 'Test your detective skills with mind-bending mysteries on your screen.', tagline: 'DEDUCT. DECODE. DISCOVER.', theme: { grid: 'none' } },
     ],
   },
   {
@@ -19,26 +26,28 @@ export const eventCategories = [
     subtitle: 'Innovate. Code. Electrify.',
     description: 'From blockchain to AI, this is your playground to experiment and revolutionize technology.',
     events: [
-      { name: 'Capture The Flag', desc: 'A thrilling cybersecurity challenge.' },
-      { name: 'Electroblitz', desc: 'Push the limits of electronics and embedded systems.' },
-      { name: 'AI Ideathon', desc: 'Compete to create groundbreaking AI-powered solutions.' },
-      { name: 'Insomnia', desc: 'An overnight coding marathon for the ultimate problem-solvers.' },
-      { name: 'Web Reshape', desc: 'Redefine the future of web development and design.' },
+      { name: 'Wintercoding Challenge', desc: 'A premier competition testing problem-solving, algorithmic thinking, and coding proficiency across all skill levels.', tagline: 'OPTIMIZE. DEBUG. OUTLAST.', theme: { grid: 'default' } },
+      { name: 'Cryptocrux', desc: 'Decrypt and solve puzzles using given information. Ready to crack?', tagline: 'CRACK. DECODE. INFILTRATE.', theme: { grid: 'dots' } },
+      { name: 'Web Reshape', desc: 'Modify a website to a given problem statement — front-end redesign or bug fixes as required.', tagline: 'BUILD. BEND. BREAK.', theme: { grid: 'default' } },
+      { name: 'Insomnia', desc: 'An 8-hour programming paradise of mind-boggling coding and algorithmic challenges.', tagline: 'CODE. THINK. SURVIVE.', theme: { grid: 'none' } },
+      { name: 'Electroblitz', desc: 'Debug an existing circuit and design an innovative new one.', tagline: 'SPARK. CIRCUIT. SURGE.', theme: { grid: 'rings' } },
+      { name: 'AI Ideathon', desc: 'Use artificial intelligence to solve real-life problems in a limited time.', tagline: 'THINK. TRAIN. TRANSFORM.', theme: { grid: 'dots' } },
+      { name: 'Capture The Flag', desc: 'A thrilling cybersecurity challenge.', tagline: 'EXPLOIT. ESCALATE. EXFILTRATE.', theme: { grid: 'dots' } },
     ],
   },
   {
     id: 'robotics',
-    title: 'Robotics & Automation',
+    title: 'Automation & Robotics',
     subtitle: 'Build. Automate. Dominate.',
     description: 'Where machines aren\'t just built—they\'re unleashed!',
     events: [
-      { name: 'Robowars', desc: 'Metal meets mayhem as battle bots fight for survival.' },
-      { name: 'Drone At Work', desc: 'Take to the skies and show off your aerial skills.' },
-      { name: 'Autobot', desc: 'AI-powered bots racing through mind-bending tracks.' },
-      { name: 'Manual Robotics', desc: 'Build bots that push engineering boundaries.' },
-      { name: 'RoboCup', desc: 'Design autonomous soccer bots.' },
-      { name: 'AquaHunt', desc: 'Dive into underwater robotics engineering.' },
-      { name: 'Mechatryst', desc: 'The ultimate RC car showdown!' },
+      { name: 'Robowars', desc: 'Custom-designed robots clash in a one-on-one knockout battle of strategy, speed, and precision.', tagline: 'BUILD. FIGHT. SURVIVE.', theme: { grid: 'diagonal' } },
+      { name: 'Aquahunt', desc: 'Build a floating robot to master a challenging obstacle course with precision and agility.', tagline: 'DIVE. NAVIGATE. CONQUER.', theme: { grid: 'dots' } },
+      { name: 'Mechatryst', desc: 'Race a nitro-powered wireless RC car through an obstacle-filled track for the fastest time.', tagline: 'ROAR. RACE. WIN.', theme: { grid: 'diagonal' } },
+      { name: 'Robocup', desc: 'Construct a manual robot to compete in a one-on-one football match.', tagline: 'PASS. DRIBBLE. SCORE.', theme: { grid: 'default' } },
+      { name: 'Drone at Work', desc: 'Guide your drone through a series of obstacles with precision and control.', tagline: 'LIFT. GUIDE. LAND.', theme: { grid: 'rings' } },
+      { name: 'Autobot', desc: 'Develop an autonomous bot that follows lines and navigates a maze to victory.', tagline: 'MAP. MOVE. MASTER.', theme: { grid: 'default' } },
+      { name: 'Manual Robotics', desc: 'Build bots that push engineering boundaries.', tagline: 'BUILD. TEST. UNLEASH.', theme: { grid: 'default' } },
     ],
   },
   {
@@ -47,21 +56,113 @@ export const eventCategories = [
     subtitle: 'Build. Innovate. Transform.',
     description: 'Where creativity meets engineering! Foster your passion for sustainable architecture and advanced construction.',
     events: [
-      { name: 'Crepido', desc: 'Design and construct the most efficient structures.' },
-      { name: 'Aquasklark', desc: 'Innovate in water management and sustainable design.' },
+      { name: 'Turbo Flux', desc: 'Give water flow a boost — build turbines, generate electricity, and prototype dam designs.', tagline: 'FLOW. TURBINE. POWER.', theme: { grid: 'default' } },
+      { name: 'Aquaskylark', desc: 'Design a flying water rocket propelled by a high-pressure pump.', tagline: 'PRESSURIZE. LAUNCH. FLY.', theme: { grid: 'diagonal' } },
+      { name: 'Paradeigma', desc: 'Craft on-the-spot models from scrap material and showcase your talent.', tagline: 'SCAVENGE. ASSEMBLE. SHOWCASE.', theme: { grid: 'default' } },
+      { name: 'Crepido', desc: 'Design and build an efficient bridge from sticks that can withstand a specified load.', tagline: 'SPAN. SUPPORT. WITHSTAND.', theme: { grid: 'default' } },
+    ],
+  },
+  {
+    id: 'devise',
+    title: 'Devise',
+    subtitle: 'Draft. Design. Dominate.',
+    /* A creative series hosted by the Department of Architecture & Planning,
+       VNIT, running as its own banner under AXIS (DEVISE'25 and earlier, in
+       collaboration with the IIA Nagpur Chapter). Runs as its own domain so
+       the three design competitions get their own stage. */
+    description: 'A creative series hosted by the Department of Architecture & Planning, VNIT, in collaboration with AXIS — where design problems meet inspired solutions.',
+    events: [
+      { name: 'Clickscape', desc: 'Capture architecture the way it was meant to be seen — a landscape through the lens.', tagline: 'FRAME. FOCUS. REVEAL.', theme: { grid: 'none' } },
+      { name: 'Mindmash', desc: 'A design-and-architecture knowledge mashup that tests your eye for detail.', tagline: 'THINK. MATCH. MASTER.', theme: { grid: 'default' } },
+      { name: 'Cre8mark', desc: 'Reimagine an iconic landmark and turn your vision into a model.', tagline: 'REIMAGINE. RECREATE. ICONIZE.', theme: { grid: 'default' } },
     ],
   },
   {
     id: 'igniting-minds',
-    title: 'Igniting Minds',
+    title: 'School Events & Igniting Minds',
     subtitle: 'Think. Create. Transform.',
     description: 'Curiosity fuels innovation! Redefine the future through creative problem-solving.',
     events: [
-      { name: 'Kartavya', desc: 'Innovate for social good through technology.' },
-      { name: 'Toycathon', desc: 'Where imagination meets model making.' },
+      { name: 'Dexter', desc: 'The nationwide aptitude test for school students, held every year under AXIS.', tagline: 'REASON. RANK. RISE.', theme: { grid: 'default' } },
+      { name: 'Space Innovation Challenge', desc: 'Solve a space-related problem, submit an abstract, and demonstrate innovation in space tech.', tagline: 'DREAM. DESIGN. DELIVER.', theme: { grid: 'dots' } },
+      { name: 'Brainstorm', desc: 'Put your general knowledge to the test by solving mind-bending mysteries against the clock.', tagline: 'PUZZLE. PONDER. PIERCE.', theme: { grid: 'dots' } },
+      { name: 'Kartavya', desc: 'Use technology to revolutionize society by solving real-world problem statements.', tagline: 'INNOVATE. IMPACT. INSPIRE.', theme: { grid: 'default' } },
+      { name: 'Toycathon', desc: 'Prepare toys from a given set of topics, where imagination meets model making.', tagline: 'IMAGINE. BUILD. PLAY.', theme: { grid: 'default' } },
+      { name: 'Techno.docx', desc: 'A research paper presentation event for exploring and showcasing your topic of expertise.', tagline: 'RESEARCH. WRITE. PRESENT.', theme: { grid: 'default' } },
+    ],
+  },
+  {
+    id: 'esports',
+    title: 'Esports & Informals',
+    subtitle: 'Play. Compete. Unwind.',
+    description: 'High-octane gaming tournaments alongside low-stakes offbeat fun between events.',
+    events: [
+      { name: 'Gamesutra', desc: 'The AXIS gaming tournament — high-octane competition across Valorant, Free Fire, BGMI and Clash Royale.', tagline: 'QUEUE. CLUTCH. CARRY.', theme: { grid: 'dots' } },
+      { name: 'Informals', desc: 'Offbeat, low-stakes games to unwind between events — details announced closer to the fest.', tagline: 'PLAY. LAUGH. REPEAT.', theme: { grid: 'none' } },
     ],
   },
 ];
+
+/* Per-event identity: one motif glyph per event (see lib/motifs.js), plus the
+   events that break their category's default layout (lib/eventBg.js exports
+   the category→layout defaults). Motifs are assigned from the event's own
+   description — RACE for Mechatryst, PITCH for Drone of it being a drone race
+   — rather than by category, so two events in the same category can carry
+   different backgrounds. */
+export const eventMotifs = {
+  'Model United Nations': 'globe',
+  'Wallstreet': 'trade',
+  'Analytico': 'trade',
+  'Who\'s The Boss': 'scale',
+  'Laser Litt': 'beam',
+  'Freak-O-Matrix': 'matrix',
+  '221B Baker Street': 'mystery',
+
+  'Wintercoding Challenge': 'code',
+  'Cryptocrux': 'cipher',
+  'Web Reshape': 'code',
+  'Insomnia': 'moon',
+  'Electroblitz': 'spark',
+  'AI Ideathon': 'ai',
+  'Capture The Flag': 'flag',
+
+  'Robowars': 'combat',
+  'Aquahunt': 'water',
+  'Mechatryst': 'speed',
+  'Robocup': 'court',
+  'Drone at Work': 'air',
+  'Autobot': 'gear',
+  'Manual Robotics': 'gear',
+
+  'Turbo Flux': 'water',
+  'Aquaskylark': 'rocket',
+  'Paradeigma': 'fabricate',
+  'Crepido': 'bridge',
+
+  'Clickscape': 'focus',
+  'Mindmash': 'matrix',
+  'Cre8mark': 'fabricate',
+
+  'Dexter': 'scale',
+  'Space Innovation Challenge': 'rocket',
+  'Brainstorm': 'mystery',
+  'Kartavya': 'spark',
+  'Toycathon': 'party',
+  'Techno.docx': 'doc',
+
+  'Gamesutra': 'game',
+  'Informals': 'party',
+};
+
+export const eventLayoutOverrides = {
+  Robowars: 'stage',
+  Aquahunt: 'stage',
+  'Mechatryst': 'stage',
+  'Insomnia': 'stage',
+  'Aquaskylark': 'stage',
+  'Space Innovation Challenge': 'blueprint',
+  'Toycathon': 'stage',
+};
 
 export const stats = [
   { label: 'Events', value: 35, suffix: '+' },
@@ -90,15 +191,36 @@ export const socialLinks = {
 export const aboutText = `AXIS is the annual technical festival of the Visvesvaraya National Institute of Technology, Nagpur. Started in 2001 as Odyssey, AXIS has grown to become one of the largest technical festivals in India and the largest in Central India. Organising 35+ events, exhibitions and workshops encompassing multiple engineering disciplines, AXIS annually attracts over 35,000 students from across the country.`;
 
 export const galleryItems = [
-  { id: 'robowars', src: 'https://picsum.photos/seed/axis27-robowars/1200/1200', alt: 'Battle bots colliding in the Robowars arena', tag: 'ROBOWARS', span: 'large' },
-  { id: 'drone-show', src: 'https://picsum.photos/seed/axis27-drone-show/800/800', alt: 'The 16-drone night show over the open sky', tag: 'DRONE SHOW', span: '' },
-  { id: 'ctf', src: 'https://picsum.photos/seed/axis27-ctf/800/800', alt: 'Teams locked in a Capture The Flag terminal war', tag: 'CAPTURE THE FLAG', span: '' },
-  { id: 'concert', src: 'https://picsum.photos/seed/axis27-concert/800/1200', alt: 'The closing concert stage lit under a crimson glow', tag: 'CONCERT NIGHT', span: 'tall' },
-  { id: 'workshop', src: 'https://picsum.photos/seed/axis27-workshop/1200/800', alt: 'Students building circuits at a hardware workshop', tag: 'WORKSHOPS', span: 'wide' },
-  { id: 'expo', src: 'https://picsum.photos/seed/axis27-expo/800/800', alt: 'Defence and ISRO exhibition stalls drawing a crowd', tag: 'EXPO', span: '' },
-  { id: 'drone-flight', src: 'https://picsum.photos/seed/axis27-drone-flight/800/800', alt: 'A pilot drone climbing into the desert sky', tag: 'DRONE AT WORK', span: '' },
-  { id: 'robocup', src: 'https://picsum.photos/seed/axis27-robocup/1200/800', alt: 'Autonomous bots on the RoboCup field', tag: 'ROBOCUP', span: 'wide' },
-  { id: 'mechatryst', src: 'https://picsum.photos/seed/axis27-mechatryst/800/800', alt: 'An RC car screaming down the Mechatryst track', tag: 'MECHATRYST', span: '' },
+  { id: 'robowars', src: '/images/gallery/image-1.jpg', alt: 'Battle bots colliding in the Robowars arena', tag: 'ROBOWARS', span: 'large' },
+  { id: 'drone-show', src: '/images/gallery/image-2.jpg', alt: 'The 16-drone night show over the open sky', tag: 'DRONE SHOW', span: '' },
+  { id: 'ctf', src: '/images/gallery/image-3.jpg', alt: 'Teams locked in a Capture The Flag terminal war', tag: 'CAPTURE THE FLAG', span: '' },
+  { id: 'concert', src: '/images/gallery/image-4.jpg', alt: 'The closing concert stage lit under a crimson glow', tag: 'CONCERT NIGHT', span: 'tall' },
+  { id: 'workshop', src: '/images/gallery/image-5.jpg', alt: 'Students building circuits at a hardware workshop', tag: 'WORKSHOPS', span: 'wide' },
+  { id: 'expo', src: '/images/gallery/image-6.jpg', alt: 'Defence and ISRO exhibition stalls drawing a crowd', tag: 'EXPO', span: '' },
+  { id: 'drone-flight', src: '/images/gallery/image-7.jpg', alt: 'A pilot drone climbing into the desert sky', tag: 'DRONE AT WORK', span: '' },
+  { id: 'robocup', src: '/images/gallery/image-8.jpg', alt: 'Autonomous bots on the RoboCup field', tag: 'ROBOCUP', span: 'wide' },
+  { id: 'mechatryst', src: '/images/gallery/image-9.jpg', alt: 'An RC car screaming down the Mechatryst track', tag: 'MECHATRYST', span: '' },
+];
+
+/* Live workshops. The registration link is the workshop's own Google Form —
+   the fbzx cache-buster is stripped so the copied link is the clean canonical
+   one. Workshop #2 later is just another entry here. */
+export const workshops = [
+  {
+    id: 'makersnext',
+    title: 'MakersNext — Robotics & Embedded Systems Workshop',
+    tagline: 'Learn • Build • Code • Innovate',
+    description:
+      'A two-day, hands-on workshop designed for school students from Classes 6 to 12 — an exciting introduction to Robotics, Electronics, Coding and Embedded Systems through interactive sessions and practical activities. Participants learn the fundamentals of robotics, explore electronic components and sensors, understand coding and hardware interaction, and gain hands-on experience through practical projects.',
+    teaser:
+      'A two-day, hands-on introduction to Robotics, Electronics, Coding and Embedded Systems for school students in Classes 6 to 12.',
+    date: '17th–18th October 2026',
+    venue: 'VNIT Nagpur',
+    eligibility: 'School Students — Classes 6 to 12',
+    fee: '₹500 per participant',
+    registerUrl:
+      'https://docs.google.com/forms/d/e/1FAIpQLSdnOaILJw2hgBzq-Zt-lWE5k_GJqfsefmnUsxQwxIONl28hNg/viewform',
+  },
 ];
 
 export const notableGuests = [

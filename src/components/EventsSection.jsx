@@ -15,22 +15,15 @@ export default function EventsSection() {
         viewport={{ once: true, margin: '-100px' }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        Explore 40+ events across 5 categories — from robotics and coding to management and design.
+        Explore 35+ events across 7 categories — from robotics and coding to management, design, and gaming.
       </motion.p>
 
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        gap: '1.5rem',
-        width: '100%',
-        maxWidth: '1200px',
-      }}>
+      {/* Equal widths, equal heights, and a centred final row — all of it in
+          `.domain-grid`. The layout's history (flex → grid → flex) is written
+          up in global.css so nobody reintroduces either failed iteration. */}
+      <div className="domain-grid">
         {eventCategories.map((cat, i) => (
-          <div key={cat.id} style={{ flex: '1 1 320px', maxWidth: '380px' }}>
-            <EventCard category={cat} index={i} />
-          </div>
+          <EventCard key={cat.id} category={cat} index={i} />
         ))}
       </div>
     </section>

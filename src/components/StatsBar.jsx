@@ -14,9 +14,14 @@ function SlotDigit({ target, delay }) {
     const el = reelRef.current;
     if (!el) return;
 
+    // The controls handle has to live in effect scope, not in the timer callback: a value
+    // returned from a setTimeout callback goes nowhere, so the old `return () =>
+    // controls.stop()` inside the timer was unreachable and the reel kept animating (and
+    // writing to a detached el.style) after unmount. Only the effect's own return is cleanup.
+    let controls = null;
     const timer = setTimeout(() => {
       if (doneRef.current) return;
-      const controls = animate(0, target * DIGIT_HEIGHT, {
+      controls = animate(0, target * DIGIT_HEIGHT, {
         duration: 1.0 + target * 0.06,
         ease: [0.25, 0.1, 0.25, 1],
         onUpdate: (latest) => {
@@ -26,10 +31,12 @@ function SlotDigit({ target, delay }) {
           doneRef.current = true;
         },
       });
-      return () => controls.stop();
     }, delay);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      controls?.stop();
+    };
   }, [target, delay]);
 
   return (
@@ -59,7 +66,7 @@ function SlotDigit({ target, delay }) {
             fontFamily: 'var(--font-heading)',
             fontSize: 'clamp(1.6rem, 4vw, 2.6rem)',
             fontWeight: 900,
-            background: 'linear-gradient(180deg, var(--gold) 0%, var(--gold-light) 50%, var(--spice-blue) 100%)',
+            background: 'linear-gradient(180deg, var(--ember) 0%, var(--sand) 50%, var(--blue) 100%)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             backgroundClip: 'text', userSelect: 'none',
           }}>
@@ -105,7 +112,7 @@ function SlotNumber({ value, suffix, staggerDelay }) {
         <span style={{
           fontFamily: 'var(--font-heading)',
           fontSize: 'clamp(1rem, 2.2vw, 1.5rem)', fontWeight: 700,
-          color: 'var(--spice-blue)', opacity: 0.8,
+          color: 'var(--blue)', opacity: 0.8,
           alignSelf: 'flex-end',
           paddingBottom: 'clamp(6px, 1vw, 12px)', marginLeft: '0.25rem',
         }}>
@@ -137,10 +144,10 @@ export default function StatsBar() {
         background: 'linear-gradient(180deg, rgba(13,10,8,0.8) 0%, rgba(7,5,3,0.94) 100%)',
         backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
         borderTop: '1px solid transparent',
-        backgroundImage: 'linear-gradient(180deg, rgba(13,10,8,0.8) 0%, rgba(7,5,3,0.94) 100%), linear-gradient(90deg, transparent, rgba(0,229,255,0.15), transparent)',
+        backgroundImage: 'linear-gradient(180deg, rgba(13,10,8,0.8) 0%, rgba(7,5,3,0.94) 100%), linear-gradient(90deg, transparent, rgba(0, 168, 232, 0.15), transparent)',
         backgroundOrigin: 'padding-box, border-box',
         backgroundClip: 'padding-box, border-box',
-        borderBottom: '1px solid rgba(0,229,255,0.1)',
+        borderBottom: '1px solid rgba(0, 168, 232, 0.1)',
       }}
     >
       {stats.map((s, i) => (

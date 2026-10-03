@@ -22,15 +22,17 @@ function GalleryTile({ item, onOpen }) {
     );
   }
 
+  // The click hands the button element up along with the id: the parent needs the real
+  // trigger node to restore focus to when the lightbox closes, and only the click knows
+  // which tile it was.
   return (
     <button
       type="button"
       className={`gallery-item ${spanClass(item.span)}`}
-      onClick={() => onOpen(item.id)}
+      onClick={(e) => onOpen(item.id, e.currentTarget)}
       aria-label={`Open photo: ${item.alt}`}
     >
       <img src={item.src} alt={item.alt} loading="lazy" onError={() => setErrored(true)} />
-      <span className="gallery-item__tag">{item.tag}</span>
     </button>
   );
 }
@@ -65,18 +67,26 @@ function ArrowIcon({ dir }) {
 export default function GallerySection() {
   const [activeIndex, setActiveIndex] = useState(null);
   const lightboxRef = useRef(null);
+  // The tile that opened the lightbox, captured in its own click handler. Reading
+  // document.activeElement inside the effect instead (keyed on activeIndex) meant that by the
+  // time the lightbox closed, the "originating" element was whichever lightbox button had
+  // last been focused — so focus was restored into a subtree that was already unmounting and
+  // landed on <body>.
+  const triggerRef = useRef(null);
   const reduce = useReducedMotion();
   const activeItem = activeIndex === null ? null : galleryItems[activeIndex];
+  const isOpen = activeIndex !== null;
 
+  // Keyed on open/closed, not on activeIndex: arrowing between photos must not tear down and
+  // re-run the open/close side effects, or the restore below would fire on every step.
   useEffect(() => {
-    if (activeIndex === null) return;
+    if (!isOpen) return;
 
     const onKey = (e) => {
       if (e.key === 'Escape') setActiveIndex(null);
       if (e.key === 'ArrowLeft') setActiveIndex((i) => (i - 1 + galleryItems.length) % galleryItems.length);
       if (e.key === 'ArrowRight') setActiveIndex((i) => (i + 1) % galleryItems.length);
     };
-    const previousActive = document.activeElement;
 
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
@@ -85,9 +95,14 @@ export default function GallerySection() {
     return () => {
       window.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
-      previousActive?.focus?.();
+      triggerRef.current?.focus?.();
     };
-  }, [activeIndex]);
+  }, [isOpen]);
+
+  const openFrom = (id, el) => {
+    triggerRef.current = el;
+    setActiveIndex(galleryItems.findIndex((g) => g.id === id));
+  };
 
   const prev = () => setActiveIndex((activeIndex - 1 + galleryItems.length) % galleryItems.length);
   const next = () => setActiveIndex((activeIndex + 1) % galleryItems.length);
@@ -96,7 +111,7 @@ export default function GallerySection() {
     <>
       <div className="gallery-grid" style={{ width: '100%', maxWidth: '1060px', margin: '0 auto' }}>
         {galleryItems.map((item) => (
-          <GalleryTile key={item.id} item={item} onOpen={(id) => setActiveIndex(galleryItems.findIndex((g) => g.id === id))} />
+          <GalleryTile key={item.id} item={item} onOpen={openFrom} />
         ))}
       </div>
 
@@ -144,7 +159,6 @@ export default function GallerySection() {
               >
                 <img src={activeItem.src} alt={activeItem.alt} />
                 <figcaption className="gallery-lightbox__caption">
-                  <span className="gallery-lightbox__tag">{activeItem.tag}</span>
                   <span className="gallery-lightbox__index">
                     {String(activeIndex + 1).padStart(2, '0')} / {String(galleryItems.length).padStart(2, '0')}
                   </span>

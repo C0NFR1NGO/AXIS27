@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>AXIS'27 — Ignis Aeternum</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #070503;
+        --surface: #0c0906;
+        --panel: #12100c;
+        --bone: #f2e4cc;
+        --sand: #e8c89a;
+        --ember: #ff7a1a;
+        --blue: #00a8e8;
+        --white: #f2f7fa;
+        --text-2: #ded2bd;
+        --text-dim: #9c9081;
+        --line-quiet: rgba(242, 228, 204, 0.1);
+        --seam-y: 57%;
+      }
+
+      @font-face {
+        font-family: 'Ethnocentric';
+        src: url('assets/fonts/Ethnocentric.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Audiowide';
+        src: url('assets/fonts/Audiowide-latin.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Inter Tight';
+        src: url('assets/fonts/InterTight-400-latin.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Inter Tight';
+        src: url('assets/fonts/InterTight-500-latin.woff2') format('woff2');
+        font-weight: 500;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Inter Tight';
+        src: url('assets/fonts/InterTight-600-latin.woff2') format('woff2');
+        font-weight: 600;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Inter Tight';
+        src: url('assets/fonts/InterTight-700-latin.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Martian Mono';
+        src: url('assets/fonts/MartianMono-400-latin.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: block;
+      }
+
+      html,
+      body {
+        margin: 0;
+        background: var(--ground);
+      }
+
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      #world {
+        position: absolute;
+        inset: 0;
+      }
+      #world-frame {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #070503;
+      }
+      #seam-flare {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: var(--seam-y);
+        height: 110px;
+        transform: translateY(-50%);
+        background: radial-gradient(closest-side, rgba(255, 150, 60, 0.55), rgba(255, 150, 60, 0.14) 45%, transparent 70%);
+      }
+
+      .clip {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+      .scene-inner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        text-align: center;
+        padding: 80px 140px;
+      }
+
+      .warm-word {
+        color: var(--ember);
+      }
+      .cold-word {
+        color: var(--blue);
+      }
+      .eyebrow {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 26px;
+        letter-spacing: 0.55em;
+        text-indent: 0.55em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin: 0 0 40px 0;
+      }
+      .eyebrow2 {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 26px;
+        letter-spacing: 0.55em;
+        text-indent: 0.55em;
+        text-transform: uppercase;
+        color: var(--blue);
+        margin: 0 0 40px 0;
+      }
+
+      .cold-hairline {
+        width: 150px;
+        height: 2px;
+        background: var(--blue);
+        box-shadow: 0 0 10px rgba(0, 168, 232, 0.4);
+        margin: 34px 0 0 0;
+      }
+
+      #hook-1,
+      #hook-2 {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 400;
+        font-size: 66px;
+        line-height: 1.25;
+        letter-spacing: 0.02em;
+        color: var(--bone);
+        max-width: 1500px;
+        margin: 0;
+        text-shadow: 0 1px 30px rgba(10, 6, 3, 0.95);
+      }
+      #hook-2 {
+        margin-top: 26px;
+        font-weight: 500;
+      }
+
+      .glyph {
+        display: inline-block;
+      }
+      .wordmark-row {
+        display: flex;
+        align-items: center;
+        gap: 44px;
+      }
+      .wordmark-logo {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+      }
+      .wordmark-row--final .wordmark-logo {
+        width: 200px;
+        height: 200px;
+      }
+      .theme-sub {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 600;
+        font-size: 30px;
+        line-height: 1.3;
+        letter-spacing: 0.14em;
+        text-indent: 0.14em;
+        text-transform: uppercase;
+        color: var(--sand);
+        margin: 18px 0 0 0;
+        text-shadow: 0 1px 20px rgba(10, 6, 3, 0.9);
+      }
+      #wordmark,
+      #wordmark-final {
+        font-family: 'Ethnocentric', sans-serif;
+        font-weight: 400;
+        line-height: 1.02;
+        letter-spacing: 0.04em;
+        text-indent: 0.04em;
+        text-transform: uppercase;
+        color: var(--bone);
+        margin: 0;
+      }
+      #wordmark {
+        font-size: 190px;
+      }
+      #wordmark-final {
+        font-size: 200px;
+      }
+      #theme,
+      #theme-final {
+        font-family: 'Audiowide', sans-serif;
+        font-weight: 400;
+        font-size: 64px;
+        line-height: 1.2;
+        letter-spacing: 0.34em;
+        text-indent: 0.34em;
+        text-transform: uppercase;
+        color: var(--ember);
+        margin: 40px 0 0 0;
+        text-shadow: 0 0 30px rgba(255, 122, 26, 0.35), 0 1px 22px rgba(10, 6, 3, 0.9);
+      }
+      #claim {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 500;
+        font-size: 38px;
+        line-height: 1.35;
+        letter-spacing: 0.04em;
+        color: var(--text-2);
+        margin: 0;
+        max-width: 1500px;
+        text-shadow: 0 1px 24px rgba(10, 6, 3, 0.9);
+      }
+
+      #panel {
+        background: rgba(18, 16, 12, 0.86);
+        border: 1px solid var(--line-quiet);
+        border-top: 2px solid rgba(0, 168, 232, 0.42);
+        border-radius: 4px;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 30px 90px rgba(0, 0, 0, 0.55);
+        padding: 60px 90px 52px 90px;
+        display: flex;
+        gap: 84px;
+        align-items: flex-end;
+      }
+      .stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        min-width: 290px;
+      }
+      .statval-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+      }
+      .statval {
+        font-family: 'Audiowide', sans-serif;
+        font-weight: 400;
+        font-size: 106px;
+        line-height: 1;
+        color: var(--blue);
+        text-shadow: 0 0 34px rgba(0, 168, 232, 0.38);
+      }
+      .plussign {
+        font-family: 'Audiowide', sans-serif;
+        font-weight: 400;
+        font-size: 58px;
+        line-height: 1;
+        color: var(--blue);
+        margin-left: 8px;
+      }
+      .statlabel {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 24px;
+        letter-spacing: 0.3em;
+        text-indent: 0.3em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        border-top: 1px solid var(--line-quiet);
+        padding-top: 16px;
+      }
+
+      .title-scrim {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 1560px;
+        height: 560px;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(closest-side, rgba(4, 3, 2, 0.78), rgba(4, 3, 2, 0.35) 55%, rgba(4, 3, 2, 0) 78%);
+        pointer-events: none;
+      }
+      #wm-glow,
+      #halo {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(closest-side, rgba(255, 150, 60, 0.3), rgba(255, 150, 60, 0.1) 52%, transparent 74%);
+        pointer-events: none;
+      }
+      #wm-glow {
+        width: 1450px;
+        height: 560px;
+      }
+      #halo {
+        width: 1240px;
+        height: 620px;
+        top: 46%;
+      }
+
+      #domain-rail {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        max-width: 1640px;
+      }
+      .dchip {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 24px;
+        letter-spacing: 0.18em;
+        text-indent: 0.18em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        background: rgba(18, 16, 12, 0.65);
+        border: 1px solid var(--line-quiet);
+        border-radius: 999px;
+        padding: 12px 22px;
+      }
+
+      .frame-cards,
+      #guest-row {
+        display: flex;
+        flex-direction: row;
+        gap: 40px;
+        align-items: stretch;
+        justify-content: center;
+      }
+      .ecard,
+      .gcard {
+        width: 490px;
+        background: rgba(18, 16, 12, 0.9);
+        border: 1px solid var(--line-quiet);
+        border-radius: 4px;
+        padding: 40px 42px 36px 42px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+        position: relative;
+        text-align: left;
+      }
+      .ecard::after,
+      .gcard::after {
+        content: '';
+        position: absolute;
+        left: -1px;
+        right: -1px;
+        bottom: -1px;
+        height: 2px;
+        background: var(--ember);
+        box-shadow: 0 0 12px rgba(255, 122, 26, 0.5);
+      }
+      .ecard-top {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+      }
+      .ecard-index {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 22px;
+        letter-spacing: 0.14em;
+        color: var(--blue);
+      }
+      .ecard-name,
+      .gname {
+        font-family: 'Audiowide', sans-serif;
+        font-weight: 400;
+        font-size: 46px;
+        line-height: 1.08;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--bone);
+        margin: 0;
+      }
+      .ecard-tag,
+      .grole {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 600;
+        font-size: 26px;
+        line-height: 1.3;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--sand);
+        margin: 0;
+      }
+      .grole {
+        font-weight: 500;
+        text-transform: none;
+        letter-spacing: 0.02em;
+      }
+      .gyear {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 22px;
+        letter-spacing: 0.18em;
+        color: var(--blue);
+        border: 1px solid rgba(0, 168, 232, 0.4);
+        border-radius: 999px;
+        padding: 4px 14px;
+      }
+
+      #thesis-1,
+      #thesis-2 {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 600;
+        font-size: 72px;
+        line-height: 1.3;
+        letter-spacing: 0.02em;
+        color: var(--bone);
+        max-width: 1500px;
+        margin: 0;
+        text-shadow: 0 1px 26px rgba(10, 6, 3, 0.95);
+      }
+      #thesis-2 {
+        margin-top: 26px;
+      }
+
+      #address {
+        font-family: 'Martian Mono', monospace;
+        font-weight: 400;
+        font-size: 28px;
+        line-height: 1.4;
+        letter-spacing: 0.18em;
+        text-indent: 0.18em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin: 42px 0 0 0;
+        text-shadow: 0 1px 22px rgba(10, 6, 3, 0.95);
+      }
+      #fade-black {
+        position: absolute;
+        inset: 0;
+        background: #030201;
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-s7t5" id="root" data-composition-id="axis27-brag" data-start="0" data-width="1920" data-height="1080" data-duration="45">
+      <!-- persistent world -->
+      <div data-hf-id="hf-a1f8" id="world" data-layout-ignore="">
+        <iframe data-hf-id="hf-f7j0" id="world-frame" src="assets/world/dunesea.html" title=""></iframe>
+        <div data-hf-id="hf-ax4w" id="seam-flare"></div>
+      </div>
+
+      <!-- spine -->
+      <section data-hf-id="hf-qbbz" id="s1" class="clip" data-start="0" data-duration="2" data-track-index="1">
+        <div data-hf-id="hf-97sb" class="scene-inner"><p data-hf-id="hf-n75m" id="hook-1">Every edition leaves ash.</p></div>
+      </section>
+      <section data-hf-id="hf-6f05" id="s2" class="clip" data-start="2" data-duration="2" data-track-index="2">
+        <div data-hf-id="hf-skgb" class="scene-inner"><p data-hf-id="hf-rfmk" id="hook-2">This one is <span data-hf-id="hf-q0pp" class="warm-word">the flame.</span></p></div>
+      </section>
+      <section data-hf-id="hf-xdwj" id="s3" class="clip" data-start="4" data-duration="4.4" data-track-index="3">
+        <div data-hf-id="hf-s65a" class="scene-inner">
+          <div data-hf-id="hf-7dcv" class="title-scrim"></div>
+          <div data-hf-id="hf-piht" id="wm-glow"></div>
+          <div data-hf-id="hf-seag" class="wordmark-row">
+            <img data-hf-id="hf-oflk" id="logo-hero" class="wordmark-logo" src="assets/logo.png" alt="" data-start="4" data-duration="4.4">
+            <h1 data-hf-id="hf-vp0y" id="wordmark" aria-label="AXIS'27"><span data-hf-id="hf-6jgk" class="glyph">A</span><span data-hf-id="hf-2ypb" class="glyph">X</span><span data-hf-id="hf-9pws" class="glyph">I</span><span data-hf-id="hf-zdy2" class="glyph">S</span><span data-hf-id="hf-u198" class="glyph">’</span><span data-hf-id="hf-151p" class="glyph">2</span><span data-hf-id="hf-34ku" class="glyph">7</span></h1>
+          </div>
+          <p data-hf-id="hf-h1wu" id="theme">Ignis Aeternum</p>
+          <p data-hf-id="hf-esuh" class="theme-sub" id="theme-sub">Illuminating the infinite</p>
+        </div>
+      </section>
+      <section data-hf-id="hf-9iy1" id="s4" class="clip" data-start="8.4" data-duration="2" data-track-index="4">
+        <div data-hf-id="hf-rru9" class="scene-inner">
+          <p data-hf-id="hf-35jf" id="claim">Central India’s largest technical fest. VNIT Nagpur.</p>
+          <div data-hf-id="hf-7jge" class="cold-hairline" id="rule-claim"></div>
+        </div>
+      </section>
+      <section data-hf-id="hf-7vfj" id="s5" class="clip" data-start="10.4" data-duration="3" data-track-index="5">
+        <div data-hf-id="hf-rdj8" class="scene-inner">
+          <div data-hf-id="hf-zk0l" id="panel">
+            <div data-hf-id="hf-xa0m" class="stat">
+              <div data-hf-id="hf-47kw" class="statval-row"><span data-hf-id="hf-nl4b" id="v1" class="statval">0</span><span data-hf-id="hf-1qa3" class="plussign">+</span></div>
+              <div data-hf-id="hf-gcrd" class="statlabel">Events</div>
+            </div>
+            <div data-hf-id="hf-tx7e" class="stat">
+              <div data-hf-id="hf-5gew" class="statval-row"><span data-hf-id="hf-b5da" id="v2" class="statval">0</span><span data-hf-id="hf-cgq3" class="plussign">+</span></div>
+              <div data-hf-id="hf-9uxy" class="statlabel">Colleges</div>
+            </div>
+            <div data-hf-id="hf-ubif" class="stat">
+              <div data-hf-id="hf-49ht" class="statval-row"><span data-hf-id="hf-7ktt" id="v3" class="statval">0</span><span data-hf-id="hf-c2f2" class="plussign">+</span></div>
+              <div data-hf-id="hf-dhf1" class="statlabel">Footfall</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section data-hf-id="hf-jmit" id="s6" class="clip" data-start="13.4" data-duration="1.9" data-track-index="6">
+        <div data-hf-id="hf-qz87" class="scene-inner">
+          <p data-hf-id="hf-cdtg" class="eyebrow">Seven domains</p>
+          <div data-hf-id="hf-ahf6" id="domain-rail"></div>
+        </div>
+      </section>
+
+      <!-- events : 12 frames of 3, all 36 — the montage, shortest per scene -->
+      <section data-hf-id="hf-7o98" id="s7" class="clip" data-start="15.3" data-duration="1.45" data-track-index="7">
+        <div data-hf-id="hf-qkx6" class="scene-inner"><div data-hf-id="hf-f2xa" class="frame-cards" id="cards-f1"></div></div>
+      </section>
+      <section data-hf-id="hf-n8x6" id="s8" class="clip" data-start="16.75" data-duration="1.45" data-track-index="8">
+        <div data-hf-id="hf-q6m5" class="scene-inner"><div data-hf-id="hf-8x7h" class="frame-cards" id="cards-f2"></div></div>
+      </section>
+      <section data-hf-id="hf-m32k" id="s9" class="clip" data-start="18.2" data-duration="1.45" data-track-index="9">
+        <div data-hf-id="hf-w57k" class="scene-inner"><div data-hf-id="hf-85jo" class="frame-cards" id="cards-f3"></div></div>
+      </section>
+      <section data-hf-id="hf-q48s" id="s10" class="clip" data-start="19.65" data-duration="1.45" data-track-index="10">
+        <div data-hf-id="hf-vqwj" class="scene-inner"><div data-hf-id="hf-vn17" class="frame-cards" id="cards-f4"></div></div>
+      </section>
+      <section data-hf-id="hf-0a7v" id="s11" class="clip" data-start="21.1" data-duration="1.45" data-track-index="11">
+        <div data-hf-id="hf-j0wx" class="scene-inner"><div data-hf-id="hf-rox6" class="frame-cards" id="cards-f5"></div></div>
+      </section>
+      <section data-hf-id="hf-mol9" id="s12" class="clip" data-start="22.55" data-duration="1.45" data-track-index="12">
+        <div data-hf-id="hf-jf7y" class="scene-inner"><div data-hf-id="hf-nqt5" class="frame-cards" id="cards-f6"></div></div>
+      </section>
+      <section data-hf-id="hf-94id" id="s13" class="clip" data-start="24" data-duration="1.45" data-track-index="13">
+        <div data-hf-id="hf-jtiz" class="scene-inner"><div data-hf-id="hf-mz5c" class="frame-cards" id="cards-f7"></div></div>
+      </section>
+      <section data-hf-id="hf-l843" id="s14" class="clip" data-start="25.45" data-duration="1.45" data-track-index="14">
+        <div data-hf-id="hf-k7u0" class="scene-inner"><div data-hf-id="hf-agmv" class="frame-cards" id="cards-f8"></div></div>
+      </section>
+      <section data-hf-id="hf-31tq" id="s15" class="clip" data-start="26.9" data-duration="1.45" data-track-index="15">
+        <div data-hf-id="hf-hfot" class="scene-inner"><div data-hf-id="hf-6iiu" class="frame-cards" id="cards-f9"></div></div>
+      </section>
+      <section data-hf-id="hf-angh" id="s16" class="clip" data-start="28.35" data-duration="1.45" data-track-index="16">
+        <div data-hf-id="hf-htzu" class="scene-inner"><div data-hf-id="hf-12oq" class="frame-cards" id="cards-f10"></div></div>
+      </section>
+      <section data-hf-id="hf-zriw" id="s17" class="clip" data-start="29.8" data-duration="1.45" data-track-index="17">
+        <div data-hf-id="hf-i8av" class="scene-inner"><div data-hf-id="hf-50sr" class="frame-cards" id="cards-f11"></div></div>
+      </section>
+      <section data-hf-id="hf-tnzq" id="s18" class="clip" data-start="31.25" data-duration="1.45" data-track-index="18">
+        <div data-hf-id="hf-imlw" class="scene-inner"><div data-hf-id="hf-u5b4" class="frame-cards" id="cards-f12"></div></div>
+      </section>
+
+      <!-- guests / thesis / finale -->
+      <section data-hf-id="hf-40y6" id="s19" class="clip" data-start="32.7" data-duration="2.5" data-track-index="19">
+        <div data-hf-id="hf-m7d5" class="scene-inner">
+          <p data-hf-id="hf-en3c" class="eyebrow2">Notable guests</p>
+          <div data-hf-id="hf-e208" id="guest-row"></div>
+        </div>
+      </section>
+      <section data-hf-id="hf-or7c" id="s20" class="clip" data-start="35.2" data-duration="2.9" data-track-index="20">
+        <div data-hf-id="hf-mlo6" class="scene-inner">
+          <p data-hf-id="hf-dywv" id="thesis-1">The world burns <span data-hf-id="hf-1nf8" class="warm-word">warm.</span></p>
+          <p data-hf-id="hf-9h2h" id="thesis-2">The interface stays <span data-hf-id="hf-nlu0" class="cold-word">cold.</span></p>
+        </div>
+      </section>
+      <section data-hf-id="hf-szxc" id="s21" class="clip" data-start="38.1" data-duration="6.9" data-track-index="21">
+        <div data-hf-id="hf-jskq" class="scene-inner">
+          <div data-hf-id="hf-0ulb" class="title-scrim"></div>
+          <div data-hf-id="hf-tyg7" id="halo"></div>
+          <div data-hf-id="hf-ksnq" class="wordmark-row wordmark-row--final">
+            <img data-hf-id="hf-u47k" id="logo-final" class="wordmark-logo" src="assets/logo.png" alt="" data-start="38.1" data-duration="6.9">
+            <h1 data-hf-id="hf-ozfl" id="wordmark-final" aria-label="AXIS'27"><span data-hf-id="hf-1q2k" class="glyph">A</span><span data-hf-id="hf-zqz3" class="glyph">X</span><span data-hf-id="hf-vax0" class="glyph">I</span><span data-hf-id="hf-ty7y" class="glyph">S</span><span data-hf-id="hf-40k4" class="glyph">’</span><span data-hf-id="hf-nzlt" class="glyph">2</span><span data-hf-id="hf-oa9e" class="glyph">7</span></h1>
+          </div>
+          <p data-hf-id="hf-bv9l" id="theme-final">Ignis Aeternum</p>
+          <p data-hf-id="hf-0p38" class="theme-sub" id="theme-sub-final">Illuminating the infinite</p>
+          <p data-hf-id="hf-8tm0" id="address">axisvnit.in · VNIT Nagpur</p>
+        </div>
+        <div data-hf-id="hf-bmrh" id="fade-black"></div>
+      </section>
+
+      <!-- audio -->
+      <audio data-hf-id="hf-aw9h" id="music" src="assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3" data-start="0" data-duration="45" data-volume="1" data-track-index="40"></audio>
+      <audio data-hf-id="hf-x4yc" id="sfx-wm" src="assets/sfx/impactBell_heavy_000.ogg" data-start="4.3" data-duration="0.65" data-volume="0.5" data-track-index="41"></audio>
+      <audio data-hf-id="hf-p24m" id="sfx-panel" src="assets/sfx/impactSoft_medium_004.ogg" data-start="10.7" data-duration="0.15" data-volume="0.34" data-track-index="42"></audio>
+      <audio data-hf-id="hf-lxjk" id="sfx-v1" src="assets/sfx/impactSoft_medium_004.ogg" data-start="11.57" data-duration="0.15" data-volume="0.3" data-track-index="43"></audio>
+      <audio data-hf-id="hf-13qc" id="sfx-v2" src="assets/sfx/impactSoft_medium_004.ogg" data-start="12.27" data-duration="0.15" data-volume="0.3" data-track-index="44"></audio>
+      <audio data-hf-id="hf-f077" id="sfx-v3" src="assets/sfx/impactSoft_medium_004.ogg" data-start="13.07" data-duration="0.15" data-volume="0.3" data-track-index="45"></audio>
+      <audio data-hf-id="hf-6fja" id="sfx-f1" src="assets/sfx/click_003.ogg" data-start="15.4" data-duration="0.01" data-volume="0.2" data-track-index="46"></audio>
+      <audio data-hf-id="hf-2j36" id="sfx-f2" src="assets/sfx/click_003.ogg" data-start="16.85" data-duration="0.01" data-volume="0.2" data-track-index="47"></audio>
+      <audio data-hf-id="hf-eejw" id="sfx-f3" src="assets/sfx/click_003.ogg" data-start="18.3" data-duration="0.01" data-volume="0.2" data-track-index="48"></audio>
+      <audio data-hf-id="hf-ddqu" id="sfx-f4" src="assets/sfx/click_003.ogg" data-start="19.75" data-duration="0.01" data-volume="0.2" data-track-index="49"></audio>
+      <audio data-hf-id="hf-7l8c" id="sfx-f5" src="assets/sfx/click_003.ogg" data-start="21.2" data-duration="0.01" data-volume="0.2" data-track-index="50"></audio>
+      <audio data-hf-id="hf-ocde" id="sfx-f6" src="assets/sfx/click_003.ogg" data-start="22.65" data-duration="0.01" data-volume="0.2" data-track-index="51"></audio>
+      <audio data-hf-id="hf-jpwi" id="sfx-f7" src="assets/sfx/click_003.ogg" data-start="24.1" data-duration="0.01" data-volume="0.2" data-track-index="52"></audio>
+      <audio data-hf-id="hf-0rfq" id="sfx-f8" src="assets/sfx/click_003.ogg" data-start="25.55" data-duration="0.01" data-volume="0.2" data-track-index="53"></audio>
+      <audio data-hf-id="hf-mkwm" id="sfx-f9" src="assets/sfx/click_003.ogg" data-start="27" data-duration="0.01" data-volume="0.2" data-track-index="54"></audio>
+      <audio data-hf-id="hf-vh1h" id="sfx-f10" src="assets/sfx/click_003.ogg" data-start="28.45" data-duration="0.01" data-volume="0.2" data-track-index="55"></audio>
+      <audio data-hf-id="hf-x8yq" id="sfx-f11" src="assets/sfx/click_003.ogg" data-start="29.9" data-duration="0.01" data-volume="0.2" data-track-index="56"></audio>
+      <audio data-hf-id="hf-3yaa" id="sfx-f12" src="assets/sfx/click_003.ogg" data-start="31.35" data-duration="0.01" data-volume="0.2" data-track-index="57"></audio>
+      <audio data-hf-id="hf-p4xw" id="sfx-guests" src="assets/sfx/click_003.ogg" data-start="33.05" data-duration="0.01" data-volume="0.2" data-track-index="58"></audio>
+      <audio data-hf-id="hf-8mxu" id="sfx-final" src="assets/sfx/impactBell_heavy_003.ogg" data-start="38.45" data-duration="0.65" data-volume="0.55" data-track-index="59"></audio>
+      <audio data-hf-id="hf-r8dc" id="sfx-ignite" src="assets/sfx/impactSoft_medium_004.ogg" data-start="40.6" data-duration="0.15" data-volume="0.3" data-track-index="60"></audio>
+    </div>
+
+    <script>
+      (function () {
+        var EVENTS = [
+          ['Model United Nations', 'DEBATE. DIPLOMACY. RESOLVE.'],
+          ['Wallstreet', 'TRADE. ANALYZE. DOMINATE.'],
+          ['Analytico', 'POSITION. PITCH. WIN.'],
+          ["Who's The Boss", 'LEAD. DECIDE. COMMAND.'],
+          ['Laser Litt', 'AIM. STEER. STRIKE.'],
+          ['Freak-O-Matrix', 'THINK. SOLVE. ESCAPE.'],
+          ['221B Baker Street', 'DEDUCT. DECODE. DISCOVER.'],
+          ['Wintercoding Challenge', 'OPTIMIZE. DEBUG. OUTLAST.'],
+          ['Cryptocrux', 'CRACK. DECODE. INFILTRATE.'],
+          ['Web Reshape', 'BUILD. BEND. BREAK.'],
+          ['Insomnia', 'CODE. THINK. SURVIVE.'],
+          ['Electroblitz', 'SPARK. CIRCUIT. SURGE.'],
+          ['AI Ideathon', 'THINK. TRAIN. TRANSFORM.'],
+          ['Capture The Flag', 'EXPLOIT. ESCALATE. EXFILTRATE.'],
+          ['Robowars', 'BUILD. FIGHT. SURVIVE.'],
+          ['Aquahunt', 'DIVE. NAVIGATE. CONQUER.'],
+          ['Mechatryst', 'ROAR. RACE. WIN.'],
+          ['Robocup', 'PASS. DRIBBLE. SCORE.'],
+          ['Drone at Work', 'LIFT. GUIDE. LAND.'],
+          ['Autobot', 'MAP. MOVE. MASTER.'],
+          ['Manual Robotics', 'BUILD. TEST. UNLEASH.'],
+          ['Turbo Flux', 'FLOW. TURBINE. POWER.'],
+          ['Aquaskylark', 'PRESSURIZE. LAUNCH. FLY.'],
+          ['Paradeigma', 'SCAVENGE. ASSEMBLE. SHOWCASE.'],
+          ['Crepido', 'SPAN. SUPPORT. WITHSTAND.'],
+          ['Clickscape', 'FRAME. FOCUS. REVEAL.'],
+          ['Mindmash', 'THINK. MATCH. MASTER.'],
+          ['Cre8mark', 'REIMAGINE. RECREATE. ICONIZE.'],
+          ['Dexter', 'REASON. RANK. RISE.'],
+          ['Space Innovation Challenge', 'DREAM. DESIGN. DELIVER.'],
+          ['Brainstorm', 'PUZZLE. PONDER. PIERCE.'],
+          ['Kartavya', 'INNOVATE. IMPACT. INSPIRE.'],
+          ['Toycathon', 'IMAGINE. BUILD. PLAY.'],
+          ['Techno.docx', 'RESEARCH. WRITE. PRESENT.'],
+          ['Gamesutra', 'QUEUE. CLUTCH. CARRY.'],
+          ['Informals', 'PLAY. LAUGH. REPEAT.']
+        ];
+
+        for (var f = 0; f < 12; f++) {
+          var box = document.getElementById('cards-f' + (f + 1));
+          for (var j = 0; j < 3; j++) {
+            var k = f * 3 + j;
+            var card = document.createElement('div');
+            card.className = 'ecard';
+            card.innerHTML =
+              '<div class="ecard-top"><span class="ecard-index">' +
+              String(k + 1).padStart(2, '0') +
+              '</span></div>' +
+              '<h2 class="ecard-name"></h2>' +
+              '<p class="ecard-tag"></p>';
+            card.querySelector('.ecard-name').textContent = EVENTS[k][0];
+            card.querySelector('.ecard-tag').textContent = EVENTS[k][1];
+            box.appendChild(card);
+          }
+        }
+
+        var DOMAINS = ['Management', 'Software', 'Robotics', 'Construction', 'Devise', 'Igniting Minds', 'Esports'];
+        var rail = document.getElementById('domain-rail');
+        for (var di = 0; di < DOMAINS.length; di++) {
+          var chip = document.createElement('div');
+          chip.className = 'dchip';
+          chip.textContent = DOMAINS[di];
+          rail.appendChild(chip);
+        }
+
+        var GUESTS = [
+          ['Dr. APJ Abdul Kalam', 'Former President of India', '2014'],
+          ['Sunita L. Williams', 'NASA astronaut', '2019'],
+          ['Prof. H.C. Verma', 'Physicist \u00b7 Padma Shri', '2024']
+        ];
+        var grow = document.getElementById('guest-row');
+        for (var gi = 0; gi < GUESTS.length; gi++) {
+          var g = GUESTS[gi];
+          var gc = document.createElement('div');
+          gc.className = 'gcard';
+          gc.innerHTML =
+            '<h2 class="gname"></h2>' +
+            '<p class="grole"></p>' +
+            '<span class="gyear"></span>';
+          gc.querySelector('.gname').textContent = g[0];
+          gc.querySelector('.grole').textContent = g[1];
+          gc.querySelector('.gyear').textContent = g[2];
+          grow.appendChild(gc);
+        }
+
+        gsap.set('#seam-flare', { opacity: 0 });
+        gsap.set('#wm-glow', { opacity: 0 });
+        gsap.set('#halo', { opacity: 0 });
+
+        var tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+
+        tl.set('#music', { volume: 0.3 }, 0);
+
+        /* the living world — the site's own WebGL DuneSea in the iframe,
+           its scroll-driven sunrise locked to this timeline */
+        tl.eventCallback('onUpdate', function () {
+          var f = document.getElementById('world-frame');
+          if (f && f.contentWindow && f.contentWindow.__timelines && f.contentWindow.__timelines['world-capture']) {
+            f.contentWindow.__timelines['world-capture'].time(tl.time());
+          }
+        });
+
+        /* seam flares at the scene cuts */
+        flare(4, 0.95);
+        flare(8.4, 0.85);
+        flare(10.4, 0.8);
+        flare(13.4, 0.8);
+        flare(15.3, 0.8);
+        flare(32.7, 0.85);
+        flare(35.2, 0.85);
+        flare(38.1, 1.0);
+        flare(41.8, 0.7);
+
+        function flare(t, peak) {
+          tl.fromTo('#seam-flare', { opacity: 0 }, { opacity: peak, duration: 0.1, immediateRender: false }, t);
+          tl.fromTo('#seam-flare', { opacity: peak }, { opacity: 0, duration: 0.6, immediateRender: false }, t + 0.1);
+        }
+
+        /* spine — hook (2s each), wordmark breathes (4.4s) */
+        tl.from('#hook-1', { y: 30, opacity: 0, duration: 0.35 }, 0.3);
+        tl.from('#hook-2', { y: 30, opacity: 0, duration: 0.35 }, 2.3);
+        tl.from('#wm-glow', { opacity: 0 }, { opacity: 0.9, duration: 0.6, immediateRender: false }, 4.3);
+        tl.from('#wordmark .glyph', { y: 34, opacity: 0, rotate: -4, duration: 0.4, stagger: 0.055, ease: 'back.out(1.2)' }, 4.3);
+        tl.from('#theme', { y: 24, opacity: 0, duration: 0.4 }, 6.2);
+        tl.from('#theme-sub', { y: 18, opacity: 0, duration: 0.3 }, 6.55);
+        tl.from('#claim', { y: 20, opacity: 0, duration: 0.35 }, 8.7);
+        tl.from('#rule-claim', { scaleX: 0, duration: 0.35, ease: 'power2.out' }, 9.2);
+
+        /* counters (3s) */
+        tl.from('#panel', { y: 60, opacity: 0, duration: 0.4 }, 10.7);
+        counters('#v1', 35, 11.2, 0.35);
+        counters('#v2', 200, 11.9, 0.35);
+        counters('#v3', 35000, 12.6, 0.45);
+
+        function counters(sel, end, pos, dur) {
+          var el = document.querySelector(sel);
+          var obj = { n: 0 };
+          tl.from(el, { y: 18, opacity: 0, duration: 0.2 }, pos);
+          tl.to(
+            obj,
+            {
+              n: end,
+              duration: dur,
+              ease: 'power2.out',
+              onUpdate: function () {
+                el.textContent = Math.round(obj.n).toLocaleString('en-US');
+              }
+            },
+            pos + 0.02
+          );
+        }
+
+        /* domains (1.9s) */
+        tl.from('.eyebrow', { y: 22, opacity: 0, duration: 0.3 }, 13.6);
+        tl.from('.dchip', { y: 16, opacity: 0, duration: 0.25, stagger: 0.13 }, 13.85);
+
+        /* event frames — montage, 1.45s each */
+        for (var fr = 0; fr < 12; fr++) {
+          var fs = 15.3 + fr * 1.45;
+          tl.from('#cards-f' + (fr + 1) + ' .ecard', { y: 48, opacity: 0, duration: 0.25, ease: 'back.out(1.15)', stagger: 0.1 }, fs + 0.1);
+        }
+
+        /* guests (2.5s) */
+        tl.from('.eyebrow2', { y: 22, opacity: 0, duration: 0.3 }, 32.95);
+        tl.from('.gcard', { y: 48, opacity: 0, duration: 0.35, ease: 'back.out(1.15)', stagger: 0.12 }, 33.05);
+
+        /* thesis (2.9s) */
+        tl.from('#thesis-1', { y: 30, opacity: 0, duration: 0.4 }, 35.5);
+        tl.from('#thesis-2', { y: 30, opacity: 0, duration: 0.4 }, 36.6);
+
+        /* finale (6.9s — the payoff breathes longest) */
+        tl.from('#halo', { opacity: 0 }, { opacity: 1, duration: 0.8, immediateRender: false }, 38.35);
+        tl.from('#wordmark-final .glyph', { y: 44, opacity: 0, rotate: -5, duration: 0.45, stagger: 0.05, ease: 'back.out(1.2)' }, 38.45);
+        tl.from('#theme-final', { y: 24, opacity: 0, duration: 0.4 }, 40.6);
+        tl.from('#theme-sub-final', { y: 18, opacity: 0, duration: 0.3 }, 40.95);
+        tl.from('#address', { y: 16, opacity: 0, duration: 0.35 }, 41.8);
+        tl.to('#music', { volume: 0, duration: 1.2, ease: 'power1.in' }, 43.3);
+        tl.to('#fade-black', { opacity: 1, duration: 1.4, ease: 'power1.in' }, 43.6);
+
+        window.__timelines['axis27-brag'] = tl;
+      })();
+    </script>
+  </body>
+</html>

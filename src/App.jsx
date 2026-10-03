@@ -1,12 +1,59 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import RouteLoading from './components/RouteLoading';
-import TextScramble from './components/TextScramble';
+import BackToTop from './components/BackToTop';
+import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
+import { eventCategories } from './data/content';
+import { categoryPalette } from './lib/eventTheme';
+import slugify from './lib/slugify';
 import './styles/global.css';
+
+const duneSeaChunk = import('./components/DuneSea');
+const LazyDuneSea = lazy(() => duneSeaChunk);
+
+const splashSceneChunk = import('./components/SplashScene');
+splashSceneChunk.catch(() => {});
+const SplashScene = lazy(() => splashSceneChunk);
+
+/* The other world: a living constellation field in the cold palette, for the
+ * interface pages. Same module-scope kick so it overlaps navigation, not the
+ * splash. Falling glyph rain in the cold palette — a hacker wallpaper. The
+ * dither and the original constellation field are kept beside it as backups
+ * and can be plugged back in one line. */
+const cosmicChunk = import('./components/CosmicRain');
+const LazyCosmicBackground = lazy(() => cosmicChunk);
+
+/* Every non-home page stands in front of a living world. World pages
+ * (about, events and its detail pages where the event's category burns warm,
+ * workshops, accommodation) get the dune sea at full night; interface pages
+ * (contact, team, sponsors, login, anything unmatched) get the cosmic field.
+ * That is the site's own world/interface rule applied to the backdrop itself —
+ * ember belongs to the dunes, cold routes float on the stars. Admin stays on
+ * the dunes, the quietest change. */
+function worldKind(pathname) {
+  const p = pathname.replace(/\/+$/, '') || '/';
+  if (p === '/contact' || p === '/sponsors' || p === '/login') return 'cosmic';
+  if (p.startsWith('/events')) {
+    const slug = (p.split('/')[2] || '').toLowerCase();
+    if (slug) {
+      for (const cat of eventCategories) {
+        if (!cat.events) continue;
+        for (const ev of cat.events) {
+          if (ev.name && slugify(ev.name) === slug) {
+            return categoryPalette(cat.id) === 'cool' ? 'cosmic' : 'dune';
+          }
+        }
+      }
+    }
+    return 'dune'; // the /events listing itself
+  }
+  if (p === '/about' || p === '/team' || p === '/workshops' || p === '/accommodation' || p === '/dashboard' || p === '/preview-hero') return 'dune';
+  return 'cosmic'; // NotFound and anything unmatched
+}
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
@@ -18,441 +65,212 @@ const AccommodationPage = lazy(() => import('./pages/AccommodationPage'));
 const TeamPage = lazy(() => import('./pages/TeamPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
-const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage'));
-const AdminLayout = lazy(() => import('./admin/AdminLayout'));
-const AdminDashboardPage = lazy(() => import('./admin/AdminDashboardPage'));
-const AdminPlaceholderPage = lazy(() => import('./admin/AdminPlaceholderPage'));
-const AdminUsersPage = lazy(() => import('./admin/AdminUsersPage'));
+const HeroPreviewPage = lazy(() => import('./pages/HeroPreviewPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 
-function SplashScreen({ onComplete }) {
-  const [logs, setLogs] = useState([]);
-  const [skipped, setSkipped] = useState(false);
-  const [instability, setInstability] = useState(92);
+const SPLASH_FLOOR_MS = 1700;
+const SPLASH_HOLD_CAP_MS = 1800;
+const SPLASH_HANDOFF_MS = 600;
 
-  const handleSkip = () => {
-    setSkipped(true);
-    onComplete();
-  };
-
+function IntroClock() {
+  const ref = useRef(null);
   useEffect(() => {
-    const logList = [
-      "CYBERLIFE INDUSTRIES INC.  |  REG: AXIS-v2.70",
-      "KERNEL INTERRUPT SIGNAL... OK [✓]",
-      "INITIALIZING SPICE_MELANGE_INTERFACE...",
-      "LOADING CONSTELLATION PARTICLE ENGINE (4200 NODES)...",
-      "SOFTWARE INSTABILITY DETECTED  [▲ 92%]",
-      "SYNCHRONIZING ARRAKIS TERRAIN MAP...",
-      "KALADAN FREQUENCY LOCK: STABLE",
-      "ANOMALY STATUS: COMPATIBLE  [DEVIANT? NO]",
-      "DIRECTIVE // IGNIS AETERNUM // ACTIVE",
-      "ILLUMINATING THE INFINITE... READY [■]",
-    ];
-
-    let currentLog = 0;
-    let finished = false;
-    let completed = false;
-    const finish = () => {
-      if (completed) return;
-      completed = true;
-      clearTimeout(dismissTimer);
-      clearTimeout(fallbackTimer);
-      clearInterval(interval);
-      setTimeout(onComplete, 600);
+    const tick = () => {
+      if (!ref.current) return;
+      const d = new Date();
+      ref.current.textContent = [d.getHours(), d.getMinutes(), d.getSeconds()]
+        .map((n) => String(n).padStart(2, '0')).join(':');
     };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return <span ref={ref} aria-hidden="true">--:--:--</span>;
+}
 
-    const interval = setInterval(() => {
-      if (currentLog < logList.length) {
-        setLogs(prev => [...prev, logList[currentLog]]);
-        currentLog++;
-        if (currentLog === 5) setInstability(94);
-        if (currentLog === 6) setInstability(91);
-        if (currentLog === 7) setInstability(94);
-      } else {
-        finished = true;
-        finish();
-      }
-    }, 170);
+function SplashScreen({ onComplete, worldReady }) {
+  const [sealed, setSealed] = useState(false);
+  const reduceMotion = useReducedMotion() ?? false;
 
-    // Fallback: if the interval stalls (e.g. tab throttled), show all logs and dismiss.
-    const fallbackTimer = setTimeout(() => {
-      if (!finished) {
-        setLogs(logList);
-        finish();
-      }
-    }, 2200);
+  const worldReadyRef = useRef(worldReady);
+  useEffect(() => { worldReadyRef.current = worldReady; }, [worldReady]);
 
-    // Auto-dismiss when all logs have rendered (logs.length === logList.length)
-    const dismissTimer = setInterval(() => {
-      setLogs(prev => {
-        if (prev.length >= logList.length) {
-          finish();
-        }
-        return prev;
-      });
-    }, 200);
+  const scenePaintedRef = useRef(false);
+  const scenePaintedAtRef = useRef(null);
+  const handleScenePainted = useCallback(() => {
+    if (scenePaintedRef.current) return;
+    scenePaintedAtRef.current = performance.now();
+    scenePaintedRef.current = true;
+  }, []);
 
-    return () => {
-      clearInterval(interval);
-      clearInterval(dismissTimer);
-      clearTimeout(fallbackTimer);
-    };
+  const skipBtnRef = useRef(null);
+  const cancelRef = useRef(null);
+
+  const handleSkip = useCallback(() => {
+    if (cancelRef.current?.()) onComplete();
   }, [onComplete]);
 
-  if (skipped) return null;
+  useEffect(() => {
+    skipBtnRef.current?.focus({ preventScroll: true });
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    let completed = false;
+    let handedOff = false;
+    let holdPoll = null;
+    let holdCap = null;
+    let handoffTimer = null;
+
+    const finish = () => {
+      if (cancelled || completed) return;
+      completed = true;
+      const handOff = () => {
+        if (cancelled || handedOff) return;
+        handedOff = true;
+        clearInterval(holdPoll);
+        clearTimeout(holdCap);
+        setSealed(true);
+        handoffTimer = setTimeout(() => {
+          if (cancelRef.current?.()) onComplete();
+        }, SPLASH_HANDOFF_MS);
+      };
+      const sceneReady = () => scenePaintedRef.current
+        && performance.now() - scenePaintedAtRef.current >= SPLASH_FLOOR_MS;
+      if (worldReadyRef.current) {
+        if (sceneReady()) {
+          handOff();
+          return;
+        }
+      }
+      holdCap = setTimeout(handOff, SPLASH_HOLD_CAP_MS);
+      holdPoll = setInterval(() => {
+        if (!worldReadyRef.current || !sceneReady()) return;
+        handOff();
+      }, 80);
+    };
+
+    const scriptTimer = setTimeout(finish, SPLASH_FLOOR_MS);
+    const cancel = () => {
+      if (cancelled) return false;
+      cancelled = true;
+      clearTimeout(scriptTimer);
+      clearInterval(holdPoll);
+      clearTimeout(holdCap);
+      clearTimeout(handoffTimer);
+      return true;
+    };
+    cancelRef.current = cancel;
+
+    return cancel;
+  }, [onComplete]);
+
+  const sealedLine = sealed
+    ? 'the dawn is breaking'
+    : worldReady ? 'the world is up' : 'compiling the world';
+  const stageFill = worldReady ? (sealed ? 2 : 1) : 0;
 
   return (
     <motion.div
-      initial={{ opacity: 1, filter: 'blur(0px)' }}
-      exit={{ opacity: 0, scale: 1.04, filter: 'blur(18px)' }}
-      transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 9999,
-        overflow: 'hidden',
-        background: 'radial-gradient(ellipse at 50% 40%, rgba(210,156,56,0.08) 0%, rgba(13,10,8,0.97) 50%, var(--bg-deep) 100%)',
+      className="intro-stage"
+      role="group"
+      aria-label="Intro"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: reduceMotion ? 0 : 0.6, ease: [0.22, 1, 0.36, 1] }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          handleSkip();
+        }
       }}
     >
-      {/* DUNE: Cinematic spice dust field — scattered fine particles */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        backgroundImage: [
-          'radial-gradient(0.8px 0.8px at 12% 18%, rgba(229,169,60,0.55), transparent)',
-          'radial-gradient(0.8px 0.8px at 82% 12%, rgba(0,229,255,0.5), transparent)',
-          'radial-gradient(0.8px 0.8px at 48% 72%, rgba(229,169,60,0.45), transparent)',
-          'radial-gradient(0.8px 0.8px at 28% 62%, rgba(255,51,85,0.4), transparent)',
-          'radial-gradient(0.6px 0.6px at 64% 28%, rgba(0,229,255,0.35), transparent)',
-          'radial-gradient(0.7px 0.7px at 8% 55%, rgba(229,169,60,0.4), transparent)',
-          'radial-gradient(0.9px 0.9px at 90% 78%, rgba(229,169,60,0.5), transparent)',
-          'radial-gradient(0.6px 0.6px at 38% 92%, rgba(0,136,255,0.38), transparent)',
-          'radial-gradient(0.7px 0.7px at 55% 8%, rgba(229,169,60,0.42), transparent)',
-          'radial-gradient(0.5px 0.5px at 20% 40%, rgba(0,229,255,0.3), transparent)',
-        ].join(','),
-        backgroundSize: '180px 180px, 260px 260px, 320px 320px, 400px 400px, 220px 220px, 350px 350px, 280px 280px, 380px 380px, 300px 300px, 440px 440px',
-        opacity: 0.3,
-        pointerEvents: 'none',
-      }} />
+      <div className="intro-canvas" aria-hidden="true">
+        <Suspense fallback={null}>
+          <SplashScene sealed={sealed} reduceMotion={reduceMotion} onPainted={handleScenePainted} />
+        </Suspense>
+      </div>
 
-      {/* DETROIT: Cybernetic diagnostic grid (DBH HUD floor plan) */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        backgroundImage: 'linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px)',
-        backgroundSize: '48px 48px',
-        opacity: 0.7,
-        pointerEvents: 'none',
-      }} />
+      <div className="intro-film" aria-hidden="true" />
+      <span className="intro-mark intro-mark--tl" aria-hidden="true" />
+      <span className="intro-mark intro-mark--tr" aria-hidden="true" />
+      <span className="intro-mark intro-mark--bl" aria-hidden="true" />
+      <span className="intro-mark intro-mark--br" aria-hidden="true" />
 
-      {/* DETROIT: Thin corner HUD brackets */}
-      {['top-left','top-right','bottom-left','bottom-right'].map(corner => (
-        <div key={corner} className="nav-desktop-links" style={{
-          position: 'absolute',
-          ...(corner.includes('top') ? { top: '1.5rem' } : { bottom: '1.5rem' }),
-          ...(corner.includes('left') ? { left: '2rem', textAlign: 'left' } : { right: '2rem', textAlign: 'right' }),
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.58rem',
-          color: 'var(--text-muted)',
-          lineHeight: 1.5,
-          letterSpacing: '0.1em',
-          opacity: 0.42,
-          pointerEvents: 'none',
-        }}>
-          {corner === 'top-left' && (
-            <>
-              <div style={{ color: 'var(--spice-blue)' }}>CYBERLIFE BOOTLOADER v4.10</div>
-              <div>KERNEL: DIRECTIVE LOADED</div>
-              <div>IFACE: DUNE_MELANGE (ACTIVE)</div>
-            </>
-          )}
-          {corner === 'top-right' && (
-            <>
-              <div style={{ color: 'var(--gold)' }}>LOCAL_TIME [2027.04.12]</div>
-              <div>COHERENCE: SECURE [✓]</div>
-              <div>CONNECTION: ENCRYPTED (TLS 1.3)</div>
-            </>
-          )}
-          {corner === 'bottom-left' && (
-            <>
-              <div>BOOT REGISTRY: ACTIVE</div>
-              <div>COGNITIVE SYNAPSE MAP: 98.4%</div>
-              <div style={{ color: 'var(--cyber-red)' }}>
-                SOFTWARE INSTABILITY: ▲ {instability}%
-              </div>
-            </>
-          )}
-          {corner === 'bottom-right' && (
-            <>
-              <div>PROCESSOR: STABLE [16/16]</div>
-              <div>CORE THERMALS: 32.4°C (OPTIMAL)</div>
-              <div style={{ color: 'var(--spice-blue)' }}>STAGE: DIRECTIVE BOOT</div>
-            </>
-          )}
+      <div className="intro-ui">
+        <div className="intro-bar intro-rise intro-rise--d1">
+          <div>
+            AXIS<span className="intro-amber">'</span>27 // VNIT NAGPUR
+            <span className="intro-drop">the annual technical festival</span>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            IGNIS AETERNUM
+            <br />
+            <IntroClock /> IST
+          </div>
         </div>
-      ))}
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 12 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'grid',
-          placeItems: 'center',
-          textAlign: 'center',
-          padding: '6rem 1.5rem 4rem',
-        }}
-      >
-        <div style={{ position: 'relative', width: 'min(92vw, 760px)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className="intro-center">
+          <div className="intro-lens intro-rise intro-rise--d2">
+            <span className="intro-lens__r1" aria-hidden="true" />
+            <span className="intro-lens__r2" aria-hidden="true" />
+            <h1 className="intro-title">AXIS27</h1>
+          </div>
 
-          {/* DUNE ECLIPSE + DBH CYBERLIFE LED TEMPLE */}
-          <div style={{ position: 'relative', width: '240px', height: '240px', marginBottom: '2.5rem' }}>
-            {/* Outer corona — spice aurora */}
-            <motion.div
-              animate={{ scale: [0.92, 1.1, 0.92], opacity: [0.45, 0.85, 0.45] }}
-              transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-              style={{
-                position: 'absolute',
-                inset: -15,
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(229,169,60,0.28) 0%, rgba(229,169,60,0.06) 50%, transparent 75%)',
-                filter: 'blur(10px)',
-              }}
-            />
-            {/* DBH CyberLife LED primary ring */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2.8, repeat: Infinity, ease: 'linear' }}
-              style={{
-                position: 'absolute',
-                inset: -6,
-                borderRadius: '50%',
-                border: '2px solid rgba(0,229,255,0.12)',
-                borderTopColor: '#00e5ff',
-                borderRightColor: 'rgba(0,229,255,0.5)',
-                boxShadow: '0 0 30px rgba(0,229,255,0.25), 0 0 60px rgba(0,229,255,0.08)',
-              }}
-            />
-            {/* DBH inner ring — counter-spin, gold spice */}
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
-              style={{
-                position: 'absolute',
-                inset: 6,
-                borderRadius: '50%',
-                border: '1.5px solid rgba(229,169,60,0.1)',
-                borderLeftColor: 'var(--gold)',
-                borderBottomColor: 'rgba(229,169,60,0.4)',
-                boxShadow: '0 0 15px rgba(229,169,60,0.08)',
-              }}
-            />
-            {/* Dune Eclipse body — dark sun */}
-            <div style={{
-              position: 'absolute',
-              inset: 20,
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, #0d0805 30%, #070503 100%)',
-              border: '1px solid rgba(255,255,255,0.04)',
-              display: 'grid',
-              placeItems: 'center',
-              boxShadow: 'inset 0 0 28px rgba(229,169,60,0.18), 0 0 40px rgba(0,0,0,0.6)',
-            }}>
-              <motion.img
-                src="/images/logo-icon.webp"
-                alt="AXIS'27"
-                initial={{ opacity: 0, scale: 0.88, rotate: 0 }}
-                animate={{ opacity: 1, scale: 1, rotate: 360 }}
-                transition={{ 
-                  default: { duration: 0.7, delay: 0.2 },
-                  rotate: { duration: 10, repeat: Infinity, ease: 'linear' }
-                }}
-                style={{
-                  width: '130px',
-                  height: 'auto',
-                  filter: 'drop-shadow(0 0 18px rgba(0,229,255,0.5)) drop-shadow(0 0 6px rgba(229,169,60,0.3))',
-                  transformOrigin: 'center center',
-                }}
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-              />
+          <div className="intro-sub intro-rise intro-rise--d3">
+            Ignis Aeternum — illuminate the infinite
+          </div>
+
+          <div className="intro-boot intro-rise intro-rise--d4">
+            <div className="intro-log" role="status" aria-live="polite">
+              <span className="intro-log__prompt">{'>'}</span>
+              {sealedLine}
+            </div>
+            <div className="intro-track" aria-hidden="true">
+              <span className="intro-track__fill" style={{ '--fill': stageFill }} />
+            </div>
+            <div className="intro-meta">
+              <span>ignis aeternum</span>
+              <span>monolith render // core_active</span>
             </div>
           </div>
 
-          {/* AXIS'27 — Cinematic Dune Title */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            style={{
-              fontFamily: "'Ethnocentric', sans-serif",
-              fontSize: 'clamp(3.125rem, 10vw, 6.875rem)',
-              fontWeight: 800,
-              letterSpacing: '0.22em',
-              textIndent: '0.22em',
-              background: 'linear-gradient(135deg, #fff 0%, var(--gold) 35%, var(--gold-light) 60%, var(--spice-blue) 85%, var(--cyber-blue) 100%)',
-              backgroundSize: '200% 200%',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              textTransform: 'uppercase',
-              lineHeight: 1.1,
-              textShadow: '0 0 60px rgba(229,169,60,0.2), 0 0 30px rgba(0,229,255,0.1)',
-              animation: 'shimmer 5s ease-in-out infinite',
-            }}
-          >
-            AXIS'27
-          </motion.div>
-
-          {/* Tagline — DBH monospace directive */}
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            style={{
-              marginTop: '0.8rem',
-              fontFamily: 'var(--font-mono)',
-              fontSize: 'clamp(1.0rem, 2.25vw, 1.185rem)',
-              letterSpacing: '0.3em',
-              textTransform: 'uppercase',
-              color: 'var(--text-secondary)',
-              borderBottom: '1px solid rgba(229,169,60,0.12)',
-              paddingBottom: '0.3rem',
-            }}
-          >
-            <TextScramble text="IGNIS AETERNUM: ILLUMINATING THE INFINITE" startDelay={800} />
-          </motion.div>
-
-          {/* DBH Holographic Diagnostics Terminal */}
-          <div style={{
-            marginTop: '2rem',
-            width: 'min(100%, 440px)',
-            background: 'rgba(0, 0, 0, 0.42)',
-            border: '1px solid rgba(0, 229, 255, 0.1)',
-            borderLeft: '3px solid var(--spice-blue)',
-            borderRadius: '2px',
-            padding: '0.9rem 1.3rem',
-            textAlign: 'left',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.7rem',
-            color: 'var(--text-muted)',
-            lineHeight: 1.55,
-            minHeight: '110px',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,0,0,0.2)',
-          }}>
-            <div style={{
-              color: 'var(--spice-blue)',
-              fontSize: '0.62rem',
-              letterSpacing: '0.15em',
-              marginBottom: '0.4rem',
-              borderBottom: '1px solid rgba(0,229,255,0.06)',
-              paddingBottom: '0.3rem',
-            }}>
-              // TERMINAL: CYBERLIFE DIAGNOSTICS //
-            </div>
-            <AnimatePresence>
-              {logs.map((log, index) => {
-                if (!log) return null;
-                const isWarning = log.includes("INSTABILITY");
-                const isComplete = index === logs.length - 1;
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.12 }}
-                    style={{
-                      color: isWarning ? 'var(--cyber-red)' : isComplete ? 'var(--spice-blue)' : 'var(--text-secondary)',
-                      fontWeight: isComplete ? 600 : 400,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.4rem',
-                    }}
-                  >
-                    <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>&gt;</span>
-                    {log}
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
-          </div>
-
-          {/* Loading Progress Bar — Spice → CyberLife gradient */}
-          <div style={{
-            width: 'min(100%, 440px)',
-            marginTop: '1.2rem',
-          }}>
-            <div style={{
-              height: '4px',
-              borderRadius: '2px',
-              background: 'rgba(255,255,255,0.04)',
-              overflow: 'hidden',
-              border: '1px solid rgba(229,169,60,0.06)',
-            }}>
-              <motion.div
-                initial={{ width: '0%' }}
-                animate={{ width: '100%' }}
-                transition={{ duration: 1.8, ease: [0.65, 0, 0.35, 1] }}
-                style={{
-                  height: '100%',
-                  background: 'linear-gradient(90deg, var(--gold), var(--spice-blue), var(--cyber-blue))',
-                  boxShadow: '0 0 14px var(--spice-blue), 0 0 28px var(--spice-blue-glow)',
-                }}
-              />
-            </div>
-            <div style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.58rem',
-              color: 'var(--text-muted)',
-              marginTop: '0.4rem',
-              letterSpacing: '0.08em',
-              textAlign: 'right',
-            }}>
-              LOADING: {Math.min(100, Math.round((logs.length / 10) * 100))}%
-            </div>
-          </div>
-
-          {/* Skip Intro */}
           <button
+            ref={skipBtnRef}
+            type="button"
             onClick={handleSkip}
-            aria-label="Skip intro"
-            style={{
-              marginTop: '1.4rem',
-              background: 'none',
-              border: '1px solid rgba(0,229,255,0.15)',
-              borderRadius: '2px',
-              padding: '0.45rem 1.1rem',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.62rem',
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: 'var(--text-muted)',
-              cursor: 'pointer',
-              transition: 'color 0.25s var(--ease-cyber), border-color 0.25s var(--ease-cyber), box-shadow 0.25s var(--ease-cyber)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--spice-blue)';
-              e.currentTarget.style.borderColor = 'var(--spice-blue)';
-              e.currentTarget.style.boxShadow = '0 0 14px rgba(0,229,255,0.18)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-muted)';
-              e.currentTarget.style.borderColor = 'rgba(0,229,255,0.15)';
-              e.currentTarget.style.boxShadow = 'none';
-            }}
+            className="intro-dismiss"
           >
-            SKIP INTRO ▸
+            Enter site
           </button>
         </div>
-      </motion.div>
+
+        <div className="intro-bar intro-bar--foot intro-rise intro-rise--d1">
+          <div className="intro-stats">
+            <span><b>35+</b> events</span>
+            <span><b>200+</b> colleges</span>
+            <span><b>35,000+</b> participants</span>
+          </div>
+          <div className="intro-drop" style={{ textAlign: 'right' }}>
+            central india's largest technical fest
+          </div>
+        </div>
+      </div>
     </motion.div>
   );
 }
+
 
 function AppContent() {
   const location = useLocation();
   const [showSplash, setShowSplash] = useState(() => {
     if (typeof window === 'undefined' || location.pathname !== '/') return false;
-    return window.sessionStorage.getItem('axis27-home-intro-seen') !== '1';
+    try {
+      return window.sessionStorage.getItem('axis27-shard-intro-seen') !== '1';
+    } catch {
+      return true;
+    }
   });
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
@@ -463,9 +281,24 @@ function AppContent() {
 
   useEffect(() => {
     if (location.pathname === '/' && showSplash) {
-      window.sessionStorage.setItem('axis27-home-intro-seen', '1');
+      try {
+        window.sessionStorage.setItem('axis27-shard-intro-seen', '1');
+      } catch {
+        return;
+      }
     }
   }, [location.pathname, showSplash]);
+
+  const [worldReady, setWorldReady] = useState(false);
+  const handleWorldReady = useCallback(() => setWorldReady(true), []);
+  const handleSplashComplete = useCallback(() => setShowSplash(false), []);
+
+  /* True exactly while a lazy route chunk is in flight — RouteLoading's
+   * Suspense-fallback instance reports it through its own mount/unmount, so
+   * there is no router-internals plumbing here. The footer is withheld for the
+   * same window: last page's footer sitting under the loader read as if the
+   * next page had already arrived. */
+  const [navLoading, setNavLoading] = useState(false);
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>
@@ -473,19 +306,66 @@ function AppContent() {
         {showSplash && (
           <SplashScreen
             key="splash"
-            onComplete={() => setShowSplash(false)}
+            onComplete={handleSplashComplete}
+            worldReady={worldReady}
           />
         )}
       </AnimatePresence>
 
+      {/* Non-home pages get a fixed living world as the page background: the
+          dune sea at full night on dune pages, the cosmic field on the others
+          (worldKind above). It sits outside the route-shell motion.div so the
+          shell's filter/scale transforms don't make it the containing block for
+          position:fixed. On the home page, HomePage renders its own sticky
+          DuneSea with the scroll-driven sunrise. */}
+      {location.pathname !== '/' && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
+          <Suspense fallback={null}>
+            {worldKind(location.pathname) === 'cosmic' ? (
+              <LazyCosmicBackground
+                color="#05f0e4"
+                fontSize={8}
+                speed={0.6}
+                className="opacity-80"
+              />
+            ) : (
+              <LazyDuneSea active={false} scrollY={1} />
+            )}
+          </Suspense>
+        </div>
+      )}
+
+      {/* The ember seam. Its position here is the whole reason it works, so it is
+          worth being explicit: it sits OUTSIDE the motion.div below, as a sibling.
+          That wrapper animates `filter` and `scale`, and an ancestor with either
+          one silently becomes the containing block for `position: fixed` — the
+          same trap that once sized the world layer to the entire document instead
+          of the viewport. Inside the wrapper this line would scroll away and blur
+          on every route change.
+
+          It is also never unmounted or re-keyed, so its 14s breathing animation
+          runs continuously for the whole session rather than restarting on
+          navigation. The eternal flame is eternal because nothing re-renders it.
+
+          The home page hides it: the hero draws a real horizon at this exact
+          height, and two lights on one horizon is one too many. */}
+      {location.pathname !== '/' && <div className="ember-seam" aria-hidden="true" />}
+
+      {/* Back-to-top, outside the route-shell like the seam above — same
+          transform trap, same reasoning. Hidden on home, where the sunrise is
+          the navigation. */}
+      {location.pathname !== '/' && <BackToTop />}
+
       <motion.div
         initial={location.pathname === '/' && showSplash ? { opacity: 0, y: 18, scale: 0.99, filter: 'blur(14px)' } : false}
-        animate={location.pathname === '/' && showSplash 
+        animate={location.pathname === '/' && showSplash
           ? { opacity: 0, y: 18, scale: 0.99, filter: 'blur(14px)' }
           : { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
         }
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         style={{ pointerEvents: showSplash ? 'none' : 'auto' }}
+        inert={showSplash}
+        className="route-shell"
       >
         <a href="#main-content" className="skip-link">Skip to content</a>
         <Navigation />
@@ -499,9 +379,9 @@ function AppContent() {
             exit={{ opacity: 0, scale: 0.995, y: -4 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Suspense fallback={<RouteLoading />}>
+            <Suspense fallback={<RouteLoading full onActive={setNavLoading} />}>
               <Routes location={location}>
-              <Route path="/" element={<HomePage ready={!showSplash} />} />
+              <Route path="/" element={<HomePage ready={!showSplash} onWorldReady={handleWorldReady} />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/events" element={<EventsPage />} />
               <Route path="/events/:eventId" element={<EventDetailsPage />} />
@@ -509,28 +389,21 @@ function AppContent() {
               <Route path="/sponsors" element={<SponsorsPage />} />
               <Route path="/accommodation" element={<AccommodationPage />} />
               <Route path="/team" element={<TeamPage />} />
+              <Route path="/team/:memberSlug" element={<TeamPage />} />
               <Route path="/contact" element={<ContactPage />} />
-              
-              {/* Auth Routes */}
-              <Route path="/login" element={<AdminLoginPage />} />
-              <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<AdminDashboardPage />} />
-                <Route path="gallery" element={<AdminPlaceholderPage section="gallery" />} />
-                <Route path="events" element={<AdminPlaceholderPage section="events" />} />
-                <Route path="workshops" element={<AdminPlaceholderPage section="workshops" />} />
-                <Route path="registrations" element={<AdminPlaceholderPage section="registrations" />} />
-                <Route path="sponsors" element={<AdminPlaceholderPage section="sponsors" />} />
-                <Route path="team" element={<AdminPlaceholderPage section="team" />} />
-                <Route path="emails" element={<AdminPlaceholderPage section="emails" />} />
-                <Route path="users" element={<AdminUsersPage />} />
-              </Route>
+
+              {/* Design direction proof — additive, remove once adopted */}
+              <Route path="/preview-hero" element={<HeroPreviewPage />} />
+
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
               
               <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>
           </motion.div>
         </AnimatePresence>
-        <Footer />
+        {!navLoading && <Footer />}
       </motion.div>
     </div>
   );

@@ -13,19 +13,19 @@ export default function Footer() {
       style={{
         position: 'relative',
         zIndex: 1,
-        borderTop: '1px solid rgba(229,169,60,0.12)',
+        borderTop: '1px solid var(--line-quiet)',
         padding: '3rem 5% 2rem',
         textAlign: 'center',
-        background: 'linear-gradient(0deg, rgba(7,5,3,0.98) 0%, rgba(13,10,8,0.92) 60%, transparent 100%)',
+        background: 'var(--ground)',
         backdropFilter: 'blur(4px)',
-        WebkitBackdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(4px)',
       }}
     >
       {/* DBH status bar */}
       <div style={{
         fontFamily: 'var(--font-mono)',
         fontSize: '0.65rem',
-        color: 'var(--text-muted)',
+        color: 'var(--text-dim)',
         letterSpacing: '0.15em',
         display: 'flex',
         justifyContent: 'center',
@@ -33,33 +33,15 @@ export default function Footer() {
         marginBottom: '2rem',
         opacity: 0.5,
       }}>
-        <span style={{ color: 'var(--spice-blue)' }}>CYBERLIFE: ACTIVE</span>
-        <span>
-          SOFTWARE INSTABILITY:{' '}
-          <motion.span
-            style={{ color: 'var(--cyber-red)' }}
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2.5, repeat: Infinity }}
-          >
-            ▲ 94%
-          </motion.span>
-        </span>
-        <motion.span
-          style={{ color: 'var(--gold)' }}
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          DIRECTIVE: IGNIS AETERNUM
-        </motion.span>
+        <span>DIRECTIVE: IGNIS AETERNUM</span>
       </div>
 
-      {/* Gradient divider below status bar */}
+      {/* Divider below status bar */}
       <div style={{
         height: '1px',
         margin: '0 auto 2rem',
         maxWidth: '480px',
-        background: 'linear-gradient(90deg, transparent, var(--gold) 20%, var(--spice-blue) 50%, var(--gold) 80%, transparent)',
-        opacity: 0.15,
+        background: 'var(--line-quiet)',
       }} />
 
       <div style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -96,28 +78,19 @@ export default function Footer() {
             href={url}
             target="_blank"
             rel="noopener noreferrer"
+            className="footer-social"
             style={{
               width: '44px',
               height: '44px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1px solid rgba(229,169,60,0.18)',
+              border: '1px solid var(--line-quiet)',
               borderRadius: '50%',
-              color: 'var(--gold)',
+              color: 'var(--text-dim)',
               textDecoration: 'none',
               transition: 'all 0.3s var(--ease-cyber)',
-              background: 'rgba(229,169,60,0.04)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--gold)';
-              e.currentTarget.style.color = 'var(--bg-deep)';
-              e.currentTarget.style.borderColor = 'var(--gold-light)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(229,169,60,0.04)';
-              e.currentTarget.style.color = 'var(--gold)';
-              e.currentTarget.style.borderColor = 'rgba(229,169,60,0.18)';
+              background: 'transparent',
             }}
           >
             {socialIcons[platform]}
@@ -146,8 +119,7 @@ export default function Footer() {
             left: '10%',
             right: '10%',
             height: '1px',
-            background: 'linear-gradient(90deg, transparent, var(--gold) 20%, var(--spice-blue) 50%, var(--gold) 80%, transparent)',
-            opacity: 0.3,
+            background: 'var(--line-quiet)',
           }} />
           &copy; {new Date().getFullYear()} AXIS, VNIT Nagpur. All Rights Reserved.
         </p>
