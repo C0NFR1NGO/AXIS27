@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <!-- Assuming you are using Tailwind based on your classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass-card-neon { background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        .form-input { width: 100%; padding: 0.75rem; border-radius: 0.5rem; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); outline: none; }
+        .form-input:focus { border-color: #4ade80; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+
+    <aside class="w-full max-w-md lg:col-span-4">
+        <div id="enrollment" class="glass-card-neon p-8 rounded-[2rem] border border-green-500/30 neon-border relative overflow-hidden">
+            
+            <!-- REMOVED: blur-[5px] pointer-events-none select-none opacity-40 -->
+            <div class="flex flex-col gap-6">
+                <div class="text-center">
+                    <h2 class="text-3xl font-black italic text-green-400 mb-1">REGISTER NOW</h2>
+                    <p class="text-[10px] font-black tracking-[0.4em] text-white/40 uppercase">Fueling Your Scientific Journey</p>
+                </div>
+
+                <form id="registration-form" class="flex flex-col gap-4" novalidate>
+                    <!-- REMOVED: disabled attribute from all inputs -->
+                    <input type="text" id="full_name" placeholder="Full Name" class="form-input" required>
+                    <input type="text" id="school" placeholder="School/College" class="form-input" required>
+                    <select id="student_class" class="form-input appearance-none bg-black/40" required>
+                        <option value="" disabled selected>Select Class</option>
+                        <option value="5">5th Class</option>
+                        <option value="6">6th Class</option>
+                        <option value="7">7th Class</option>
+                        <option value="8">8th Class</option>
+                        <option value="9">9th Class</option>
+                        <option value="10">10th Class</option>
+                    </select>
+                    <input type="email" id="email" placeholder="Email Address" class="form-input" required>
+                    <input type="tel" id="phone" placeholder="Phone Number" class="form-input" required>
+                    <input type="tel" id="alt_phone" placeholder="Parent / Alt Phone (optional)" class="form-input">
+                    <input type="text" id="city" placeholder="City" class="form-input" required>
+
+                  
+                        
+                        <button type="submit" id="submit-enrollment"
+                            class="w-full bg-green-600 hover:bg-green-500 text-black py-4 rounded-xl text-lg font-black italic tracking-widest uppercase transition-all shadow-[0_0_20px_rgba(0,255,0,0.2)] disabled:opacity-50">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+
+                
+            </div>
+        </div>
+    </aside>
+
+    <script>
+        (function () {
+            // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
+            const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+            const form = document.getElementById('registration-form');
+            const submitBtn = document.getElementById('submit-enrollment');
+
+            const fieldIds = ['full_name', 'phone', 'alt_phone', 'email', 'school', 'city', 'student_class'];
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const fields = {};
+                fieldIds.forEach(id => { fields[id] = document.getElementById(id); });
+
+                let valid = true;
+                fieldIds.forEach(id => { fields[id].style.borderColor = ''; });
+
+                if (fields.full_name.value.trim().length < 2) { fields.full_name.style.borderColor = 'red'; valid = false; }
+                if (!/^\+?[\d\s]+$/.test(fields.phone.value.trim())) { fields.phone.style.borderColor = 'red'; valid = false; }
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value.trim())) { fields.email.style.borderColor = 'red'; valid = false; }
+                if (fields.student_class.value.trim().length < 1) { fields.student_class.style.borderColor = 'red'; valid = false; }
+                if (fields.school.value.trim().length < 1) { fields.school.style.borderColor = 'red'; valid = false; }
+                if (fields.city.value.trim().length < 1) { fields.city.style.borderColor = 'red'; valid = false; }
+
+                if (!valid) {
+                    alert('Please correct the highlighted fields.');
+                    return;
+                }
+
+                // Prepare Data
+                const formData = new FormData();
+                formData.append('full_name', fields.full_name.value.trim());
+                formData.append('phone', fields.phone.value.trim());
+                formData.append('alt_phone', fields.alt_phone.value.trim());
+                formData.append('email', fields.email.value.trim());
+                formData.append('school', fields.school.value.trim());
+                formData.append('city', fields.city.value.trim());
+                formData.append('student_class', fields.student_class.value.trim());
+                formData.append('payment_screenshot_url', form.dataset.paymentScreenshotUrl || '');
+
+                // UI Loading State
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'SUBMITTING...';
+
+                try {
+    const response = await fetch('http://127.0.0.1:8000/Dx/register', {
+        method: 'POST',
+        body: formData
+    });
+    
+    const result = await response.json().catch(() => ({}));
+
+    // Check HTTP status code 200 or status field
+    if (response.ok && (result.status === "success" || result.registration_id)) {
+        const regId = result.registration_id ? `\n\nYour Registration ID: ${result.registration_id}` : '';
+        alert('Registration Successful! Welcome to the Junior Science Olympiad.' + regId);
+        form.reset();
+    } else {
+        alert(result.detail || result.message || 'Registration failed. Please try again.');
+    }
+} catch (err) {
+    console.error(err);
+    alert('Could not connect to the server. Please check your backend.');
+} finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Pay & Register';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
